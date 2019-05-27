@@ -44,49 +44,48 @@ these messages without knowing the private key.
 
 ## Key generation
 
-1. Define the bit length of the modulus n, or keyLength in bits.
+1. Define the bit length of the modulus `n`, or `keyLength` in bits.
+2. Choose two large prime numbers `p` and `q` randomly and independently of each other such that `gcd( p·q, (p-1)(q-1) )=1` and `n=p·q` has a key length of keyLength. For instance:
+   1. Generate a random prime `p` with a bit length of `keyLength/2 + 1`.
+   2. Generate a random prime `q` with a bit length of `keyLength/2`.
+   3. Repeat until the bitlength of `n=p·q` is `keyLength`.
+3. Compute `λ = lcm(p-1, q-1)` with `lcm(a, b) = a·b / gcd(a, b)`.
+4. Select generator `g` where in Z* of `n^2`. `g` can be computed as follows (there are other ways):
+   * Generate randoms `λ` and `β` in Z* of n (i.e. `0<λ<n` and `0<β<n`).
+   * Compute `g=( λ·n + 1 ) β^n mod n^2`
+5. Compute `μ=( L( g^λ mod n^2 ) )^(-1) mod n` where `L(x)=(x-1)/n`.
+   
+The **public** (encryption) **key** is **(n, g)**.
 
-2. Choose two large prime numbers p and q randomly and independently of each other such that gcd( p·q, (p-1)(q-1) )=1
-and n=p·q has a key length of keyLength. For instance:
+The **private** (decryption) **key** is **(λ, μ)**. 
+  
+## Encryption
+Let `m` in Z* of `n` be the clear-text message, 1. Select random `r` in Z* of `n^2`.
 
-1. Generate a random prime p with a bit length of keyLength/2 + 1.
+Compute ciphertext as: **`c=g^m · r^n mod n^2`**
 
-2. Generate a random prime q with a bit length of keyLength/2.
+## Decryption
+Let `c` be the ciphertext to decrypt, where `c` in Z* of `n^2`.
 
-3. Repeat until the bitlength of n=p·q is keyLength.
+Compute the plaintext message as: **`m=L( c^λ mod n^2 ) · μ mod n`**
 
-3. Compute λ = lcm(p-1, q-1) with lcm(a,b) = a·b/gcd(a, b).
+## Installation
+`paillier-bigint` is distributed for [web browsers and/or webviews supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
 
-4. Select generator g where in Z* de n^2. g can be computed as follows (there are other ways):
+`paillier-bigint` can be imported to your project with `npm`:
+```bash
+npm install paillier-bigint
+```
 
-* Generate randoms λ and β in Z* of n (i.e. 0<λ<n and 0<β<n). * Compute g=( λ·n + 1 ) β^n mod n^2 5. Compute the
-    following modular multiplicative inverse μ=( L( g^λ mod n^2 ) )^{-1} mod n where L(x)=(x-1)/n The **public**
-    (encryption) **key** is **(n, g)**. The **private** (decryption) **key** is **(λ, μ)**. ## Encryption Let m in Z* of
-    n be the clear-text message, 1. Select random r in Z* of n 2. Compute ciphertext as: **c=g^m · r^n mod n^2** ##
-    Decryption Let c be the ciphertext to decrypt, where c in Z* of n^2 1. Compute the plaintext message as: **m=L( c^λ
-    mod n^2 ) · μ mod n** ## Installation paillier-bigint is distributed for [web browsers and/or webviews supporting
-    BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility)
-    as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
+NPM installation defaults to the ES6 module for browsers and the CJS one for Node.js.
 
-    paillier-bigint can be imported to your project with `npm`:
-    ```bash
-    npm install paillier-bigint
-    ```
-    NPM installation defaults to the ES6 module for browsers and the CJS one for Node.js.
+For web browsers, you can also directly download the minimised version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/paillier-bigint-latest.browser.min.js) or the [ES6 module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/paillier-bigint-latest.browser.mod.min.js) from GitHub.
 
-    For web browsers, you can also directly download the minimised version of the [IIFE
-    file](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/paillier-bigint-latest.browser.min.js)
-    or the [ES6
-    module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/paillier-bigint-latest.browser.mod.min.js)
-    from GitHub.
+## Usage
+Every input number should be a string in base 10, an integer, or a bigint. All the output numbers are of type `bigint`.
 
-    ## Usage
-
-    Every input number should be a string in base 10, an integer, or a bigint. All the output numbers are of type
-    `bigint`.
-
-    An example with Node.js:
-    ```javascript
+An example with Node.js:
+```javascript
     // import paillier
     const paillier = require('paillier-bigint.js');
 
@@ -113,10 +112,10 @@ and n=p·q has a key length of keyLength. For instance:
     let c1 = publicKey.encrypt(m1);
     let encryptedMul = publicKey.multiply(c1, k);
     let mul = privateKey.decrypt(encryptedMul); // k · m1
-    ```
+```
 
-    From a browser, you can just load the module in a html page as:
-    ```html
+From a browser, you can just load the module in a html page as:
+```html
     <script type="module">
         import * as paillier from 'paillier-bigint-latest.browser.mod.min.js';
 
@@ -148,10 +147,9 @@ and n=p·q has a key length of keyLength. For instance:
         let encryptedMul = publicKey.multiply(c1, k);
         let mul = privateKey.decrypt(encryptedMul); // k · m1
     </script>
-    ```
+```
 
-
-    ## Classes
+## Classes
 
 <dl>
 <dt><a href="#PublicKey">PublicKey</a></dt>
@@ -446,4 +444,4 @@ Paillier private-key decryption
 | privateKey | [<code>PrivateKey</code>](#PrivateKey) | the associated Paillier's private key |
 
 
-    * * *
+* * *
