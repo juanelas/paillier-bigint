@@ -64,12 +64,12 @@ Let `m` in `Z*` of `n` be the clear-text message,
 
 1. Select random integer `r` in `(1, n^2)`.
 
-2. Compute ciphertext as: **`c=g^m · r^n mod n^2`**
+2. Compute ciphertext as: **`c = g^m · r^n mod n^2`**
 
 ## Decryption
 Let `c` be the ciphertext to decrypt, where `c` in `(0, n^2)`.
 
-1. Compute the plaintext message as: **`m=L( c^λ mod n^2 ) · μ mod n`**
+1. Compute the plaintext message as: **`m = L( c^λ mod n^2 ) · μ mod n`**
 
 ## Installation
 `paillier-bigint` is distributed for [web browsers and/or webviews supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
