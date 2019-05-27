@@ -1,10 +1,18 @@
 # bigint-paillier
 
-An implementation of the Paillier cryptosystem relying on the native JS (stage 3) implementation of BigInt. It can be used by any [Web Browser or webview supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests (during key generation), you should use Node.js 11 or enable at runtime with `node --experimental-worker` with Node.js >=10.5.0.
+An implementation of the Paillier cryptosystem relying on the native JS (stage 3) implementation of BigInt. It can be
+used by any [Web Browser or webview supporting
+BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility)
+and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests (during key generation), you should
+use Node.js 11 or enable at runtime with `node --experimental-worker` with Node.js >=10.5.0.
 
-_The operations supported on BigInts are not constant time. BigInt can be therefore **[unsuitable for use in cryptography](https://www.chosenplaintext.ca/articles/beginners-guide-constant-time-cryptography.html).** Many platforms provide native support for cryptography, such as [Web Cryptography API](https://w3c.github.io/webcrypto/) or [Node.js Crypto](https://nodejs.org/dist/latest/docs/api/crypto.html)._
+_The operations supported on BigInts are not constant time. BigInt can be therefore **[unsuitable for use in
+cryptography](https://www.chosenplaintext.ca/articles/beginners-guide-constant-time-cryptography.html).** Many platforms
+provide native support for cryptography, such as [Web Cryptography API](https://w3c.github.io/webcrypto/) or [Node.js
+Crypto](https://nodejs.org/dist/latest/docs/api/crypto.html)._
 
-The Paillier cryptosystem, named after and invented by Pascal Paillier in 1999, is a probabilistic asymmetric algorithm for public key cryptography. A notable feature of the Paillier cryptosystem is its homomorphic properties.
+The Paillier cryptosystem, named after and invented by Pascal Paillier in 1999, is a probabilistic asymmetric algorithm
+for public key cryptography. A notable feature of the Paillier cryptosystem is its homomorphic properties.
 
 ## Homomorphic properties
 
@@ -45,7 +53,7 @@ and n=p·q has a key length of keyLength. For instance:
 
 2. Generate a random prime q with a bit length of keyLength/2.
 
-3. Repeat until satisfy: p != q and n with a bit length of keyLength.
+3. Repeat until the bitlength of n=p·q is keyLength.
 
 3. Compute λ = lcm(p-1, q-1) with lcm(a,b) = a·b/gcd(a, b).
 
@@ -112,31 +120,33 @@ and n=p·q has a key length of keyLength. For instance:
     <script type="module">
         import * as paillier from 'paillier-bigint-latest.browser.mod.min.js';
 
-        (async function () {
-            // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
-            const { publicKey, privateKey } = await paillier.generateRandomKeys(3072);
+        // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
+        paillier.generateRandomKeys(3072).then((keyPair) => {
+            const publicKey = keyPair.publicKey;
+            const privateKey = keyPair.privateKey;
+            // ...
+        });
 
-            // optionally, you can create your public/private keys from known parameters
-            const publicKey = new paillier.PublicKey(n, g);
-            const privateKey = new paillier.PrivateKey(lambda, mu, p, q, publicKey);
+        // You can also create your public/private keys from known parameters
+        const publicKey = new paillier.PublicKey(n, g);
+        const privateKey = new paillier.PrivateKey(lambda, mu, p, q, publicKey);
 
-            // encrypt m
-            let c = publicKey.encrypt(m);
+        // encrypt m is just
+        let c = publicKey.encrypt(m);
 
-            // decrypt c
-            let d = privateKey.decrypt(c);
+        // decrypt c
+        let d = privateKey.decrypt(c);
 
-            // homomorphic addition of two ciphertexts (encrypted numbers)
-            let c1 = publicKey.encrypt(m1);
-            let c2 = publicKey.encrypt(m2);
-            let encryptedSum = publicKey.addition(c1, c2);
-            let sum = privateKey.decrypt(encryptedSum); // m1 + m2
+        // homomorphic addition of two ciphertexts (encrypted numbers)
+        let c1 = publicKey.encrypt(m1);
+        let c2 = publicKey.encrypt(m2);
+        let encryptedSum = publicKey.addition(c1, c2);
+        let sum = privateKey.decrypt(encryptedSum); // m1 + m2
 
-            // multiplication by k
-            let c1 = publicKey.encrypt(m1);
-            let encryptedMul = publicKey.multiply(c1, k);
-            let mul = privateKey.decrypt(encryptedMul); // k · m1
-        })();
+        // multiplication by k
+        let c1 = publicKey.encrypt(m1);
+        let encryptedMul = publicKey.multiply(c1, k);
+        let mul = privateKey.decrypt(encryptedMul); // k · m1
     </script>
     ```
 
