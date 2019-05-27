@@ -1,4 +1,4 @@
-# A node.js implementation of the Paillier cryptosystem
+# bigint-paillier
 
 An implementation of the Paillier cryptosystem relying on the native JS (stage 3) implementation of BigInt. It can be used by any [Web Browser or webview supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests (during key generation), you should use Node.js 11 or enable at runtime with `node --experimental-worker` with Node.js >=10.5.0.
 
