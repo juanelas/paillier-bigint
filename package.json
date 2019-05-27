@@ -1,6 +1,6 @@
 {
   "name": "paillier-bigint",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An implementation of the Paillier cryptosystem using native JS (stage 3) implementation of BigInt",
   "keywords": [
     "paillier",
