@@ -51,8 +51,8 @@ these messages without knowing the private key.
    3. Repeat until the bitlength of `n=p·q` is `keyLength`.
 3. Compute `λ = lcm(p-1, q-1)` with `lcm(a, b) = a·b / gcd(a, b)`.
 4. Select generator `g` where in Z* of `n^2`. `g` can be computed as follows (there are other ways):
-   * Generate randoms `λ` and `β` in Z* of n (i.e. `0<λ<n` and `0<β<n`).
-   * Compute `g=( λ·n + 1 ) β^n mod n^2`
+   * Generate randoms `α` and `β` in Z* of n (i.e. `0<α<n` and `0<β<n`).
+   * Compute `g=( α·n + 1 ) β^n mod n^2`
 5. Compute `μ=( L( g^λ mod n^2 ) )^(-1) mod n` where `L(x)=(x-1)/n`.
    
 The **public** (encryption) **key** is **(n, g)**.
@@ -60,14 +60,16 @@ The **public** (encryption) **key** is **(n, g)**.
 The **private** (decryption) **key** is **(λ, μ)**. 
   
 ## Encryption
-Let `m` in Z* of `n` be the clear-text message, 1. Select random `r` in Z* of `n^2`.
+Let `m` in Z* of `n` be the clear-text message,
 
-Compute ciphertext as: **`c=g^m · r^n mod n^2`**
+1. Select random `r` in Z* of `n^2`.
+
+2. Compute ciphertext as: **`c=g^m · r^n mod n^2`**
 
 ## Decryption
 Let `c` be the ciphertext to decrypt, where `c` in Z* of `n^2`.
 
-Compute the plaintext message as: **`m=L( c^λ mod n^2 ) · μ mod n`**
+1. Compute the plaintext message as: **`m=L( c^λ mod n^2 ) · μ mod n`**
 
 ## Installation
 `paillier-bigint` is distributed for [web browsers and/or webviews supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
