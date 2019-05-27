@@ -2,7 +2,6 @@ const _ZERO = BigInt(0);
 const _ONE = BigInt(1);
 const _TWO = BigInt(2);
 
-
 /**
  * Absolute value. abs(a)==a if a>=0. abs(a)==-a if a<0
  *  

@@ -44,6 +44,6 @@
     "rollup-plugin-multi-entry": "^2.1.0"
   },
   "dependencies": {
-    "bigint-crypto-utils": "^2.1.5"
+    "bigint-crypto-utils": "^2.1.6"
   }
 }

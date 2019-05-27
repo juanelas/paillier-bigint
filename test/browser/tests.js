@@ -2,7 +2,6 @@ const _ZERO = BigInt(0);
 const _ONE = BigInt(1);
 const _TWO = BigInt(2);
 
-
 /**
  * Absolute value. abs(a)==a if a>=0. abs(a)==-a if a<0
  *  
@@ -338,6 +337,9 @@ function randBytes(byteLength, forceLength = false) {
         return new Promise(function (resolve) {
             buf = new Uint8Array(byteLength);
             self.crypto.getRandomValues(buf);
+            // If fixed length is required we put the first bit to 1 -> to get the necessary bitLength
+            if (forceLength)
+                buf[0] = buf[0] | 128;
             resolve(buf);
         });
     }
