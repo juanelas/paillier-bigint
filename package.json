@@ -1,0 +1,49 @@
+{
+  "name": "paillier-bigint",
+  "version": "1.0.0",
+  "description": "An implementation of the Paillier cryptosystem using native JS (stage 3) implementation of BigInt",
+  "keywords": [
+    "paillier",
+    "homomorphic",
+    "crypto",
+    "cryptosystem"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Juan Hernández Serrano",
+    "email": "jserrano@entel.upc.edu",
+    "url": "https://github.com/juanelas"
+  },
+  "repository": "github:juanelas/paillier-bigint",
+  "main": "./dist/paillier-bigint-latest.node.js",
+  "browser": "./dist/paillier-bigint-latest.browser.mod.js",
+  "directories": {
+    "build": "./build",
+    "dist": "./dist",
+    "src": "./src",
+    "test": "./test"
+  },
+  "scripts": {
+    "test": "node --experimental-worker node_modules/mocha/bin/_mocha --timeout 600000",
+    "build": "node build/build.rollup.js",
+    "build:browserTests": "node build/build.browser.tests.js",
+    "build:docs": "jsdoc2md --template=README.hbs --files ./src/main.js > README.md",
+    "build:all": "npm run build && npm run build:browserTests && npm run build:docs",
+    "prepublishOnly": "npm run build && npm run build:docs"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "jsdoc-to-markdown": "^5.0.0",
+    "mocha": "^6.1.4",
+    "rollup": "^1.12.3",
+    "rollup-plugin-babel-minify": "^8.0.0",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-node-resolve": "^4.2.4",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-multi-entry": "^2.1.0"
+  },
+  "dependencies": {
+    "bigint-crypto-utils": "^2.1.5"
+  }
+}
