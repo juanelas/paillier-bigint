@@ -805,7 +805,7 @@ var paillierBigint = (function (exports) {
         /**
          * Homomorphic addition
          * 
-         * @param {...bigints} - 2 or more (big) numbers (m_1,..., m_n) encrypted with this public key
+         * @param {...bigint | ...number} - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
          * 
          * @returns {bigint} - the encryption of (m_1 + ... + m_2) with this public key
          */
@@ -814,12 +814,12 @@ var paillierBigint = (function (exports) {
         }
 
         /**
-         * Pseudo-homomorphic paillier multiplication
+         * Pseudo-homomorphic Paillier multiplication
          * 
          * @param {bigint} c - a number m encrypted with this public key
          * @param {bigint | stringBase10 | number} k - either a cleartext message (number) or a scalar
          * 
-         * @returns {bigint} - the ecnryption of k·m with this public key
+         * @returns {bigint} - the encryption of k·m with this public key
          */
         multiply(c, k) { // c is ciphertext. k is either a cleartext message (number) or a scalar
             if (typeof k === 'string')

@@ -233,15 +233,15 @@ Homomorphic addition
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...ciphertexts | <code>bigints</code> | 2 or more (big) numbers (m_1,..., m_n) encrypted with this public key |
+| ...ciphertexts | <code>bigint</code> \| <code>number</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
 
 <a name="PublicKey+multiply"></a>
 
 ### publicKey.multiply(c, k) ⇒ <code>bigint</code>
-Pseudo-homomorphic paillier multiplication
+Pseudo-homomorphic Paillier multiplication
 
 **Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the ecnryption of k·m with this public key  
+**Returns**: <code>bigint</code> - - the encryption of k·m with this public key  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -366,15 +366,15 @@ Homomorphic addition
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...ciphertexts | <code>bigints</code> | 2 or more (big) numbers (m_1,..., m_n) encrypted with this public key |
+| ...ciphertexts | <code>bigint</code> \| <code>number</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
 
 <a name="PublicKey+multiply"></a>
 
 ### publicKey.multiply(c, k) ⇒ <code>bigint</code>
-Pseudo-homomorphic paillier multiplication
+Pseudo-homomorphic Paillier multiplication
 
 **Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the ecnryption of k·m with this public key  
+**Returns**: <code>bigint</code> - - the encryption of k·m with this public key  
 
 | Param | Type | Description |
 | --- | --- | --- |
