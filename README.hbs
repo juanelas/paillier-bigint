@@ -1,4 +1,4 @@
-# bigint-paillier
+# paillier-bigint
 
 An implementation of the Paillier cryptosystem relying on the native JS (stage 3) implementation of BigInt. It can be
 used by any [Web Browser or webview supporting
