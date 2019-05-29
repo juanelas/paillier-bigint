@@ -205,14 +205,12 @@ function modPow(a, b, n) {
     let result = _ONE;
     let x = a;
     while (b > 0) {
-        var leastSignificantBit = b % _TWO;
+        var leastSignificantBit = b & _ONE;
         b = b / _TWO;
-        if (leastSignificantBit == _ONE) {
-            result = result * x;
-            result = result % n;
+        if (leastSignificantBit === _ONE) {
+            result = (result * x) % n;
         }
-        x = x * x;
-        x = x % n;
+        x = (x * x) % n;
     }
     return result;
 }
@@ -696,24 +694,24 @@ function _isProbablyPrime(w, iterations = 16) {
     }
 
     /*
-	1. Let a be the largest integer such that 2**a divides w−1.
-	2. m = (w−1) / 2**a.
-	3. wlen = len (w).
-	4. For i = 1 to iterations do
-		4.1 Obtain a string b of wlen bits from an RBG.
-		Comment: Ensure that 1 < b < w−1.
-		4.2 If ((b ≤ 1) or (b ≥ w−1)), then go to step 4.1.
-		4.3 z = b**m mod w.
-		4.4 If ((z = 1) or (z = w − 1)), then go to step 4.7.
-		4.5 For j = 1 to a − 1 do.
-		4.5.1 z = z**2 mod w.
-		4.5.2 If (z = w−1), then go to step 4.7.
-		4.5.3 If (z = 1), then go to step 4.6.
-		4.6 Return COMPOSITE.
-		4.7 Continue.
-		Comment: Increment i for the do-loop in step 4.
-	5. Return PROBABLY PRIME.
-	*/
+    1. Let a be the largest integer such that 2**a divides w−1.
+    2. m = (w−1) / 2**a.
+    3. wlen = len (w).
+    4. For i = 1 to iterations do
+        4.1 Obtain a string b of wlen bits from an RBG.
+        Comment: Ensure that 1 < b < w−1.
+        4.2 If ((b ≤ 1) or (b ≥ w−1)), then go to step 4.1.
+        4.3 z = b**m mod w.
+        4.4 If ((z = 1) or (z = w − 1)), then go to step 4.7.
+        4.5 For j = 1 to a − 1 do.
+        4.5.1 z = z**2 mod w.
+        4.5.2 If (z = w−1), then go to step 4.7.
+        4.5.3 If (z = 1), then go to step 4.6.
+        4.6 Return COMPOSITE.
+        4.7 Continue.
+        Comment: Increment i for the do-loop in step 4.
+    5. Return PROBABLY PRIME.
+    */
     let a = _ZERO, d = w - _ONE;
     while (d % _TWO === _ZERO) {
         d /= _TWO;
@@ -773,16 +771,10 @@ for (const bitLength of bitLengths) {
         const tests = 32;
         let numbers = [];
         let ciphertexts = [];
-        before(async function () {
-            keyPair = await paillierBigint.generateRandomKeys(bitLength);
-            for (let i = 0; i < tests; i++) {
-                numbers[i] = bigintCryptoUtilsLatest_browser_mod.randBetween(keyPair.publicKey.n);
-                ciphertexts[i] = keyPair.publicKey.encrypt(numbers[i]);
-            }
-        });
 
         describe(`generateRandomKeys(${bitLength})`, function () {
             it(`it should return a publicKey and a privateKey with public modulus of ${bitLength} bits`, async function () {
+                keyPair = await paillierBigint.generateRandomKeys(bitLength);
                 chai.expect(keyPair.publicKey).to.be.an.instanceOf(paillierBigint.PublicKey);
                 chai.expect(keyPair.privateKey).to.be.an.instanceOf(paillierBigint.PrivateKey);
                 chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength);
@@ -793,6 +785,8 @@ for (const bitLength of bitLengths) {
             it('all should return r', function () {
                 let testPassed = true;
                 for (let i = 0; i < tests; i++) {
+                    numbers[i] = bigintCryptoUtilsLatest_browser_mod.randBetween(keyPair.publicKey.n);
+                    ciphertexts[i] = keyPair.publicKey.encrypt(numbers[i]);
                     const decrypted = keyPair.privateKey.decrypt(ciphertexts[i]);
                     if (numbers[i] !== decrypted) {
                         testPassed = false;

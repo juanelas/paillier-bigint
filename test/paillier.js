@@ -15,16 +15,10 @@ for (const bitLength of bitLengths) {
         const tests = 32;
         let numbers = [];
         let ciphertexts = [];
-        before(async function () {
-            keyPair = await paillierBigint.generateRandomKeys(bitLength);
-            for (let i = 0; i < tests; i++) {
-                numbers[i] = bcu.randBetween(keyPair.publicKey.n);
-                ciphertexts[i] = keyPair.publicKey.encrypt(numbers[i]);
-            }
-        });
 
         describe(`generateRandomKeys(${bitLength})`, function () {
             it(`it should return a publicKey and a privateKey with public modulus of ${bitLength} bits`, async function () {
+                keyPair = await paillierBigint.generateRandomKeys(bitLength);
                 chai.expect(keyPair.publicKey).to.be.an.instanceOf(paillierBigint.PublicKey);
                 chai.expect(keyPair.privateKey).to.be.an.instanceOf(paillierBigint.PrivateKey);
                 chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength);
@@ -35,6 +29,8 @@ for (const bitLength of bitLengths) {
             it('all should return r', function () {
                 let testPassed = true;
                 for (let i = 0; i < tests; i++) {
+                    numbers[i] = bcu.randBetween(keyPair.publicKey.n);
+                    ciphertexts[i] = keyPair.publicKey.encrypt(numbers[i]);
                     const decrypted = keyPair.privateKey.decrypt(ciphertexts[i]);
                     if (numbers[i] !== decrypted) {
                         testPassed = false;

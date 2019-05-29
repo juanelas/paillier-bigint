@@ -205,14 +205,12 @@ function modPow(a, b, n) {
     let result = _ONE;
     let x = a;
     while (b > 0) {
-        var leastSignificantBit = b % _TWO;
+        var leastSignificantBit = b & _ONE;
         b = b / _TWO;
-        if (leastSignificantBit == _ONE) {
-            result = result * x;
-            result = result % n;
+        if (leastSignificantBit === _ONE) {
+            result = (result * x) % n;
         }
-        x = x * x;
-        x = x % n;
+        x = (x * x) % n;
     }
     return result;
 }
@@ -671,24 +669,24 @@ function _isProbablyPrime(w, iterations = 16) {
     }
 
     /*
-	1. Let a be the largest integer such that 2**a divides w−1.
-	2. m = (w−1) / 2**a.
-	3. wlen = len (w).
-	4. For i = 1 to iterations do
-		4.1 Obtain a string b of wlen bits from an RBG.
-		Comment: Ensure that 1 < b < w−1.
-		4.2 If ((b ≤ 1) or (b ≥ w−1)), then go to step 4.1.
-		4.3 z = b**m mod w.
-		4.4 If ((z = 1) or (z = w − 1)), then go to step 4.7.
-		4.5 For j = 1 to a − 1 do.
-		4.5.1 z = z**2 mod w.
-		4.5.2 If (z = w−1), then go to step 4.7.
-		4.5.3 If (z = 1), then go to step 4.6.
-		4.6 Return COMPOSITE.
-		4.7 Continue.
-		Comment: Increment i for the do-loop in step 4.
-	5. Return PROBABLY PRIME.
-	*/
+    1. Let a be the largest integer such that 2**a divides w−1.
+    2. m = (w−1) / 2**a.
+    3. wlen = len (w).
+    4. For i = 1 to iterations do
+        4.1 Obtain a string b of wlen bits from an RBG.
+        Comment: Ensure that 1 < b < w−1.
+        4.2 If ((b ≤ 1) or (b ≥ w−1)), then go to step 4.1.
+        4.3 z = b**m mod w.
+        4.4 If ((z = 1) or (z = w − 1)), then go to step 4.7.
+        4.5 For j = 1 to a − 1 do.
+        4.5.1 z = z**2 mod w.
+        4.5.2 If (z = w−1), then go to step 4.7.
+        4.5.3 If (z = 1), then go to step 4.6.
+        4.6 Return COMPOSITE.
+        4.7 Continue.
+        Comment: Increment i for the do-loop in step 4.
+    5. Return PROBABLY PRIME.
+    */
     let a = _ZERO, d = w - _ONE;
     while (d % _TWO === _ZERO) {
         d /= _TWO;
