@@ -164,7 +164,11 @@ From a browser, you can just load the module in a html page as:
 
 <dl>
 <dt><a href="#generateRandomKeys">generateRandomKeys</a> ⇒ <code>Promise</code></dt>
-<dd><p>Generates a pair private, public key for the Paillier cryptosystem in synchronous mode</p>
+<dd><p>Generates a pair private, public key for the Paillier cryptosystem.</p>
+</dd>
+<dt><a href="#generateRandomKeysSync">generateRandomKeysSync</a> ⇒</dt>
+<dd><p>Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
+Synchronous mode is NOT RECOMMENDED since it won&#39;t use workers and thus it&#39;ll be slower and may freeze thw window in browser&#39;s javascript.</p>
 </dd>
 <dt><a href="#PublicKey">PublicKey</a></dt>
 <dd><p>Class for a Paillier public key</p>
@@ -302,15 +306,29 @@ Paillier private-key decryption
 <a name="generateRandomKeys"></a>
 
 ## generateRandomKeys ⇒ <code>Promise</code>
-Generates a pair private, public key for the Paillier cryptosystem in synchronous mode
+Generates a pair private, public key for the Paillier cryptosystem.
 
 **Kind**: global constant  
 **Returns**: <code>Promise</code> - - a promise that resolves to a [KeyPair](#KeyPair) of public, private keys  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| bitLength | <code>number</code> | the bit lenght of the public modulo |
-| simplevariant | <code>boolean</code> | use the simple variant to compute the generator |
+| bitLength | <code>number</code> | the bit length of the public modulo |
+| simplevariant | <code>boolean</code> | use the simple variant to compute the generator (g=n+1) |
+
+<a name="generateRandomKeysSync"></a>
+
+## generateRandomKeysSync ⇒
+Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
+Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
+
+**Kind**: global constant  
+**Returns**: [KeyPair](#KeyPair) - a [KeyPair](#KeyPair) of public, private keys  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| bitLength | <code>number</code> | the bit length of the public modulo |
+| simplevariant | <code>boolean</code> | use the simple variant to compute the generator (g=n+1) |
 
 <a name="PublicKey"></a>
 

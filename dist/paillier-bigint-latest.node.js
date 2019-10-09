@@ -13,19 +13,59 @@ const _ONE = BigInt(1);
  */
 
 /**
- * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode
+ * Generates a pair private, public key for the Paillier cryptosystem.
  * 
- * @param {number} bitLength - the bit lenght of the public modulo
- * @param {boolean} simplevariant - use the simple variant to compute the generator
+ * @param {number} bitLength - the bit length of the public modulo
+ * @param {boolean} simplevariant - use the simple variant to compute the generator (g=n+1)
  * 
  * @returns {Promise} - a promise that resolves to a {@link KeyPair} of public, private keys
  */
 const generateRandomKeys = async function (bitLength = 4096, simpleVariant = false) {
     let p, q, n, phi, n2, g, lambda, mu;
-    // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLenght) 
+    // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength) 
     do {
         p = await bcu.prime(Math.floor(bitLength / 2) + 1);
         q = await bcu.prime(Math.floor(bitLength / 2));
+        n = p * q;
+    } while (q === p || bcu.bitLength(n) != bitLength);
+
+    phi = (p - _ONE) * (q - _ONE);
+
+    n2 = n ** BigInt(2);
+
+    if (simpleVariant === true) {
+        //If using p,q of equivalent length, a simpler variant of the key
+        // generation steps would be to set
+        // g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n)
+        g = n + _ONE;
+        lambda = phi;
+        mu = bcu.modInv(lambda, n);
+    } else {
+        g = getGenerator(n, n2);
+        lambda = bcu.lcm(p - _ONE, q - _ONE);
+        mu = bcu.modInv(L(bcu.modPow(g, lambda, n2), n), n);
+    }
+
+    const publicKey = new PublicKey(n, g);
+    const privateKey = new PrivateKey(lambda, mu, p, q, publicKey);
+    return { publicKey: publicKey, privateKey: privateKey };
+};
+
+/**
+ * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
+ * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
+ * 
+ * @param {number} bitLength - the bit length of the public modulo
+ * @param {boolean} simplevariant - use the simple variant to compute the generator (g=n+1)
+ * 
+ * @returns {@link KeyPair} - a {@link KeyPair} of public, private keys
+ */
+const generateRandomKeysSync = function (bitLength = 4096, simpleVariant = false) {
+    let p, q, n, phi, n2, g, lambda, mu;
+    // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength) 
+    do {
+        p = bcu.primeSync(Math.floor(bitLength / 2) + 1);
+        q = bcu.primeSync(Math.floor(bitLength / 2));
         n = p * q;
     } while (q === p || bcu.bitLength(n) != bitLength);
 
@@ -175,3 +215,4 @@ function getGenerator(n, n2 = bcu.modPow(n, 2)) {
 exports.PrivateKey = PrivateKey;
 exports.PublicKey = PublicKey;
 exports.generateRandomKeys = generateRandomKeys;
+exports.generateRandomKeysSync = generateRandomKeysSync;

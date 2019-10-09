@@ -67,3 +67,11 @@ for (const bitLength of bitLengths) {
         });
     });
 }
+describe('Testing generateRandomKeysSync(2048) NOT RECOMMENDED', function () {
+    it('it should return a publicKey and a privateKey with public modulus of 2048 bits', function () {
+        const keyPair = paillierBigint.generateRandomKeysSync(2048);
+        chai.expect(keyPair.publicKey).to.be.an.instanceOf(paillierBigint.PublicKey);
+        chai.expect(keyPair.privateKey).to.be.an.instanceOf(paillierBigint.PrivateKey);
+        chai.expect(keyPair.publicKey.bitLength).to.equal(2048);
+    });
+});

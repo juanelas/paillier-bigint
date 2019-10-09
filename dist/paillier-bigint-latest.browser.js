@@ -131,7 +131,7 @@ var paillierBigint = (function (exports) {
         }
         { // browser
             return new Promise((resolve, reject) => {
-                let worker = new Worker(_isProbablyPrimeWorkerUrl());
+                const worker = new Worker(_isProbablyPrimeWorkerUrl());
 
                 worker.onmessage = (event) => {
                     worker.terminate();
@@ -187,35 +187,37 @@ var paillierBigint = (function (exports) {
     }
 
     /**
-     * Modular exponentiation a**b mod n
-     * @param {number|bigint} a base
-     * @param {number|bigint} b exponent
+     * Modular exponentiation b**e mod n. Currently using the right-to-left binary method
+     * 
+     * @param {number|bigint} b base
+     * @param {number|bigint} e exponent
      * @param {number|bigint} n modulo
      * 
-     * @returns {bigint} a**b mod n
+     * @returns {bigint} b**e mod n
      */
-    function modPow(a, b, n) {
-        // See Knuth, volume 2, section 4.6.3.
+    function modPow(b, e, n) {
         n = BigInt(n);
         if (n === _ZERO)
             return NaN;
+        else if (n === _ONE)
+            return _ZERO;
 
-        a = toZn(a, n);
-        b = BigInt(b);
-        if (b < _ZERO) {
-            return modInv(modPow(a, abs(b), n), n);
+        b = toZn(b, n);
+
+        e = BigInt(e);
+        if (e < _ZERO) {
+            return modInv(modPow(b, abs(e), n), n);
         }
-        let result = _ONE;
-        let x = a;
-        while (b > 0) {
-            var leastSignificantBit = b & _ONE;
-            b = b / _TWO;
-            if (leastSignificantBit === _ONE) {
-                result = (result * x) % n;
+
+        let r = _ONE;
+        while (e > 0) {
+            if ((e % _TWO) === _ONE) {
+                r = (r * b) % n;
             }
-            x = (x * x) % n;
+            e = e / _TWO;
+            b = b ** _TWO % n;
         }
-        return result;
+        return r;
     }
 
     /**
@@ -227,8 +229,9 @@ var paillierBigint = (function (exports) {
      * 
      * @param {number} bitLength The required bit length for the generated prime
      * @param {number} iterations The number of iterations for the Miller-Rabin Probabilistic Primality Test
+     * @param {boolean} sync NOT RECOMMENDED. Invoke the function synchronously. It won't use workers so it'll be slower and may freeze thw window in browser's javascript.
      * 
-     * @returns {Promise} A promise that resolves to a bigint probable prime of bitLength bits
+     * @returns {Promise} A promise that resolves to a bigint probable prime of bitLength bits.
      */
     function prime(bitLength, iterations = 16) {
         if (bitLength < 1)
@@ -277,6 +280,25 @@ var paillierBigint = (function (exports) {
                 });
             }
         });
+    }
+
+    /**
+     * A probably-prime (Miller-Rabin), cryptographically-secure, random-number generator. 
+     * The sync version is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript. Please consider using prime() instead.
+     * 
+     * @param {number} bitLength The required bit length for the generated prime
+     * @param {number} iterations The number of iterations for the Miller-Rabin Probabilistic Primality Test
+     * 
+     * @returns {bigint} A bigint probable prime of bitLength bits.
+     */
+    function primeSync(bitLength, iterations = 16) {
+        if (bitLength < 1)
+            throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`);
+        let rnd = _ZERO;
+        do {
+            rnd = fromBuffer(randBytesSync(bitLength / 8, true));
+        } while (!_isProbablyPrime(rnd, iterations));
+        return rnd;
     }
 
     /**
@@ -394,7 +416,7 @@ var paillierBigint = (function (exports) {
 
     function _workerUrl(workerCode) {
         workerCode = `(() => {${workerCode}})()`; // encapsulate IIFE
-        var _blob = new Blob([workerCode], { type: 'text/javascript' });
+        const _blob = new Blob([workerCode], { type: 'text/javascript' });
         return window.URL.createObjectURL(_blob);
     }
 
@@ -726,19 +748,59 @@ var paillierBigint = (function (exports) {
      */
 
     /**
-     * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode
+     * Generates a pair private, public key for the Paillier cryptosystem.
      * 
-     * @param {number} bitLength - the bit lenght of the public modulo
-     * @param {boolean} simplevariant - use the simple variant to compute the generator
+     * @param {number} bitLength - the bit length of the public modulo
+     * @param {boolean} simplevariant - use the simple variant to compute the generator (g=n+1)
      * 
      * @returns {Promise} - a promise that resolves to a {@link KeyPair} of public, private keys
      */
     const generateRandomKeys = async function (bitLength$1 = 4096, simpleVariant = false) {
         let p, q, n, phi, n2, g, lambda, mu;
-        // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLenght) 
+        // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength) 
         do {
             p = await prime(Math.floor(bitLength$1 / 2) + 1);
             q = await prime(Math.floor(bitLength$1 / 2));
+            n = p * q;
+        } while (q === p || bitLength(n) != bitLength$1);
+
+        phi = (p - _ONE$1) * (q - _ONE$1);
+
+        n2 = n ** BigInt(2);
+
+        if (simpleVariant === true) {
+            //If using p,q of equivalent length, a simpler variant of the key
+            // generation steps would be to set
+            // g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n)
+            g = n + _ONE$1;
+            lambda = phi;
+            mu = modInv(lambda, n);
+        } else {
+            g = getGenerator(n, n2);
+            lambda = lcm(p - _ONE$1, q - _ONE$1);
+            mu = modInv(L(modPow(g, lambda, n2), n), n);
+        }
+
+        const publicKey = new PublicKey(n, g);
+        const privateKey = new PrivateKey(lambda, mu, p, q, publicKey);
+        return { publicKey: publicKey, privateKey: privateKey };
+    };
+
+    /**
+     * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
+     * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
+     * 
+     * @param {number} bitLength - the bit length of the public modulo
+     * @param {boolean} simplevariant - use the simple variant to compute the generator (g=n+1)
+     * 
+     * @returns {@link KeyPair} - a {@link KeyPair} of public, private keys
+     */
+    const generateRandomKeysSync = function (bitLength$1 = 4096, simpleVariant = false) {
+        let p, q, n, phi, n2, g, lambda, mu;
+        // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength) 
+        do {
+            p = primeSync(Math.floor(bitLength$1 / 2) + 1);
+            q = primeSync(Math.floor(bitLength$1 / 2));
             n = p * q;
         } while (q === p || bitLength(n) != bitLength$1);
 
@@ -888,6 +950,7 @@ var paillierBigint = (function (exports) {
     exports.PrivateKey = PrivateKey;
     exports.PublicKey = PublicKey;
     exports.generateRandomKeys = generateRandomKeys;
+    exports.generateRandomKeysSync = generateRandomKeysSync;
 
     return exports;
 

@@ -128,7 +128,7 @@ async function isProbablyPrime(w, iterations = 16) {
     }
     { // browser
         return new Promise((resolve, reject) => {
-            let worker = new Worker(_isProbablyPrimeWorkerUrl());
+            const worker = new Worker(_isProbablyPrimeWorkerUrl());
 
             worker.onmessage = (event) => {
                 worker.terminate();
@@ -164,6 +164,34 @@ function lcm(a, b) {
 }
 
 /**
+ * Maximum. max(a,b)==a if a>=b. max(a,b)==b if a<=b
+ *  
+ * @param {number|bigint} a  
+ * @param {number|bigint} b 
+ * 
+ * @returns {bigint} maximum of numbers a and b
+ */
+function max(a, b) {
+    a = BigInt(a);
+    b = BigInt(b);
+    return (a >= b) ? a : b;
+}
+
+/**
+ * Minimum. min(a,b)==b if a>=b. min(a,b)==a if a<=b
+ *  
+ * @param {number|bigint} a  
+ * @param {number|bigint} b 
+ * 
+ * @returns {bigint} minimum of numbers a and b
+ */
+function min(a, b) {
+    a = BigInt(a);
+    b = BigInt(b);
+    return (a >= b) ? b : a;
+}
+
+/**
  * Modular inverse.
  * 
  * @param {number|bigint} a The number to find an inverse for
@@ -184,35 +212,37 @@ function modInv(a, n) {
 }
 
 /**
- * Modular exponentiation a**b mod n
- * @param {number|bigint} a base
- * @param {number|bigint} b exponent
+ * Modular exponentiation b**e mod n. Currently using the right-to-left binary method
+ * 
+ * @param {number|bigint} b base
+ * @param {number|bigint} e exponent
  * @param {number|bigint} n modulo
  * 
- * @returns {bigint} a**b mod n
+ * @returns {bigint} b**e mod n
  */
-function modPow(a, b, n) {
-    // See Knuth, volume 2, section 4.6.3.
+function modPow(b, e, n) {
     n = BigInt(n);
     if (n === _ZERO)
         return NaN;
+    else if (n === _ONE)
+        return _ZERO;
 
-    a = toZn(a, n);
-    b = BigInt(b);
-    if (b < _ZERO) {
-        return modInv(modPow(a, abs(b), n), n);
+    b = toZn(b, n);
+
+    e = BigInt(e);
+    if (e < _ZERO) {
+        return modInv(modPow(b, abs(e), n), n);
     }
-    let result = _ONE;
-    let x = a;
-    while (b > 0) {
-        var leastSignificantBit = b & _ONE;
-        b = b / _TWO;
-        if (leastSignificantBit === _ONE) {
-            result = (result * x) % n;
+
+    let r = _ONE;
+    while (e > 0) {
+        if ((e % _TWO) === _ONE) {
+            r = (r * b) % n;
         }
-        x = (x * x) % n;
+        e = e / _TWO;
+        b = b ** _TWO % n;
     }
-    return result;
+    return r;
 }
 
 /**
@@ -224,8 +254,9 @@ function modPow(a, b, n) {
  * 
  * @param {number} bitLength The required bit length for the generated prime
  * @param {number} iterations The number of iterations for the Miller-Rabin Probabilistic Primality Test
+ * @param {boolean} sync NOT RECOMMENDED. Invoke the function synchronously. It won't use workers so it'll be slower and may freeze thw window in browser's javascript.
  * 
- * @returns {Promise} A promise that resolves to a bigint probable prime of bitLength bits
+ * @returns {Promise} A promise that resolves to a bigint probable prime of bitLength bits.
  */
 function prime(bitLength, iterations = 16) {
     if (bitLength < 1)
@@ -274,6 +305,25 @@ function prime(bitLength, iterations = 16) {
             });
         }
     });
+}
+
+/**
+ * A probably-prime (Miller-Rabin), cryptographically-secure, random-number generator. 
+ * The sync version is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript. Please consider using prime() instead.
+ * 
+ * @param {number} bitLength The required bit length for the generated prime
+ * @param {number} iterations The number of iterations for the Miller-Rabin Probabilistic Primality Test
+ * 
+ * @returns {bigint} A bigint probable prime of bitLength bits.
+ */
+function primeSync(bitLength, iterations = 16) {
+    if (bitLength < 1)
+        throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`);
+    let rnd = _ZERO;
+    do {
+        rnd = fromBuffer(randBytesSync(bitLength / 8, true));
+    } while (!_isProbablyPrime(rnd, iterations));
+    return rnd;
 }
 
 /**
@@ -416,7 +466,7 @@ function _isProbablyPrimeWorkerUrl() {
 
 function _workerUrl(workerCode) {
     workerCode = `(() => {${workerCode}})()`; // encapsulate IIFE
-    var _blob = new Blob([workerCode], { type: 'text/javascript' });
+    const _blob = new Blob([workerCode], { type: 'text/javascript' });
     return window.URL.createObjectURL(_blob);
 }
 
@@ -740,15 +790,19 @@ function _isProbablyPrime(w, iterations = 16) {
 }
 
 var bigintCryptoUtilsLatest_browser_mod = /*#__PURE__*/Object.freeze({
+    __proto__: null,
     abs: abs,
     bitLength: bitLength,
     eGcd: eGcd,
     gcd: gcd,
     isProbablyPrime: isProbablyPrime,
     lcm: lcm,
+    max: max,
+    min: min,
     modInv: modInv,
     modPow: modPow,
     prime: prime,
+    primeSync: primeSync,
     randBetween: randBetween,
     randBits: randBits,
     randBytes: randBytes,
@@ -823,3 +877,11 @@ for (const bitLength of bitLengths) {
         });
     });
 }
+describe('Testing generateRandomKeysSync(2048) NOT RECOMMENDED', function () {
+    it('it should return a publicKey and a privateKey with public modulus of 2048 bits', function () {
+        const keyPair = paillierBigint.generateRandomKeysSync(2048);
+        chai.expect(keyPair.publicKey).to.be.an.instanceOf(paillierBigint.PublicKey);
+        chai.expect(keyPair.privateKey).to.be.an.instanceOf(paillierBigint.PrivateKey);
+        chai.expect(keyPair.publicKey.bitLength).to.equal(2048);
+    });
+});
