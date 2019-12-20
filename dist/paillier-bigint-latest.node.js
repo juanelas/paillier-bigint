@@ -15,12 +15,12 @@ const _ONE = BigInt(1);
 /**
  * Generates a pair private, public key for the Paillier cryptosystem.
  * 
- * @param {number} bitLength - the bit length of the public modulo
- * @param {boolean} simplevariant - use the simple variant to compute the generator (g=n+1)
+ * @param {number} [bitLength = 3072] - the bit length of the public modulo
+ * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
  * 
  * @returns {Promise} - a promise that resolves to a {@link KeyPair} of public, private keys
  */
-const generateRandomKeys = async function (bitLength = 4096, simpleVariant = false) {
+const generateRandomKeys = async function (bitLength = 3072, simpleVariant = false) {
     let p, q, n, phi, n2, g, lambda, mu;
     // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength) 
     do {
@@ -55,8 +55,8 @@ const generateRandomKeys = async function (bitLength = 4096, simpleVariant = fal
  * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
  * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
  * 
- * @param {number} bitLength - the bit length of the public modulo
- * @param {boolean} simplevariant - use the simple variant to compute the generator (g=n+1)
+ * @param {number} [bitLength = 4096] - the bit length of the public modulo
+ * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
  * 
  * @returns {@link KeyPair} - a {@link KeyPair} of public, private keys
  */

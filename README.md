@@ -311,10 +311,10 @@ Generates a pair private, public key for the Paillier cryptosystem.
 **Kind**: global constant  
 **Returns**: <code>Promise</code> - - a promise that resolves to a [KeyPair](#KeyPair) of public, private keys  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| bitLength | <code>number</code> | the bit length of the public modulo |
-| simplevariant | <code>boolean</code> | use the simple variant to compute the generator (g=n+1) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [bitLength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
+| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
 
 <a name="generateRandomKeysSync"></a>
 
@@ -325,10 +325,10 @@ Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be
 **Kind**: global constant  
 **Returns**: [KeyPair](#KeyPair) - a [KeyPair](#KeyPair) of public, private keys  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| bitLength | <code>number</code> | the bit length of the public modulo |
-| simplevariant | <code>boolean</code> | use the simple variant to compute the generator (g=n+1) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [bitLength] | <code>number</code> | <code>4096</code> | the bit length of the public modulo |
+| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
 
 <a name="PublicKey"></a>
 
