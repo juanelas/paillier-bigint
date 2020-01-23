@@ -121,7 +121,7 @@ var paillierBigint = (function (exports) {
      * iterations of Miller-Rabin Probabilistic Primality Test (FIPS 186-4 C.3.1)
      * 
      * @param {number|bigint} w An integer to be tested for primality
-     * @param {number} iterations The number of iterations for the primality test. The value shall be consistent with Table C.1, C.2 or C.3
+     * @param {number} [iterations = 16] The number of iterations for the primality test. The value shall be consistent with Table C.1, C.2 or C.3
      * 
      * @return {Promise} A promise that resolves to a boolean that is either true (a probably prime number) or false (definitely composite)
      */
@@ -781,7 +781,7 @@ var paillierBigint = (function (exports) {
         }
 
         const publicKey = new PublicKey(n, g);
-        const privateKey = new PrivateKey(lambda, mu, p, q, publicKey);
+        const privateKey = new PrivateKey(lambda, mu, publicKey, p, q);
         return { publicKey: publicKey, privateKey: privateKey };
     };
 
@@ -821,7 +821,7 @@ var paillierBigint = (function (exports) {
         }
 
         const publicKey = new PublicKey(n, g);
-        const privateKey = new PrivateKey(lambda, mu, p, q, publicKey);
+        const privateKey = new PrivateKey(lambda, mu, publicKey, p, q);
         return { publicKey: publicKey, privateKey: privateKey };
     };
 
@@ -896,15 +896,15 @@ var paillierBigint = (function (exports) {
          * 
          * @param {bigint | stringBase10 | number} lambda 
          * @param {bigint | stringBase10 | number} mu 
-         * @param {bigint | stringBase10 | number} p - a big prime
-         * @param {bigint | stringBase10 | number} q - a big prime
          * @param {PaillierPublicKey} publicKey
+         * @param {bigint | stringBase10 | number} [p = null] - a big prime
+         * @param {bigint | stringBase10 | number} [q = null] - a big prime
          */
-        constructor(lambda, mu, p, q, publicKey) {
+        constructor(lambda, mu, publicKey, p = null, q = null) {
             this.lambda = BigInt(lambda);
             this.mu = BigInt(mu);
-            this._p = BigInt(p);
-            this._q = BigInt(q);
+            this._p = (p) ? BigInt(p) : null;
+            this._q = (q) ? BigInt(q) : null;
             this.publicKey = publicKey;
         }
 

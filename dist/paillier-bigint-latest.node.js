@@ -47,7 +47,7 @@ const generateRandomKeys = async function (bitLength = 3072, simpleVariant = fal
     }
 
     const publicKey = new PublicKey(n, g);
-    const privateKey = new PrivateKey(lambda, mu, p, q, publicKey);
+    const privateKey = new PrivateKey(lambda, mu, publicKey, p, q);
     return { publicKey: publicKey, privateKey: privateKey };
 };
 
@@ -87,7 +87,7 @@ const generateRandomKeysSync = function (bitLength = 4096, simpleVariant = false
     }
 
     const publicKey = new PublicKey(n, g);
-    const privateKey = new PrivateKey(lambda, mu, p, q, publicKey);
+    const privateKey = new PrivateKey(lambda, mu, publicKey, p, q);
     return { publicKey: publicKey, privateKey: privateKey };
 };
 
@@ -162,15 +162,15 @@ const PrivateKey = class PrivateKey {
      * 
      * @param {bigint | stringBase10 | number} lambda 
      * @param {bigint | stringBase10 | number} mu 
-     * @param {bigint | stringBase10 | number} p - a big prime
-     * @param {bigint | stringBase10 | number} q - a big prime
      * @param {PaillierPublicKey} publicKey
+     * @param {bigint | stringBase10 | number} [p = null] - a big prime
+     * @param {bigint | stringBase10 | number} [q = null] - a big prime
      */
-    constructor(lambda, mu, p, q, publicKey) {
+    constructor(lambda, mu, publicKey, p = null, q = null) {
         this.lambda = BigInt(lambda);
         this.mu = BigInt(mu);
-        this._p = BigInt(p);
-        this._q = BigInt(q);
+        this._p = (p) ? BigInt(p) : null;
+        this._q = (q) ? BigInt(q) : null;
         this.publicKey = publicKey;
     }
 

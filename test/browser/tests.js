@@ -118,7 +118,7 @@ function gcd(a, b) {
  * iterations of Miller-Rabin Probabilistic Primality Test (FIPS 186-4 C.3.1)
  * 
  * @param {number|bigint} w An integer to be tested for primality
- * @param {number} iterations The number of iterations for the primality test. The value shall be consistent with Table C.1, C.2 or C.3
+ * @param {number} [iterations = 16] The number of iterations for the primality test. The value shall be consistent with Table C.1, C.2 or C.3
  * 
  * @return {Promise} A promise that resolves to a boolean that is either true (a probably prime number) or false (definitely composite)
  */
