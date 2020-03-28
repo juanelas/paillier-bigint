@@ -6,8 +6,7 @@ An implementation of the Paillier cryptosystem relying on the native JS (stage 3
 
 _The operations supported on BigInts are not constant time. BigInt can be therefore **[unsuitable for use in cryptography](https://www.chosenplaintext.ca/articles/beginners-guide-constant-time-cryptography.html).** Many platforms provide native support for cryptography, such as [Web Cryptography API](https://w3c.github.io/webcrypto/) or [Node.js Crypto](https://nodejs.org/dist/latest/docs/api/crypto.html)._
 
-The Paillier cryptosystem, named after and invented by Pascal Paillier in 1999, is a probabilistic asymmetric algorithm
-for public key cryptography. A notable feature of the Paillier cryptosystem is its homomorphic properties.
+The Paillier cryptosystem, named after and invented by Pascal Paillier in 1999, is a probabilistic asymmetric algorithm for public key cryptography. A notable feature of the Paillier cryptosystem is its homomorphic properties.
 
 ## Homomorphic properties
 
@@ -76,75 +75,42 @@ npm install paillier-bigint
 
 NPM installation defaults to the ES6 module for browsers and the CJS one for Node.js.
 
-For web browsers, you can also directly download the minimised version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/paillier-bigint-latest.browser.min.js) or the [ES6 module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/paillier-bigint-latest.browser.mod.min.js) from GitHub.
+For web browsers, you can also directly download the minimized version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.js) or the [ES6 module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.mod.js) from GitHub.
 
 ## Usage
-Every input number should be a string in base 10, an integer, or a bigint. All the output numbers are of type `bigint`.
 
-An example with Node.js:
 ```javascript
-    // import paillier
-    const paillier = require('paillier-bigint.js');
+    // import paillier in node.js
+    const paillier = require('paillier-bigint.js')
+    // import paillier in native JS
+    import * as paillier from 'paillier-bigint'
 
     // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
-    const {publicKey, privateKey} = await paillier.generateRandomKeys(3072);
+    const {publicKey, privateKey} = await paillier.generateRandomKeys(3072)
 
     // optionally, you can create your public/private keys from known parameters
-    const publicKey = new paillier.PublicKey(n, g);
-    const privateKey = new paillier.PrivateKey(lambda, mu, publicKey);
+    const publicKey = new paillier.PublicKey(n, g)
+    const privateKey = new paillier.PrivateKey(lambda, mu, publicKey)
 
     // encrypt m
-    let c = publicKey.encrypt(m);
+    let c = publicKey.encrypt(m)
 
     // decrypt c
-    let d = privateKey.decrypt(c);
+    let d = privateKey.decrypt(c)
 
     // homomorphic addition of two ciphertexts (encrypted numbers)
-    let c1 = publicKey.encrypt(m1);
-    let c2 = publicKey.encrypt(m2);
-    let encryptedSum = publicKey.addition(c1, c2);
-    let sum = privateKey.decrypt(encryptedSum); // m1 + m2
+    let c1 = publicKey.encrypt(m1)
+    let c2 = publicKey.encrypt(m2)
+    let encryptedSum = publicKey.addition(c1, c2)
+    let sum = privateKey.decrypt(encryptedSum) // m1 + m2
 
     // multiplication by k
-    let c1 = publicKey.encrypt(m1);
-    let encryptedMul = publicKey.multiply(c1, k);
-    let mul = privateKey.decrypt(encryptedMul); // k · m1
+    let c1 = publicKey.encrypt(m1)
+    let encryptedMul = publicKey.multiply(c1, k)
+    let mul = privateKey.decrypt(encryptedMul) // k · m1
 ```
 
-From a browser, you can just load the module in a html page as:
-```html
-    <script type="module">
-        import * as paillier from 'paillier-bigint-latest.browser.mod.min.js';
-
-        // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
-        paillier.generateRandomKeys(3072).then((keyPair) => {
-            const publicKey = keyPair.publicKey;
-            const privateKey = keyPair.privateKey;
-            // ...
-        });
-
-        // You can also create your public/private keys from known parameters
-        const publicKey = new paillier.PublicKey(n, g);
-        const privateKey = new paillier.PrivateKey(lambda, mu, publicKey);
-
-        // encrypt m is just
-        let c = publicKey.encrypt(m);
-
-        // decrypt c
-        let d = privateKey.decrypt(c);
-
-        // homomorphic addition of two ciphertexts (encrypted numbers)
-        let c1 = publicKey.encrypt(m1);
-        let c2 = publicKey.encrypt(m2);
-        let encryptedSum = publicKey.addition(c1, c2);
-        let sum = privateKey.decrypt(encryptedSum); // m1 + m2
-
-        // multiplication by k
-        let c1 = publicKey.encrypt(m1);
-        let encryptedMul = publicKey.multiply(c1, k);
-        let mul = privateKey.decrypt(encryptedMul); // k · m1
-    </script>
-```
+# JS Doc
 
 ## Classes
 
@@ -458,5 +424,3 @@ Paillier private-key decryption
 | publicKey | [<code>PublicKey</code>](#PublicKey) | a Paillier's public key |
 | privateKey | [<code>PrivateKey</code>](#PrivateKey) | the associated Paillier's private key |
 
-
-* * *
