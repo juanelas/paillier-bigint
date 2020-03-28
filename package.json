@@ -1,12 +1,13 @@
 {
   "name": "paillier-bigint",
   "version": "2.0.0",
-  "description": "An implementation of the Paillier cryptosystem using native JS (stage 3) implementation of BigInt",
+  "description": "An implementation of the Paillier cryptosystem using native JS (ECMA 2020) implementation of BigInt",
   "keywords": [
     "paillier",
     "homomorphic",
     "crypto",
-    "cryptosystem"
+    "cryptosystem",
+    "bigint"
   ],
   "license": "MIT",
   "author": {
