@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{PKG_NAME}} - Mocha Tests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/{{MOCHA_VERSION}}/mocha.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/{{MOCHA_VERSION}}/mocha.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/{{CHAI_VERSION}}/chai.min.js"></script>
+</head>
+
+<body>
+    <div id="mocha"></div>
+    <script>mocha.setup('bdd'); mocha.setup({ timeout: 90000 });</script>
+{{TESTS}}
+</body>
+
+</html>

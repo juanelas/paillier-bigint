@@ -1,3 +1,5 @@
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 # paillier-bigint
 
 An implementation of the Paillier cryptosystem relying on the native JS (stage 3) implementation of BigInt. It can be used by any [Web Browser or webview supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests, you should use Node.js v11 or newer or enable at runtime with `node --experimental-worker` with Node.js version >= 10.5.0 and < 11.
@@ -156,11 +158,11 @@ From a browser, you can just load the module in a html page as:
 ## Constants
 
 <dl>
-<dt><a href="#generateRandomKeys">generateRandomKeys</a> ⇒ <code>Promise</code></dt>
+<dt><a href="#generateRandomKeys">generateRandomKeys</a> ⇒ <code><a href="#KeyPair">Promise.&lt;KeyPair&gt;</a></code></dt>
 <dd><p>Generates a pair private, public key for the Paillier cryptosystem.</p>
 </dd>
-<dt><a href="#generateRandomKeysSync">generateRandomKeysSync</a> ⇒</dt>
-<dd><p>Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
+<dt><a href="#generateRandomKeysSync">generateRandomKeysSync</a> ⇒ <code><a href="#KeyPair">KeyPair</a></code></dt>
+<dd><p>Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
 Synchronous mode is NOT RECOMMENDED since it won&#39;t use workers and thus it&#39;ll be slower and may freeze thw window in browser&#39;s javascript.</p>
 </dd>
 <dt><a href="#PublicKey">PublicKey</a></dt>
@@ -198,8 +200,8 @@ Creates an instance of class PaillierPublicKey
 
 | Param | Type | Description |
 | --- | --- | --- |
-| n | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | the public modulo |
-| g | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | the public generator |
+| n | <code>bigint</code> | the public modulo |
+| g | <code>bigint</code> \| <code>number</code> | the public generator |
 
 <a name="PublicKey+bitLength"></a>
 
@@ -218,7 +220,7 @@ Paillier public-key encryption
 
 | Param | Type | Description |
 | --- | --- | --- |
-| m | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | a cleartext number |
+| m | <code>bigint</code> | a bigint representation of a cleartext message |
 
 <a name="PublicKey+addition"></a>
 
@@ -230,7 +232,7 @@ Homomorphic addition
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...ciphertexts | <code>bigint</code> \| <code>number</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
+| ...ciphertexts | <code>bigint</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
 
 <a name="PublicKey+multiply"></a>
 
@@ -243,7 +245,7 @@ Pseudo-homomorphic Paillier multiplication
 | Param | Type | Description |
 | --- | --- | --- |
 | c | <code>bigint</code> | a number m encrypted with this public key |
-| k | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | either a cleartext message (number) or a scalar |
+| k | <code>bigint</code> \| <code>number</code> | either a bigint or a number |
 
 <a name="PrivateKey"></a>
 
@@ -264,11 +266,11 @@ Creates an instance of class PaillierPrivateKey
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| lambda | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> |  |  |
-| mu | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> |  |  |
+| lambda | <code>bigint</code> |  |  |
+| mu | <code>bigint</code> |  |  |
 | publicKey | <code>PaillierPublicKey</code> |  |  |
-| [p] | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | <code></code> | a big prime |
-| [q] | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | <code></code> | a big prime |
+| [p] | <code>bigint</code> | <code></code> | a big prime |
+| [q] | <code>bigint</code> | <code></code> | a big prime |
 
 <a name="PrivateKey+bitLength"></a>
 
@@ -294,15 +296,15 @@ Paillier private-key decryption
 
 | Param | Type | Description |
 | --- | --- | --- |
-| c | <code>bigint</code> \| <code>stringBase10</code> | a (big) number encrypted with the public key |
+| c | <code>bigint</code> | a bigint encrypted with the public key |
 
 <a name="generateRandomKeys"></a>
 
-## generateRandomKeys ⇒ <code>Promise</code>
+## generateRandomKeys ⇒ [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair)
 Generates a pair private, public key for the Paillier cryptosystem.
 
 **Kind**: global constant  
-**Returns**: <code>Promise</code> - - a promise that resolves to a [KeyPair](#KeyPair) of public, private keys  
+**Returns**: [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair) - - a promise that resolves to a [KeyPair](#KeyPair) of public, private keys  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -311,12 +313,12 @@ Generates a pair private, public key for the Paillier cryptosystem.
 
 <a name="generateRandomKeysSync"></a>
 
-## generateRandomKeysSync ⇒
-Generates a pair private, public key for the Paillier cryptosystem in synchronous mode. 
+## generateRandomKeysSync ⇒ [<code>KeyPair</code>](#KeyPair)
+Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
 Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
 
 **Kind**: global constant  
-**Returns**: [KeyPair](#KeyPair) - a [KeyPair](#KeyPair) of public, private keys  
+**Returns**: [<code>KeyPair</code>](#KeyPair) - - a [KeyPair](#KeyPair) of public, private keys  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -345,8 +347,8 @@ Creates an instance of class PaillierPublicKey
 
 | Param | Type | Description |
 | --- | --- | --- |
-| n | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | the public modulo |
-| g | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | the public generator |
+| n | <code>bigint</code> | the public modulo |
+| g | <code>bigint</code> \| <code>number</code> | the public generator |
 
 <a name="PublicKey+bitLength"></a>
 
@@ -365,7 +367,7 @@ Paillier public-key encryption
 
 | Param | Type | Description |
 | --- | --- | --- |
-| m | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | a cleartext number |
+| m | <code>bigint</code> | a bigint representation of a cleartext message |
 
 <a name="PublicKey+addition"></a>
 
@@ -377,7 +379,7 @@ Homomorphic addition
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...ciphertexts | <code>bigint</code> \| <code>number</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
+| ...ciphertexts | <code>bigint</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
 
 <a name="PublicKey+multiply"></a>
 
@@ -390,7 +392,7 @@ Pseudo-homomorphic Paillier multiplication
 | Param | Type | Description |
 | --- | --- | --- |
 | c | <code>bigint</code> | a number m encrypted with this public key |
-| k | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | either a cleartext message (number) or a scalar |
+| k | <code>bigint</code> \| <code>number</code> | either a bigint or a number |
 
 <a name="PrivateKey"></a>
 
@@ -413,11 +415,11 @@ Creates an instance of class PaillierPrivateKey
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| lambda | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> |  |  |
-| mu | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> |  |  |
+| lambda | <code>bigint</code> |  |  |
+| mu | <code>bigint</code> |  |  |
 | publicKey | <code>PaillierPublicKey</code> |  |  |
-| [p] | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | <code></code> | a big prime |
-| [q] | <code>bigint</code> \| <code>stringBase10</code> \| <code>number</code> | <code></code> | a big prime |
+| [p] | <code>bigint</code> | <code></code> | a big prime |
+| [q] | <code>bigint</code> | <code></code> | a big prime |
 
 <a name="PrivateKey+bitLength"></a>
 
@@ -443,7 +445,7 @@ Paillier private-key decryption
 
 | Param | Type | Description |
 | --- | --- | --- |
-| c | <code>bigint</code> \| <code>stringBase10</code> | a (big) number encrypted with the public key |
+| c | <code>bigint</code> | a bigint encrypted with the public key |
 
 <a name="KeyPair"></a>
 
