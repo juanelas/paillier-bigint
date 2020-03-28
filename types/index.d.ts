@@ -45,7 +45,41 @@ export type KeyPair = {
         mu: bigint;
         _p: bigint;
         _q: bigint;
-        publicKey: any;
+        publicKey: {
+            n: bigint;
+            _n2: bigint;
+            g: bigint;
+            /**
+             * Get the bit length of the public modulo
+             * @return {number} - bit length of the public modulo
+             */
+            readonly bitLength: number;
+            /**
+             * Paillier public-key encryption
+             *
+             * @param {bigint} m - a bigint representation of a cleartext message
+             *
+             * @returns {bigint} - the encryption of m with this public key
+             */
+            encrypt(m: bigint): bigint;
+            /**
+             * Homomorphic addition
+             *
+             * @param {...bigint} ciphertexts - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
+             *
+             * @returns {bigint} - the encryption of (m_1 + ... + m_2) with this public key
+             */
+            addition(...ciphertexts: bigint[]): bigint;
+            /**
+             * Pseudo-homomorphic Paillier multiplication
+             *
+             * @param {bigint} c - a number m encrypted with this public key
+             * @param {bigint | number} k - either a bigint or a number
+             *
+             * @returns {bigint} - the encryption of k·m with this public key
+             */
+            multiply(c: bigint, k: number | bigint): bigint;
+        };
         /**
          * Get the bit length of the public modulo
          * @return {number} - bit length of the public modulo
@@ -70,12 +104,80 @@ export type KeyPair = {
  * Class for Paillier private keys.
  */
 export const PrivateKey: {
-    new (lambda: bigint, mu: bigint, publicKey: any, p?: bigint, q?: bigint): {
+    new (lambda: bigint, mu: bigint, publicKey: {
+        n: bigint;
+        _n2: bigint;
+        g: bigint;
+        /**
+         * Get the bit length of the public modulo
+         * @return {number} - bit length of the public modulo
+         */
+        readonly bitLength: number;
+        /**
+         * Paillier public-key encryption
+         *
+         * @param {bigint} m - a bigint representation of a cleartext message
+         *
+         * @returns {bigint} - the encryption of m with this public key
+         */
+        encrypt(m: bigint): bigint;
+        /**
+         * Homomorphic addition
+         *
+         * @param {...bigint} ciphertexts - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
+         *
+         * @returns {bigint} - the encryption of (m_1 + ... + m_2) with this public key
+         */
+        addition(...ciphertexts: bigint[]): bigint;
+        /**
+         * Pseudo-homomorphic Paillier multiplication
+         *
+         * @param {bigint} c - a number m encrypted with this public key
+         * @param {bigint | number} k - either a bigint or a number
+         *
+         * @returns {bigint} - the encryption of k·m with this public key
+         */
+        multiply(c: bigint, k: number | bigint): bigint;
+    }, p?: bigint, q?: bigint): {
         lambda: bigint;
         mu: bigint;
         _p: bigint;
         _q: bigint;
-        publicKey: any;
+        publicKey: {
+            n: bigint;
+            _n2: bigint;
+            g: bigint;
+            /**
+             * Get the bit length of the public modulo
+             * @return {number} - bit length of the public modulo
+             */
+            readonly bitLength: number;
+            /**
+             * Paillier public-key encryption
+             *
+             * @param {bigint} m - a bigint representation of a cleartext message
+             *
+             * @returns {bigint} - the encryption of m with this public key
+             */
+            encrypt(m: bigint): bigint;
+            /**
+             * Homomorphic addition
+             *
+             * @param {...bigint} ciphertexts - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
+             *
+             * @returns {bigint} - the encryption of (m_1 + ... + m_2) with this public key
+             */
+            addition(...ciphertexts: bigint[]): bigint;
+            /**
+             * Pseudo-homomorphic Paillier multiplication
+             *
+             * @param {bigint} c - a number m encrypted with this public key
+             * @param {bigint | number} k - either a bigint or a number
+             *
+             * @returns {bigint} - the encryption of k·m with this public key
+             */
+            multiply(c: bigint, k: number | bigint): bigint;
+        };
         /**
          * Get the bit length of the public modulo
          * @return {number} - bit length of the public modulo

@@ -92,7 +92,7 @@ export const generateRandomKeysSync = function (bitLength = 4096, simpleVariant 
  */
 export const PublicKey = class PublicKey {
   /**
-   * Creates an instance of class PaillierPublicKey
+   * Creates an instance of class PublicKey
    * @param {bigint} n - the public modulo
    * @param {bigint | number} g - the public generator
    */
@@ -151,11 +151,11 @@ export const PublicKey = class PublicKey {
  */
 export const PrivateKey = class PrivateKey {
   /**
-   * Creates an instance of class PaillierPrivateKey
+   * Creates an instance of class PrivateKey
    *
    * @param {bigint} lambda
    * @param {bigint} mu
-   * @param {PaillierPublicKey} publicKey
+   * @param {PublicKey} publicKey
    * @param {bigint} [p = null] - a big prime
    * @param {bigint} [q = null] - a big prime
    */

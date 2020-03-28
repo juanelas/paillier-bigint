@@ -161,7 +161,7 @@ Synchronous mode is NOT RECOMMENDED since it won&#39;t use workers and thus it&#
 <a name="new_PublicKey_new"></a>
 
 ### new PublicKey(n, g)
-Creates an instance of class PaillierPublicKey
+Creates an instance of class PublicKey
 
 
 | Param | Type | Description |
@@ -227,14 +227,14 @@ Pseudo-homomorphic Paillier multiplication
 <a name="new_PrivateKey_new"></a>
 
 ### new PrivateKey(lambda, mu, publicKey, [p], [q])
-Creates an instance of class PaillierPrivateKey
+Creates an instance of class PrivateKey
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | lambda | <code>bigint</code> |  |  |
 | mu | <code>bigint</code> |  |  |
-| publicKey | <code>PaillierPublicKey</code> |  |  |
+| publicKey | [<code>PublicKey</code>](#PublicKey) |  |  |
 | [p] | <code>bigint</code> | <code></code> | a big prime |
 | [q] | <code>bigint</code> | <code></code> | a big prime |
 
@@ -308,7 +308,7 @@ Class for a Paillier public key
 <a name="new_PublicKey_new"></a>
 
 ### new PublicKey(n, g)
-Creates an instance of class PaillierPublicKey
+Creates an instance of class PublicKey
 
 
 | Param | Type | Description |
@@ -376,14 +376,14 @@ Class for Paillier private keys.
 <a name="new_PrivateKey_new"></a>
 
 ### new PrivateKey(lambda, mu, publicKey, [p], [q])
-Creates an instance of class PaillierPrivateKey
+Creates an instance of class PrivateKey
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | lambda | <code>bigint</code> |  |  |
 | mu | <code>bigint</code> |  |  |
-| publicKey | <code>PaillierPublicKey</code> |  |  |
+| publicKey | [<code>PublicKey</code>](#PublicKey) |  |  |
 | [p] | <code>bigint</code> | <code></code> | a big prime |
 | [q] | <code>bigint</code> | <code></code> | a big prime |
 
