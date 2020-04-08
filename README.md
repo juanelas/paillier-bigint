@@ -69,68 +69,90 @@ Let `c` be the ciphertext to decrypt, where `c` in `(0, n^2)`.
 `paillier-bigint` is distributed for [web browsers and/or webviews supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
 
 `paillier-bigint` can be imported to your project with `npm`:
+
 ```bash
 npm install paillier-bigint
 ```
 
-NPM installation defaults to the ES6 module for browsers and the CJS one for Node.js.
+NPM installation defaults to the ES6 module for native JS and the CJS one for Node.js.
 
-For web browsers, you can also directly download the minimized version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.js) or the [ES6 module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.mod.js) from GitHub.
+For web browsers, you can also directly download the minimized version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.iife.js) or the [ES6 bundle module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.mod.js) from GitHub.
 
 ## Usage
 
+Import your module as :
+
+ - Node.js
+   ```javascript
+   const paillierBigint = require('paillier-bigint')
+   ... // your code here
+   ```
+ - JavaScript native project or TypeScript
+   ```javascript
+   import * as paillierBigint from 'paillier-bigint'
+   ... // your code here
+   ```
+   > BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
+ - JavaScript native browser ES6 mod
+   ```html
+   <script type="module">
+      import * as paillierBigint from 'lib/index.browser.bundle.mod.js'  // Use you actual path to the broser mod bundle
+      ... // your code here
+    </script>
+   ```
+ - JavaScript native browser IIFE
+   ```html
+   <script src="../../lib/index.browser.bundle.js"></script> <!-- Use you actual path to the browser bundle -->
+   <script>
+     ... // your code here
+   </script>
+   ```
+
+Then you could use, for instance, the following code:
+
 ```javascript
-    // import paillier in node.js
-    const paillier = require('paillier-bigint.js')
-    // import paillier in native JS
-    import * as paillier from 'paillier-bigint'
+async function paillierTest() {
+   // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
+   const {publicKey, privateKey} = await paillierBigint.generateRandomKeys(3072)
 
-    // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
-    const {publicKey, privateKey} = await paillier.generateRandomKeys(3072)
+   // optionally, you can create your public/private keys from known parameters
+   const publicKey = new paillierBigint.PublicKey(n, g)
+   const privateKey = new paillierBigint.PrivateKey(lambda, mu, publicKey)
 
-    // optionally, you can create your public/private keys from known parameters
-    const publicKey = new paillier.PublicKey(n, g)
-    const privateKey = new paillier.PrivateKey(lambda, mu, publicKey)
+   // encrypt m
+   let c = publicKey.encrypt(m)
 
-    // encrypt m
-    let c = publicKey.encrypt(m)
+   // decrypt c
+   let d = privateKey.decrypt(c)
 
-    // decrypt c
-    let d = privateKey.decrypt(c)
+   // homomorphic addition of two ciphertexts (encrypted numbers)
+   let c1 = publicKey.encrypt(m1)
+   let c2 = publicKey.encrypt(m2)
+   let encryptedSum = publicKey.addition(c1, c2)
+   let sum = privateKey.decrypt(encryptedSum) // m1 + m2
 
-    // homomorphic addition of two ciphertexts (encrypted numbers)
-    let c1 = publicKey.encrypt(m1)
-    let c2 = publicKey.encrypt(m2)
-    let encryptedSum = publicKey.addition(c1, c2)
-    let sum = privateKey.decrypt(encryptedSum) // m1 + m2
+   // multiplication by k
+   let c1 = publicKey.encrypt(m1)
+   let encryptedMul = publicKey.multiply(c1, k)
+   let mul = privateKey.decrypt(encryptedMul) // k · m1
+}
+paillierTest()
 
-    // multiplication by k
-    let c1 = publicKey.encrypt(m1)
-    let encryptedMul = publicKey.multiply(c1, k)
-    let mul = privateKey.decrypt(encryptedMul) // k · m1
 ```
 
-# JS Doc
+## API reference documentation
 
-## Classes
+### Modules
 
 <dl>
-<dt><a href="#PublicKey">PublicKey</a></dt>
-<dd></dd>
-<dt><a href="#PrivateKey">PrivateKey</a></dt>
-<dd></dd>
+<dt><a href="#module_paillier-bigint">paillier-bigint</a></dt>
+<dd><p>Paillier cryptosystem for both Node.js and native JS (browsers and webviews)</p>
+</dd>
 </dl>
 
-## Constants
+### Classes
 
 <dl>
-<dt><a href="#generateRandomKeys">generateRandomKeys</a> ⇒ <code><a href="#KeyPair">Promise.&lt;KeyPair&gt;</a></code></dt>
-<dd><p>Generates a pair private, public key for the Paillier cryptosystem.</p>
-</dd>
-<dt><a href="#generateRandomKeysSync">generateRandomKeysSync</a> ⇒ <code><a href="#KeyPair">KeyPair</a></code></dt>
-<dd><p>Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
-Synchronous mode is NOT RECOMMENDED since it won&#39;t use workers and thus it&#39;ll be slower and may freeze thw window in browser&#39;s javascript.</p>
-</dd>
 <dt><a href="#PublicKey">PublicKey</a></dt>
 <dd><p>Class for a Paillier public key</p>
 </dd>
@@ -139,288 +161,174 @@ Synchronous mode is NOT RECOMMENDED since it won&#39;t use workers and thus it&#
 </dd>
 </dl>
 
-## Typedefs
+<a name="module_paillier-bigint"></a>
 
-<dl>
-<dt><a href="#KeyPair">KeyPair</a> : <code>Object</code></dt>
-<dd></dd>
-</dl>
-
-<a name="PublicKey"></a>
-
-## PublicKey
-**Kind**: global class  
-
-* [PublicKey](#PublicKey)
-    * [new PublicKey(n, g)](#new_PublicKey_new)
-    * [.bitLength](#PublicKey+bitLength) ⇒ <code>number</code>
-    * [.encrypt(m)](#PublicKey+encrypt) ⇒ <code>bigint</code>
-    * [.addition(...ciphertexts)](#PublicKey+addition) ⇒ <code>bigint</code>
-    * [.multiply(c, k)](#PublicKey+multiply) ⇒ <code>bigint</code>
-
-<a name="new_PublicKey_new"></a>
-
-### new PublicKey(n, g)
-Creates an instance of class PublicKey
+### paillier-bigint
+Paillier cryptosystem for both Node.js and native JS (browsers and webviews)
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| n | <code>bigint</code> | the public modulo |
-| g | <code>bigint</code> \| <code>number</code> | the public generator |
+* [paillier-bigint](#module_paillier-bigint)
+    * [~generateRandomKeys([bitlength], [simplevariant])](#module_paillier-bigint..generateRandomKeys) ⇒ <code>Promise.&lt;KeyPair&gt;</code>
+    * [~generateRandomKeysSync([bitlength], [simplevariant])](#module_paillier-bigint..generateRandomKeysSync) ⇒ <code>KeyPair</code>
+    * [~KeyPair](#module_paillier-bigint..KeyPair) : <code>Object</code>
 
-<a name="PublicKey+bitLength"></a>
+<a name="module_paillier-bigint..generateRandomKeys"></a>
 
-### publicKey.bitLength ⇒ <code>number</code>
-Get the bit length of the public modulo
-
-**Kind**: instance property of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>number</code> - - bit length of the public modulo  
-<a name="PublicKey+encrypt"></a>
-
-### publicKey.encrypt(m) ⇒ <code>bigint</code>
-Paillier public-key encryption
-
-**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the encryption of m with this public key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| m | <code>bigint</code> | a bigint representation of a cleartext message |
-
-<a name="PublicKey+addition"></a>
-
-### publicKey.addition(...ciphertexts) ⇒ <code>bigint</code>
-Homomorphic addition
-
-**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the encryption of (m_1 + ... + m_2) with this public key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| ...ciphertexts | <code>bigint</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
-
-<a name="PublicKey+multiply"></a>
-
-### publicKey.multiply(c, k) ⇒ <code>bigint</code>
-Pseudo-homomorphic Paillier multiplication
-
-**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the encryption of k·m with this public key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| c | <code>bigint</code> | a number m encrypted with this public key |
-| k | <code>bigint</code> \| <code>number</code> | either a bigint or a number |
-
-<a name="PrivateKey"></a>
-
-## PrivateKey
-**Kind**: global class  
-
-* [PrivateKey](#PrivateKey)
-    * [new PrivateKey(lambda, mu, publicKey, [p], [q])](#new_PrivateKey_new)
-    * [.bitLength](#PrivateKey+bitLength) ⇒ <code>number</code>
-    * [.n](#PrivateKey+n) ⇒ <code>bigint</code>
-    * [.decrypt(c)](#PrivateKey+decrypt) ⇒ <code>bigint</code>
-
-<a name="new_PrivateKey_new"></a>
-
-### new PrivateKey(lambda, mu, publicKey, [p], [q])
-Creates an instance of class PrivateKey
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| lambda | <code>bigint</code> |  |  |
-| mu | <code>bigint</code> |  |  |
-| publicKey | [<code>PublicKey</code>](#PublicKey) |  |  |
-| [p] | <code>bigint</code> | <code></code> | a big prime |
-| [q] | <code>bigint</code> | <code></code> | a big prime |
-
-<a name="PrivateKey+bitLength"></a>
-
-### privateKey.bitLength ⇒ <code>number</code>
-Get the bit length of the public modulo
-
-**Kind**: instance property of [<code>PrivateKey</code>](#PrivateKey)  
-**Returns**: <code>number</code> - - bit length of the public modulo  
-<a name="PrivateKey+n"></a>
-
-### privateKey.n ⇒ <code>bigint</code>
-Get the public modulo n=p·q
-
-**Kind**: instance property of [<code>PrivateKey</code>](#PrivateKey)  
-**Returns**: <code>bigint</code> - - the public modulo n=p·q  
-<a name="PrivateKey+decrypt"></a>
-
-### privateKey.decrypt(c) ⇒ <code>bigint</code>
-Paillier private-key decryption
-
-**Kind**: instance method of [<code>PrivateKey</code>](#PrivateKey)  
-**Returns**: <code>bigint</code> - - the decryption of c with this private key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| c | <code>bigint</code> | a bigint encrypted with the public key |
-
-<a name="generateRandomKeys"></a>
-
-## generateRandomKeys ⇒ [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair)
+#### paillier-bigint~generateRandomKeys([bitlength], [simplevariant]) ⇒ <code>Promise.&lt;KeyPair&gt;</code>
 Generates a pair private, public key for the Paillier cryptosystem.
 
-**Kind**: global constant  
-**Returns**: [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair) - - a promise that resolves to a [KeyPair](#KeyPair) of public, private keys  
+**Kind**: inner method of [<code>paillier-bigint</code>](#module_paillier-bigint)  
+**Returns**: <code>Promise.&lt;KeyPair&gt;</code> - - a promise that resolves to a [KeyPair](KeyPair) of public, private keys  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [bitLength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
+| [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
 | [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
 
-<a name="generateRandomKeysSync"></a>
+<a name="module_paillier-bigint..generateRandomKeysSync"></a>
 
-## generateRandomKeysSync ⇒ [<code>KeyPair</code>](#KeyPair)
+#### paillier-bigint~generateRandomKeysSync([bitlength], [simplevariant]) ⇒ <code>KeyPair</code>
 Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
 Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
 
-**Kind**: global constant  
-**Returns**: [<code>KeyPair</code>](#KeyPair) - - a [KeyPair](#KeyPair) of public, private keys  
+**Kind**: inner method of [<code>paillier-bigint</code>](#module_paillier-bigint)  
+**Returns**: <code>KeyPair</code> - - a [KeyPair](KeyPair) of public, private keys  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [bitLength] | <code>number</code> | <code>4096</code> | the bit length of the public modulo |
+| [bitlength] | <code>number</code> | <code>4096</code> | the bit length of the public modulo |
 | [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
 
-<a name="PublicKey"></a>
+<a name="module_paillier-bigint..KeyPair"></a>
 
-## PublicKey
-Class for a Paillier public key
-
-**Kind**: global constant  
-
-* [PublicKey](#PublicKey)
-    * [new PublicKey(n, g)](#new_PublicKey_new)
-    * [.bitLength](#PublicKey+bitLength) ⇒ <code>number</code>
-    * [.encrypt(m)](#PublicKey+encrypt) ⇒ <code>bigint</code>
-    * [.addition(...ciphertexts)](#PublicKey+addition) ⇒ <code>bigint</code>
-    * [.multiply(c, k)](#PublicKey+multiply) ⇒ <code>bigint</code>
-
-<a name="new_PublicKey_new"></a>
-
-### new PublicKey(n, g)
-Creates an instance of class PublicKey
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| n | <code>bigint</code> | the public modulo |
-| g | <code>bigint</code> \| <code>number</code> | the public generator |
-
-<a name="PublicKey+bitLength"></a>
-
-### publicKey.bitLength ⇒ <code>number</code>
-Get the bit length of the public modulo
-
-**Kind**: instance property of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>number</code> - - bit length of the public modulo  
-<a name="PublicKey+encrypt"></a>
-
-### publicKey.encrypt(m) ⇒ <code>bigint</code>
-Paillier public-key encryption
-
-**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the encryption of m with this public key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| m | <code>bigint</code> | a bigint representation of a cleartext message |
-
-<a name="PublicKey+addition"></a>
-
-### publicKey.addition(...ciphertexts) ⇒ <code>bigint</code>
-Homomorphic addition
-
-**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the encryption of (m_1 + ... + m_2) with this public key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| ...ciphertexts | <code>bigint</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
-
-<a name="PublicKey+multiply"></a>
-
-### publicKey.multiply(c, k) ⇒ <code>bigint</code>
-Pseudo-homomorphic Paillier multiplication
-
-**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
-**Returns**: <code>bigint</code> - - the encryption of k·m with this public key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| c | <code>bigint</code> | a number m encrypted with this public key |
-| k | <code>bigint</code> \| <code>number</code> | either a bigint or a number |
-
-<a name="PrivateKey"></a>
-
-## PrivateKey
-Class for Paillier private keys.
-
-**Kind**: global constant  
-
-* [PrivateKey](#PrivateKey)
-    * [new PrivateKey(lambda, mu, publicKey, [p], [q])](#new_PrivateKey_new)
-    * [.bitLength](#PrivateKey+bitLength) ⇒ <code>number</code>
-    * [.n](#PrivateKey+n) ⇒ <code>bigint</code>
-    * [.decrypt(c)](#PrivateKey+decrypt) ⇒ <code>bigint</code>
-
-<a name="new_PrivateKey_new"></a>
-
-### new PrivateKey(lambda, mu, publicKey, [p], [q])
-Creates an instance of class PrivateKey
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| lambda | <code>bigint</code> |  |  |
-| mu | <code>bigint</code> |  |  |
-| publicKey | [<code>PublicKey</code>](#PublicKey) |  |  |
-| [p] | <code>bigint</code> | <code></code> | a big prime |
-| [q] | <code>bigint</code> | <code></code> | a big prime |
-
-<a name="PrivateKey+bitLength"></a>
-
-### privateKey.bitLength ⇒ <code>number</code>
-Get the bit length of the public modulo
-
-**Kind**: instance property of [<code>PrivateKey</code>](#PrivateKey)  
-**Returns**: <code>number</code> - - bit length of the public modulo  
-<a name="PrivateKey+n"></a>
-
-### privateKey.n ⇒ <code>bigint</code>
-Get the public modulo n=p·q
-
-**Kind**: instance property of [<code>PrivateKey</code>](#PrivateKey)  
-**Returns**: <code>bigint</code> - - the public modulo n=p·q  
-<a name="PrivateKey+decrypt"></a>
-
-### privateKey.decrypt(c) ⇒ <code>bigint</code>
-Paillier private-key decryption
-
-**Kind**: instance method of [<code>PrivateKey</code>](#PrivateKey)  
-**Returns**: <code>bigint</code> - - the decryption of c with this private key  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| c | <code>bigint</code> | a bigint encrypted with the public key |
-
-<a name="KeyPair"></a>
-
-## KeyPair : <code>Object</code>
-**Kind**: global typedef  
+#### paillier-bigint~KeyPair : <code>Object</code>
+**Kind**: inner typedef of [<code>paillier-bigint</code>](#module_paillier-bigint)  
 **Properties**
 
 | Name | Type | Description |
 | --- | --- | --- |
 | publicKey | [<code>PublicKey</code>](#PublicKey) | a Paillier's public key |
 | privateKey | [<code>PrivateKey</code>](#PrivateKey) | the associated Paillier's private key |
+
+<a name="PublicKey"></a>
+
+### PublicKey
+Class for a Paillier public key
+
+**Kind**: global class  
+
+* [PublicKey](#PublicKey)
+    * [new PublicKey(n, g)](#new_PublicKey_new)
+    * [.bitLength](#PublicKey+bitLength) ⇒ <code>number</code>
+    * [.encrypt(m)](#PublicKey+encrypt) ⇒ <code>bigint</code>
+    * [.addition(...ciphertexts)](#PublicKey+addition) ⇒ <code>bigint</code>
+    * [.multiply(c, k)](#PublicKey+multiply) ⇒ <code>bigint</code>
+
+<a name="new_PublicKey_new"></a>
+
+#### new PublicKey(n, g)
+Creates an instance of class PublicKey
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| n | <code>bigint</code> | the public modulo |
+| g | <code>bigint</code> | the public generator |
+
+<a name="PublicKey+bitLength"></a>
+
+#### publicKey.bitLength ⇒ <code>number</code>
+Get the bit length of the public modulo
+
+**Kind**: instance property of [<code>PublicKey</code>](#PublicKey)  
+**Returns**: <code>number</code> - - bit length of the public modulo  
+<a name="PublicKey+encrypt"></a>
+
+#### publicKey.encrypt(m) ⇒ <code>bigint</code>
+Paillier public-key encryption
+
+**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
+**Returns**: <code>bigint</code> - - the encryption of m with this public key  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| m | <code>bigint</code> | a bigint representation of a cleartext message |
+
+<a name="PublicKey+addition"></a>
+
+#### publicKey.addition(...ciphertexts) ⇒ <code>bigint</code>
+Homomorphic addition
+
+**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
+**Returns**: <code>bigint</code> - - the encryption of (m_1 + ... + m_2) with this public key  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ...ciphertexts | <code>bigint</code> | n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key |
+
+<a name="PublicKey+multiply"></a>
+
+#### publicKey.multiply(c, k) ⇒ <code>bigint</code>
+Pseudo-homomorphic Paillier multiplication
+
+**Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
+**Returns**: <code>bigint</code> - - the encryption of k·m with this public key  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| c | <code>bigint</code> | a number m encrypted with this public key |
+| k | <code>bigint</code> \| <code>number</code> | either a bigint or a number |
+
+<a name="PrivateKey"></a>
+
+### PrivateKey
+Class for Paillier private keys.
+
+**Kind**: global class  
+
+* [PrivateKey](#PrivateKey)
+    * [new PrivateKey(lambda, mu, publicKey, [p], [q])](#new_PrivateKey_new)
+    * [.bitLength](#PrivateKey+bitLength) ⇒ <code>number</code>
+    * [.n](#PrivateKey+n) ⇒ <code>bigint</code>
+    * [.decrypt(c)](#PrivateKey+decrypt) ⇒ <code>bigint</code>
+
+<a name="new_PrivateKey_new"></a>
+
+#### new PrivateKey(lambda, mu, publicKey, [p], [q])
+Creates an instance of class PrivateKey
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| lambda | <code>bigint</code> |  |  |
+| mu | <code>bigint</code> |  |  |
+| publicKey | [<code>PublicKey</code>](#PublicKey) |  |  |
+| [p] | <code>bigint</code> | <code></code> | a big prime |
+| [q] | <code>bigint</code> | <code></code> | a big prime |
+
+<a name="PrivateKey+bitLength"></a>
+
+#### privateKey.bitLength ⇒ <code>number</code>
+Get the bit length of the public modulo
+
+**Kind**: instance property of [<code>PrivateKey</code>](#PrivateKey)  
+**Returns**: <code>number</code> - - bit length of the public modulo  
+<a name="PrivateKey+n"></a>
+
+#### privateKey.n ⇒ <code>bigint</code>
+Get the public modulo n=p·q
+
+**Kind**: instance property of [<code>PrivateKey</code>](#PrivateKey)  
+**Returns**: <code>bigint</code> - - the public modulo n=p·q  
+<a name="PrivateKey+decrypt"></a>
+
+#### privateKey.decrypt(c) ⇒ <code>bigint</code>
+Paillier private-key decryption
+
+**Kind**: instance method of [<code>PrivateKey</code>](#PrivateKey)  
+**Returns**: <code>bigint</code> - - the decryption of c with this private key  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| c | <code>bigint</code> | a bigint encrypted with the public key |
 

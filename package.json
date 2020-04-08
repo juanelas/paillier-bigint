@@ -31,7 +31,7 @@
     "build:js": "rollup -c build/rollup.config.js",
     "build:standard": "standard --fix",
     "build:browserTests": "rollup -c build/rollup.tests.config.js",
-    "build:docs": "jsdoc2md --template=./src/doc/readme-template.md --files ./src/js/index.js > README.md",
+    "build:docs": "node build/build.docs.js",
     "build:dts": "node build/build.dts.js",
     "build": "run-s build:**",
     "prepublishOnly": "npm run build"
@@ -45,7 +45,7 @@
     ],
     "ignore": [
       "/test/browser/",
-      "/lib/index.browser.bundle.js",
+      "/lib/index.browser.bundle.iife.js",
       "/lib/index.browser.bundle.mod.js"
     ]
   },
@@ -58,12 +58,12 @@
     "jsdoc-to-markdown": "^5.0.3",
     "mocha": "^7.1.1",
     "npm-run-all": "^4.1.5",
-    "rollup": "^2.2.0",
+    "rollup": "^2.3.4",
     "rollup-plugin-terser": "^5.3.0",
     "standard": "^14.3.3",
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "bigint-crypto-utils": "^2.5.2"
+    "bigint-crypto-utils": "^3.0.0"
   }
 }

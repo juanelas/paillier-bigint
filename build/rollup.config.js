@@ -12,7 +12,6 @@ const srcDir = path.join(rootDir, pkgJson.directories.src)
 const dstDir = path.join(rootDir, pkgJson.directories.lib)
 
 function camelise (str) {
-  console.log('camelise', str)
   return str.replace(/-([a-z])/g,
     function (m, w) {
       return w.toUpperCase()
@@ -25,12 +24,12 @@ const pkgCamelisedName = camelise(pkgName)
 const input = path.join(srcDir, 'js', 'index.js')
 
 module.exports = [
-  { // ESM native module
+  { // Native JS
     input: input,
     output: [
       {
-        file: path.join(dstDir, 'index.browser.mod.js'),
-        format: 'esm'
+        file: path.join(rootDir, pkgJson.browser),
+        format: 'es'
       }
     ],
     plugins: [
@@ -44,7 +43,7 @@ module.exports = [
     input: input,
     output: [
       {
-        file: path.join(dstDir, 'index.browser.bundle.js'),
+        file: path.join(dstDir, 'index.browser.bundle.iife.js'),
         format: 'iife',
         name: pkgCamelisedName
       },
@@ -60,23 +59,20 @@ module.exports = [
       resolve({
         browser: true
       }),
-      terser({
-        mangle: false,
-        compress: false
-      })
+      terser()
     ]
   },
   { // Node
     input: input,
+    output: {
+      file: path.join(dstDir, 'index.node.js'),
+      format: 'cjs'
+    },
     plugins: [
       replace({
         'process.browser': false
       })
     ],
-    output: {
-      file: path.join(dstDir, 'index.node.js'),
-      format: 'cjs'
-    },
     external: ['bigint-crypto-utils']
   }
 ]

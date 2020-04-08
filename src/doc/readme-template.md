@@ -69,47 +69,77 @@ Let `c` be the ciphertext to decrypt, where `c` in `(0, n^2)`.
 `paillier-bigint` is distributed for [web browsers and/or webviews supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
 
 `paillier-bigint` can be imported to your project with `npm`:
+
 ```bash
 npm install paillier-bigint
 ```
 
-NPM installation defaults to the ES6 module for browsers and the CJS one for Node.js.
+NPM installation defaults to the ES6 module for native JS and the CJS one for Node.js.
 
-For web browsers, you can also directly download the minimized version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.js) or the [ES6 module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.mod.js) from GitHub.
+For web browsers, you can also directly download the minimized version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.iife.js) or the [ES6 bundle module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.mod.js) from GitHub.
 
 ## Usage
 
+Import your module as :
+
+ - Node.js
+   ```javascript
+   const {{PKG_CAMELCASE}} = require('{{PKG_NAME}}')
+   ... // your code here
+   ```
+ - JavaScript native project or TypeScript
+   ```javascript
+   import * as {{PKG_CAMELCASE}} from '{{PKG_NAME}}'
+   ... // your code here
+   ```
+   > BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
+ - JavaScript native browser ES6 mod
+   ```html
+   <script type="module">
+      import * as {{PKG_CAMELCASE}} from 'lib/index.browser.bundle.mod.js'  // Use you actual path to the broser mod bundle
+      ... // your code here
+    </script>
+   ```
+ - JavaScript native browser IIFE
+   ```html
+   <script src="../../lib/index.browser.bundle.js"></script> <!-- Use you actual path to the browser bundle -->
+   <script>
+     ... // your code here
+   </script>
+   ```
+
+Then you could use, for instance, the following code:
+
 ```javascript
-    // import paillier in node.js
-    const paillier = require('paillier-bigint.js')
-    // import paillier in native JS
-    import * as paillier from 'paillier-bigint'
+async function paillierTest() {
+   // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
+   const {publicKey, privateKey} = await paillierBigint.generateRandomKeys(3072)
 
-    // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
-    const {publicKey, privateKey} = await paillier.generateRandomKeys(3072)
+   // optionally, you can create your public/private keys from known parameters
+   const publicKey = new paillierBigint.PublicKey(n, g)
+   const privateKey = new paillierBigint.PrivateKey(lambda, mu, publicKey)
 
-    // optionally, you can create your public/private keys from known parameters
-    const publicKey = new paillier.PublicKey(n, g)
-    const privateKey = new paillier.PrivateKey(lambda, mu, publicKey)
+   // encrypt m
+   let c = publicKey.encrypt(m)
 
-    // encrypt m
-    let c = publicKey.encrypt(m)
+   // decrypt c
+   let d = privateKey.decrypt(c)
 
-    // decrypt c
-    let d = privateKey.decrypt(c)
+   // homomorphic addition of two ciphertexts (encrypted numbers)
+   let c1 = publicKey.encrypt(m1)
+   let c2 = publicKey.encrypt(m2)
+   let encryptedSum = publicKey.addition(c1, c2)
+   let sum = privateKey.decrypt(encryptedSum) // m1 + m2
 
-    // homomorphic addition of two ciphertexts (encrypted numbers)
-    let c1 = publicKey.encrypt(m1)
-    let c2 = publicKey.encrypt(m2)
-    let encryptedSum = publicKey.addition(c1, c2)
-    let sum = privateKey.decrypt(encryptedSum) // m1 + m2
+   // multiplication by k
+   let c1 = publicKey.encrypt(m1)
+   let encryptedMul = publicKey.multiply(c1, k)
+   let mul = privateKey.decrypt(encryptedMul) // k · m1
+}
+paillierTest()
 
-    // multiplication by k
-    let c1 = publicKey.encrypt(m1)
-    let encryptedMul = publicKey.multiply(c1, k)
-    let mul = privateKey.decrypt(encryptedMul) // k · m1
 ```
 
-# JS Doc
+## API reference documentation
 
 {{>main}}
