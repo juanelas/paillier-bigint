@@ -260,6 +260,14 @@ function isProbablyPrime (w, iterations = 16) {
  */
 function prime (bitLength, iterations = 16) {
   if (bitLength < 1) { throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`) }
+
+  if (!_useWorkers) { // If there is no support for workers
+    let rnd = 0n;
+    do {
+      rnd = fromBuffer(randBitsSync(bitLength, true));
+    } while (!_isProbablyPrime(rnd, iterations))
+    return new Promise((resolve) => { resolve(rnd); })
+  }
   return new Promise((resolve) => {
     const workerList = [];
     const _onmessage = (msg, newWorker) => {
@@ -318,7 +326,7 @@ function prime (bitLength, iterations = 16) {
  * @returns {bigint} A bigint probable prime of bitLength bits.
  */
 function primeSync (bitLength, iterations = 16) {
-  if (bitLength < 1) { throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`) }
+  if (bitLength < 1) throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`)
   let rnd = 0n;
   do {
     rnd = fromBuffer(randBitsSync(bitLength, true));
@@ -417,9 +425,9 @@ function randBytes (byteLength, forceLength = false) {
   { // browser
     return new Promise(function (resolve) {
       const buf = new Uint8Array(byteLength);
-      self.crypto.getRandomValues(buf);
+      crypto.getRandomValues(buf);
       // If fixed length is required we put the first bit to 1 -> to get the necessary bitLength
-      if (forceLength) { buf[0] = buf[0] | 128; }
+      if (forceLength) buf[0] = buf[0] | 128;
       resolve(buf);
     })
   }
@@ -440,7 +448,7 @@ function randBytesSync (byteLength, forceLength = false) {
   /* eslint-disable no-lone-blocks */
   { // browser
     const buf = new Uint8Array(byteLength);
-    self.crypto.getRandomValues(buf);
+    crypto.getRandomValues(buf);
     // If fixed length is required we put the first bit to 1 -> to get the necessary bitLength
     if (forceLength) { buf[0] = buf[0] | 128; }
     return buf
@@ -489,7 +497,8 @@ function _isProbablyPrime (w, iterations = 16) {
   PREFILTERING. Even values but 2 are not primes, so don't test.
   1 is not a prime and the M-R algorithm needs w>1.
   */
-  if (w === 2n) { return true } else if ((w & 1n) === 0n || w === 1n) { return false }
+  if (w === 2n) return true
+  else if ((w & 1n) === 0n || w === 1n) return false
 
   /*
     Test if any of the first 250 small primes are a factor of w. 2 is not tested because it was already tested above.
@@ -749,11 +758,8 @@ function _isProbablyPrime (w, iterations = 16) {
 
   for (let i = 0; i < firstPrimes.length && (firstPrimes[i] <= w); i++) {
     const p = firstPrimes[i];
-    if (w === p) {
-      return true
-    } else if (w % p === 0n) {
-      return false
-    }
+    if (w === p) return true
+    else if (w % p === 0n) return false
   }
 
   /*
@@ -785,38 +791,27 @@ function _isProbablyPrime (w, iterations = 16) {
 
   const m = d / (2n ** a);
 
-  // /* eslint-disable no-labels */
-  // loop: do {
-  //   const b = randBetween(w - 1n, 2n)
-  //   let z = modPow(b, m, w)
-  //   if (z === 1n || z === w - 1n) { continue }
-  //   for (let j = 1; j < a; j++) {
-  //     z = modPow(z, 2n, w)
-  //     if (z === w - 1n) { continue loop }
-  //     if (z === 1n) { break }
-  //   }
-  //   return false
-  // } while (--iterations)
-  // /* eslint-enable no-labels */
-
-  // return true
-
   do {
     const b = randBetween(d, 2n);
     let z = modPow(b, m, w);
-    if (z === 1n || z === d) { continue }
+    if (z === 1n || z === d) continue
     let j = 1;
     while (j < a) {
       z = modPow(z, 2n, w);
-      if (z === d) { break }
-      if (z === 1n) { return false }
+      if (z === d) break
+      if (z === 1n) return false
       j++;
     }
-    if (z !== d) {
-      return false
-    }
+    if (z !== d) return false
   } while (--iterations)
+
   return true
+}
+
+let _useWorkers = false; // The following is just to check whether we can use workers
+/* eslint-disable no-lone-blocks */
+{ // Native JS
+  if (self.Worker) _useWorkers = true;
 }
 
 var index_browser_mod = /*#__PURE__*/Object.freeze({
