@@ -12,12 +12,12 @@
     <div id="mocha"></div>
     <script>mocha.setup('bdd'); mocha.setup({ timeout: 90000 });</script>
 
-    <script type="module">
-        import * as _pkg from '../../../lib/index.browser.bundle.mod.js'
-        window._pkg = _pkg;
-        import './tests.js';
-        mocha.run();
-    </script>
+  <script type="module">
+    import * as _pkg from '../../../lib/index.browser.bundle.mod.js'
+    window._pkg = _pkg
+    import './tests.js'
+    mocha.run()
+  </script>
 </body>
 
 </html>

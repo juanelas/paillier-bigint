@@ -1,8 +1,12 @@
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+{{GITHUB_ACTIONS_BADGES}}
 
 # paillier-bigint
 
-An implementation of the Paillier cryptosystem relying on the native JS (stage 3) implementation of BigInt. It can be used by any [Web Browser or webview supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests, you should use Node.js v11 or newer or enable at runtime with `node --experimental-worker` with Node.js version >= 10.5.0 and < 11.
+An implementation of the Paillier cryptosystem relying on the native JS implementation of BigInt. 
+
+It can be used by any [Web Browser or webview supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests, you should use Node.js v11 or newer or enable at runtime with `node --experimental-worker` with Node.js version >= 10.5.0 and < 11.
 
 _The operations supported on BigInts are not constant time. BigInt can be therefore **[unsuitable for use in cryptography](https://www.chosenplaintext.ca/articles/beginners-guide-constant-time-cryptography.html).** Many platforms provide native support for cryptography, such as [Web Cryptography API](https://w3c.github.io/webcrypto/) or [Node.js Crypto](https://nodejs.org/dist/latest/docs/api/crypto.html)._
 
@@ -66,17 +70,14 @@ Let `c` be the ciphertext to decrypt, where `c` in `(0, n^2)`.
 1. Compute the plaintext message as: **`m = L( c^λ mod n^2 ) · μ mod n`**
 
 ## Installation
-`paillier-bigint` is distributed for [web browsers and/or webviews supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) as an ES6 module or an IIFE file; and for Node.js (>=10.4.0), as a CJS module.
 
-`paillier-bigint` can be imported to your project with `npm`:
+`{{PKG_NAME}}` can be imported to your project with `npm`:
 
 ```bash
-npm install paillier-bigint
+npm install {{PKG_NAME}}
 ```
 
-NPM installation defaults to the ES6 module for native JS and the CJS one for Node.js.
-
-For web browsers, you can also directly download the minimized version of the [IIFE file](https://aw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.iife.js) or the [ES6 bundle module](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/index.browser.bundle.mod.js) from GitHub.
+NPM installation defaults to the ES6 module for browsers and the CJS one for Node.js. For web browsers, you can also directly download the {{IIFE_BUNDLE}} or the {{ESM_BUNDLE}} from the repository.
 
 ## Usage
 
@@ -87,13 +88,13 @@ Import your module as :
    const {{PKG_CAMELCASE}} = require('{{PKG_NAME}}')
    ... // your code here
    ```
- - JavaScript native project or TypeScript
+ - JavaScript native or TypeScript project
    ```javascript
    import * as {{PKG_CAMELCASE}} from '{{PKG_NAME}}'
    ... // your code here
    ```
-   > BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
- - JavaScript native browser ES6 mod
+  > BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
+ - JavaScript native browser ES module
    ```html
    <script type="module">
       import * as {{PKG_CAMELCASE}} from 'lib/index.browser.bundle.mod.js'  // Use you actual path to the broser mod bundle
@@ -102,10 +103,16 @@ Import your module as :
    ```
  - JavaScript native browser IIFE
    ```html
-   <script src="../../lib/index.browser.bundle.js"></script> <!-- Use you actual path to the browser bundle -->
-   <script>
-     ... // your code here
-   </script>
+   <head>
+     ...
+     <script src="../../lib/index.browser.bundle.js"></script> <!-- Use you actual path to the browser bundle -->
+   </head>
+   <body>
+     ...
+     <script>
+       ... // your code here
+     </script>
+   </body>
    ```
 
 Then you could use, for instance, the following code:

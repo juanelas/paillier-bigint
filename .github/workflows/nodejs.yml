@@ -1,0 +1,81 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: build, test, check coverage
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [11, 12, 13]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: install
+        run: npm ci
+
+      - name: build
+        run: npm run build
+
+      - name: test
+        run: npm test
+
+  publication:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: EndBug/version-check@v1
+        id: check
+
+      - name: check version changes
+        if: steps.check.outputs.changed == 'true'
+        run: 'echo "Version change found! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
+
+      - uses: actions/setup-node@v1
+        if: steps.check.outputs.changed == 'true'
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      
+      - name: install
+        if: steps.check.outputs.changed == 'true'
+        run: npm ci
+      
+      - name: build
+        if: steps.check.outputs.changed == 'true'
+        run: npm run build
+      
+      - name: test
+        if: steps.check.outputs.changed == 'true'
+        run: npm test
+      
+      - name: create code coverage report
+        if: steps.check.outputs.changed == 'true'
+        run: npm run coverage
+      
+      - name: send report to coveralls.io
+        if: steps.check.outputs.changed == 'true'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: publish to NPM
+        if: steps.check.outputs.changed == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

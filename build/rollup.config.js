@@ -65,7 +65,7 @@ module.exports = [
   { // Node
     input: input,
     output: {
-      file: path.join(dstDir, 'index.node.js'),
+      file: path.join(rootDir, pkgJson.main),
       format: 'cjs'
     },
     plugins: [

@@ -23,12 +23,12 @@ const dstFileName = path.join(dstDir, 'index.html')
 const template = fs.readFileSync(templatePath, 'utf-8')
 const bundleFile = path.join(rootDir, pkgJson.directories.lib, 'index.browser.bundle.mod.js')
 const testsJs = `
-    <script type="module">
-        import * as _pkg from '${path.relative(templatePath, bundleFile)}'
-        window._pkg = _pkg;
-        import './tests.js';
-        mocha.run();
-    </script>`
+  <script type="module">
+    import * as _pkg from '${path.relative(templatePath, bundleFile)}'
+    window._pkg = _pkg
+    import './tests.js'
+    mocha.run()
+  </script>`
 
 fs.writeFileSync(dstFileName,
   template.replace(/{{TESTS}}/g, testsJs).replace(/{{PKG_NAME}}/g, pkgName).replace(/{{MOCHA_VERSION}}/g, mochaVersion).replace(/{{CHAI_VERSION}}/g, chaiVersion)
