@@ -844,21 +844,36 @@ var index_browser_mod = /*#__PURE__*/Object.freeze({
 
 
 
-const bitLengths = [1024, 2048, 3072];
+const bitLengths = [511, 1024, null];
 for (const bitLength of bitLengths) {
-  describe(`Testing Paillier with keys of ${bitLength} bits`, function () {
-    this.timeout(90000);
+  describe(`Testing Paillier with keys of ${bitLength || '3072'} bits`, function () {
+    this.timeout(200000);
     let keyPair;
-    const tests = 32;
+    const tests = 16;
     const numbers = [];
     const ciphertexts = [];
 
-    describe(`generateRandomKeys(${bitLength})`, function () {
-      it(`it should return a publicKey and a privateKey with public modulus of ${bitLength} bits`, async function () {
-        keyPair = await _pkg.generateRandomKeys(bitLength);
+    describe(`generateRandomKeys(${bitLength || ''})`, function () {
+      it(`should return a publicKey and a privateKey with public modulus of ${bitLength || '3072'} bits`, async function () {
+        keyPair = bitLength ? await _pkg.generateRandomKeys(bitLength) : await _pkg.generateRandomKeys();
         chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey);
         chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey);
-        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength);
+        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength || 3072);
+        if (bitLength) {
+          keyPair = await _pkg.generateRandomKeys(bitLength, true);
+          chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey);
+          chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey);
+          chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength);
+        }
+      });
+    });
+
+    describe('privateKey constructor', function () {
+      it('should create a privateKey from known parameters', function () {
+        const privateKey = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey);
+        chai.expect(privateKey).to.be.an.instanceOf(_pkg.PrivateKey);
+        chai.expect(privateKey.bitLength).to.equal(bitLength || 3072);
+        chai.expect(privateKey.n).to.equal(keyPair.publicKey.n);
       });
     });
 
@@ -904,12 +919,16 @@ for (const bitLength of bitLengths) {
     });
   });
 }
-describe('Testing generateRandomKeysSync(2048) NOT RECOMMENDED', function () {
+describe('Testing generateRandomKeysSync() NOT RECOMMENDED', function () {
   this.timeout(90000);
-  it('it should return a publicKey and a privateKey with public modulus of 2048 bits', function () {
-    const keyPair = _pkg.generateRandomKeysSync(2048);
+  it('it should return a publicKey and a privateKey of the expected bitlength', function () {
+    const keyPair = _pkg.generateRandomKeysSync(2048, true);
     chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey);
     chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey);
     chai.expect(keyPair.publicKey.bitLength).to.equal(2048);
+    const keyPair2 = _pkg.generateRandomKeysSync();
+    chai.expect(keyPair2.publicKey).to.be.an.instanceOf(_pkg.PublicKey);
+    chai.expect(keyPair2.privateKey).to.be.an.instanceOf(_pkg.PrivateKey);
+    chai.expect(keyPair2.publicKey.bitLength).to.equal(3072);
   });
 });

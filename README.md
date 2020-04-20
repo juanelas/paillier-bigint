@@ -196,7 +196,7 @@ Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [bitlength] | <code>number</code> | <code>4096</code> | the bit length of the public modulo |
+| [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
 | [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
 
 <a name="module_paillier-bigint..KeyPair"></a>

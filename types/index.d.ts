@@ -112,7 +112,7 @@ export function generateRandomKeys(bitlength?: number, simpleVariant?: boolean):
  * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
  * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
  *
- * @param {number} [bitlength = 4096] - the bit length of the public modulo
+ * @param {number} [bitlength = 3072] - the bit length of the public modulo
  * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
  *
  * @returns {KeyPair} - a {@link KeyPair} of public, private keys

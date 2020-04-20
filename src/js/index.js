@@ -33,18 +33,15 @@ export async function generateRandomKeys (bitlength = 3072, simpleVariant = fals
     n = p * q
   } while (q === p || bcu.bitLength(n) !== bitlength)
 
-  const phi = (p - 1n) * (q - 1n)
-
-  const n2 = n ** 2n
-
   if (simpleVariant === true) {
     // If using p,q of equivalent length, a simpler variant of the key
     // generation steps would be to set
     // g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n)
     g = n + 1n
-    lambda = phi
+    lambda = (p - 1n) * (q - 1n)
     mu = bcu.modInv(lambda, n)
   } else {
+    const n2 = n ** 2n
     g = getGenerator(n, n2)
     lambda = bcu.lcm(p - 1n, q - 1n)
     mu = bcu.modInv(L(bcu.modPow(g, lambda, n2), n), n)
@@ -59,12 +56,12 @@ export async function generateRandomKeys (bitlength = 3072, simpleVariant = fals
  * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
  * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
  *
- * @param {number} [bitlength = 4096] - the bit length of the public modulo
+ * @param {number} [bitlength = 3072] - the bit length of the public modulo
  * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
  *
  * @returns {KeyPair} - a {@link KeyPair} of public, private keys
  */
-export function generateRandomKeysSync (bitlength = 4096, simpleVariant = false) {
+export function generateRandomKeysSync (bitlength = 3072, simpleVariant = false) {
   let p, q, n, g, lambda, mu
   // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength)
   do {
@@ -73,18 +70,15 @@ export function generateRandomKeysSync (bitlength = 4096, simpleVariant = false)
     n = p * q
   } while (q === p || bcu.bitLength(n) !== bitlength)
 
-  const phi = (p - 1n) * (q - 1n)
-
-  const n2 = n ** 2n
-
   if (simpleVariant === true) {
     // If using p,q of equivalent length, a simpler variant of the key
     // generation steps would be to set
     // g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n)
     g = n + 1n
-    lambda = phi
+    lambda = (p - 1n) * (q - 1n)
     mu = bcu.modInv(lambda, n)
   } else {
+    const n2 = n ** 2n
     g = getGenerator(n, n2)
     lambda = bcu.lcm(p - 1n, q - 1n)
     mu = bcu.modInv(L(bcu.modPow(g, lambda, n2), n), n)
@@ -95,7 +89,7 @@ export function generateRandomKeysSync (bitlength = 4096, simpleVariant = false)
   return { publicKey, privateKey }
 }
 
-function getGenerator (n, n2 = bcu.modPow(n, 2)) {
+function getGenerator (n, n2) { // n2 = n*n
   const alpha = bcu.randBetween(n)
   const beta = bcu.randBetween(n)
   return ((alpha * n + 1n) * bcu.modPow(beta, n, n2)) % n2
