@@ -89,12 +89,27 @@ Import your module as :
    const paillierBigint = require('paillier-bigint')
    ... // your code here
    ```
- - JavaScript native or TypeScript project
+ - JavaScript native or TypeScript project (including Angular and React)
    ```javascript
    import * as paillierBigint from 'paillier-bigint'
    ... // your code here
    ```
-  > BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
+   Notice that `paillier-bigint` relies on [`bigint-crypto-utils`](https://github.com/juanelas/bigint-crypto-utils) which cannot be polyfilled to suport older browsers. If you are using webpack/babel to create your production bundles, you should target only the most modern browsers. For instance, for React apps created with [`create-react-app`](https://create-react-app.dev/), you should edit your `package.json` and modify the `browserList` so that it only targets the latest browsers (supporting the latest features):
+   ```json
+   "browserslist": {
+     "production": [
+       "last 1 chrome version",
+       "last 1 firefox version",
+       "last 1 safari version"
+     ],
+     "development": [
+       "last 1 chrome version",
+       "last 1 firefox version",
+       "last 1 safari version"
+     ]
+   }
+   ```
+   Also, notice that BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
  - JavaScript native browser ES module
    ```html
    <script type="module">
@@ -152,63 +167,6 @@ paillierTest()
 
 
 ## API reference documentation
-
-### Modules
-
-<dl>
-<dt><a href="#module_paillier-bigint">paillier-bigint</a></dt>
-<dd><p>Paillier cryptosystem for both Node.js and native JS (browsers and webviews)</p>
-</dd>
-</dl>
-
-<a name="module_paillier-bigint"></a>
-
-### paillier-bigint
-Paillier cryptosystem for both Node.js and native JS (browsers and webviews)
-
-
-* [paillier-bigint](#module_paillier-bigint)
-    * [~generateRandomKeys([bitlength], [simplevariant])](#module_paillier-bigint..generateRandomKeys) ⇒ <code>Promise.&lt;KeyPair&gt;</code>
-    * [~generateRandomKeysSync([bitlength], [simplevariant])](#module_paillier-bigint..generateRandomKeysSync) ⇒ <code>KeyPair</code>
-    * [~KeyPair](#module_paillier-bigint..KeyPair) : <code>Object</code>
-
-<a name="module_paillier-bigint..generateRandomKeys"></a>
-
-#### paillier-bigint~generateRandomKeys([bitlength], [simplevariant]) ⇒ <code>Promise.&lt;KeyPair&gt;</code>
-Generates a pair private, public key for the Paillier cryptosystem.
-
-**Kind**: inner method of [<code>paillier-bigint</code>](#module_paillier-bigint)  
-**Returns**: <code>Promise.&lt;KeyPair&gt;</code> - - a promise that resolves to a [KeyPair](KeyPair) of public, private keys  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
-| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
-
-<a name="module_paillier-bigint..generateRandomKeysSync"></a>
-
-#### paillier-bigint~generateRandomKeysSync([bitlength], [simplevariant]) ⇒ <code>KeyPair</code>
-Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
-Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
-
-**Kind**: inner method of [<code>paillier-bigint</code>](#module_paillier-bigint)  
-**Returns**: <code>KeyPair</code> - - a [KeyPair](KeyPair) of public, private keys  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
-| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
-
-<a name="module_paillier-bigint..KeyPair"></a>
-
-#### paillier-bigint~KeyPair : <code>Object</code>
-**Kind**: inner typedef of [<code>paillier-bigint</code>](#module_paillier-bigint)  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| publicKey | [<code>PublicKey</code>](#PublicKey) | a Paillier's public key |
-| privateKey | [<code>PrivateKey</code>](#PrivateKey) | the associated Paillier's private key |
 
 <a name="PublicKey"></a>
 
@@ -331,4 +289,42 @@ Paillier private-key decryption
 | Param | Type | Description |
 | --- | --- | --- |
 | c | <code>bigint</code> | a bigint encrypted with the public key |
+
+<a name="generateRandomKeys"></a>
+
+### generateRandomKeys([bitlength], [simplevariant]) ⇒ [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair)
+Generates a pair private, public key for the Paillier cryptosystem.
+
+**Kind**: global function  
+**Returns**: [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair) - - a promise that resolves to a [KeyPair](#KeyPair) of public, private keys  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
+| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
+
+<a name="generateRandomKeysSync"></a>
+
+### generateRandomKeysSync([bitlength], [simplevariant]) ⇒ [<code>KeyPair</code>](#KeyPair)
+Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
+Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
+
+**Kind**: global function  
+**Returns**: [<code>KeyPair</code>](#KeyPair) - - a [KeyPair](#KeyPair) of public, private keys  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
+| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
+
+<a name="KeyPair"></a>
+
+### KeyPair : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| publicKey | [<code>PublicKey</code>](#PublicKey) | a Paillier's public key |
+| privateKey | [<code>PrivateKey</code>](#PrivateKey) | the associated Paillier's private key |
 

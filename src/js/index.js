@@ -1,8 +1,3 @@
-/**
- * Paillier cryptosystem for both Node.js and native JS (browsers and webviews)
- * @module paillier-bigint
- */
-
 import * as bcu from 'bigint-crypto-utils'
 import PublicKey from './PublicKey'
 import PrivateKey, { L } from './PrivateKey'

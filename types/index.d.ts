@@ -91,10 +91,6 @@ export class PublicKey {
     multiply(c: bigint, k: number | bigint): bigint;
 }
 /**
- * Paillier cryptosystem for both Node.js and native JS (browsers and webviews)
- * @module paillier-bigint
- */
-/**
  * @typedef {Object} KeyPair
  * @property {PublicKey} publicKey - a Paillier's public key
  * @property {PrivateKey} privateKey - the associated Paillier's private key

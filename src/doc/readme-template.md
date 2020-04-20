@@ -88,12 +88,27 @@ Import your module as :
    const {{PKG_CAMELCASE}} = require('{{PKG_NAME}}')
    ... // your code here
    ```
- - JavaScript native or TypeScript project
+ - JavaScript native or TypeScript project (including Angular and React)
    ```javascript
    import * as {{PKG_CAMELCASE}} from '{{PKG_NAME}}'
    ... // your code here
    ```
-  > BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
+   Notice that `{{PKG_NAME}}` relies on [`bigint-crypto-utils`](https://github.com/juanelas/bigint-crypto-utils) which cannot be polyfilled to suport older browsers. If you are using webpack/babel to create your production bundles, you should target only the most modern browsers. For instance, for React apps created with [`create-react-app`](https://create-react-app.dev/), you should edit your `package.json` and modify the `browserList` so that it only targets the latest browsers (supporting the latest features):
+   ```json
+   "browserslist": {
+     "production": [
+       "last 1 chrome version",
+       "last 1 firefox version",
+       "last 1 safari version"
+     ],
+     "development": [
+       "last 1 chrome version",
+       "last 1 firefox version",
+       "last 1 safari version"
+     ]
+   }
+   ```
+   Also, notice that BigInt is [ES-2020](https://tc39.es/ecma262/#sec-bigint-objects). In order to use it with TypeScript you should set `lib` (and probably also `target` and `module`) to `esnext` in `tsconfig.json`.
  - JavaScript native browser ES module
    ```html
    <script type="module">
