@@ -52,7 +52,7 @@ these messages without knowing the private key.
    1. Standard approach:
       1. Compute `λ = lcm(p-1, q-1)` with `lcm(a, b) = a·b / gcd(a, b)`.
       2. Generate randoms `α` and `β` in `Z*` of `n`, and select generator `g` in `Z*` of `n**2` as `g = ( α·n + 1 ) β**n mod n**2`.
-      3. Compute `μ = ( L( g^λ mod n**2 ) )^(-1) mod n` where `L(x)=(x-1)/n`.
+      3. Compute `μ = ( L( g^λ mod n**2 ) )**(-1) mod n` where `L(x)=(x-1)/n`.
    2. If using p,q of equivalent length, a simpler variant would be:
       1. `λ = (p-1, q-1)`
       2. `g = n+1`
