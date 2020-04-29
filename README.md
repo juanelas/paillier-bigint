@@ -19,24 +19,24 @@ The Paillier cryptosystem, named after and invented by Pascal Paillier in 1999, 
 
 The product of two ciphertexts will decrypt to the sum of their corresponding plaintexts,
 
-**D( E(m1) · E(m2) ) mod n^2 = m1 + m2 mod n**
+**D( E(m<sub>1</sub>) · E(m<sub>2</sub>) ) mod n<sup>2</sup> = m<sub>1</sub> + m<sub>2</sub> mod n**
 
 The product of a ciphertext with a plaintext raising g will decrypt to the sum of the corresponding plaintexts,
 
-**D( E(m1) · g^(m2) ) mod n^2 = m1 + m2 mod n**
+**D( E(m<sub>1</sub>) · g<sup>m<sub>2</sub></sup> ) mod n<sup>2</sup> = m<sub>1</sub> + m<sub>2</sub> mod n**
 
 ### (pseudo-)homomorphic multiplication of plaintexts
 
 An encrypted plaintext raised to the power of another plaintext will decrypt to the product of the two plaintexts,
 
-**D( E(m1)^(m2) mod n^2 ) = m1 · m2 mod n**,
+**D( E(m<sub>1</sub>)<sup>m<sub>2</sub></sup> mod n<sup>2</sup> ) = m<sub>1</sub> · m<sub>2</sub> mod n**,
 
-**D( E(m2)^(m1) mod n^2 ) = m1 · m2 mod n**.
+**D( E(m<sub>2</sub>)<sup>m<sub>1</sub></sup> mod n<sup>2</sup> ) = m<sub>1</sub> · m<sub>2</sub> mod n**.
 
 More generally, an encrypted plaintext raised to a constant k will decrypt to the product of the plaintext and the
 constant,
 
-**D( E(m1)^k mod n^2 ) = k · m1 mod n**.
+**D( E(m<sub>1</sub>)<sup>k</sup> mod n<sup>2</sup> ) = k · m<sub>1</sub> mod n**.
 
 However, given the Paillier encryptions of two messages there is no known way to compute an encryption of the product of
 these messages without knowing the private key.
@@ -48,11 +48,15 @@ these messages without knowing the private key.
    1. Generate a random prime `p` with a bit length of `keyLength/2 + 1`.
    2. Generate a random prime `q` with a bit length of `keyLength/2`.
    3. Repeat until the bitlength of `n=p·q` is `keyLength`.
-3. Compute `λ = lcm(p-1, q-1)` with `lcm(a, b) = a·b / gcd(a, b)`.
-4. Select a generator `g` in `Z*` of `n^2`. `g` can be computed as follows (there are other ways):
-   * Generate randoms `α` and `β` in `Z*` of `n`. 
-   * Compute `g=( α·n + 1 ) β^n mod n^2`.
-5. Compute `μ=( L( g^λ mod n^2 ) )^(-1) mod n` where `L(x)=(x-1)/n`.
+3. Compute parameters `λ`, `g` and `μ`. Among other ways, it can be done as follows:
+   1. Standard approach:
+      1. Compute `λ = lcm(p-1, q-1)` with `lcm(a, b) = a·b / gcd(a, b)`.
+      2. Generate randoms `α` and `β` in `Z*` of `n`, and select generator `g` in `Z*` of `n**2` as `g = ( α·n + 1 ) β**n mod n**2`.
+      3. Compute `μ = ( L( g^λ mod n**2 ) )^(-1) mod n` where `L(x)=(x-1)/n`.
+   2. If using p,q of equivalent length, a simpler variant would be:
+      1. `λ = (p-1, q-1)`
+      2. `g = n+1`
+      3. `μ = λ**(-1) mod n`
    
 The **public** (encryption) **key** is **(n, g)**.
 
@@ -61,14 +65,14 @@ The **private** (decryption) **key** is **(λ, μ)**.
 ## Encryption
 Let `m` in `Z*` of `n` be the clear-text message,
 
-1. Select random integer `r` in `(1, n^2)`.
+1. Select random integer `r` in `(1, n)`.
 
-2. Compute ciphertext as: **`c = g^m · r^n mod n^2`**
+2. Compute ciphertext as: **`c = g**m · r**n mod n**2`**
 
 ## Decryption
-Let `c` be the ciphertext to decrypt, where `c` in `(0, n^2)`.
+Let `c` be the ciphertext to decrypt, where `c` in `(0, n**2)`.
 
-1. Compute the plaintext message as: **`m = L( c^λ mod n^2 ) · μ mod n`**
+1. Compute the plaintext message as: **`m = L( c**λ mod n**2 ) · μ mod n`**
 
 ## Installation
 
@@ -142,22 +146,22 @@ async function paillierTest () {
   // const publicKey = new paillierBigint.PublicKey(n, g)
   // const privateKey = new paillierBigint.PrivateKey(lambda, mu, publicKey)
 
-  const m1 = 12345678901234567890n
-  const m2 = 5n
+  const m<sub>1</sub> = 12345678901234567890n
+  const m<sub>2</sub> = 5n
 
   // encryption/decryption
-  const c1 = publicKey.encrypt(m1)
+  const c1 = publicKey.encrypt(m<sub>1</sub>)
   console.log(privateKey.decrypt(c1)) // 12345678901234567890n
 
   // homomorphic addition of two ciphertexts (encrypted numbers)
-  const c2 = publicKey.encrypt(m2)
+  const c2 = publicKey.encrypt(m<sub>2</sub>)
   const encryptedSum = publicKey.addition(c1, c2)
-  console.log(privateKey.decrypt(encryptedSum)) // m1 + m2 = 12345678901234567895n
+  console.log(privateKey.decrypt(encryptedSum)) // m<sub>1</sub> + m<sub>2</sub> = 12345678901234567895n
 
   // multiplication by k
   const k = 10n
   const encryptedMul = publicKey.multiply(c1, k)
-  console.log(privateKey.decrypt(encryptedMul)) // k · m1 = 123456789012345678900n
+  console.log(privateKey.decrypt(encryptedMul)) // k · m<sub>1</sub> = 123456789012345678900n
 }
 paillierTest()
 
