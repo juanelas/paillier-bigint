@@ -146,22 +146,22 @@ async function paillierTest () {
   // const publicKey = new paillierBigint.PublicKey(n, g)
   // const privateKey = new paillierBigint.PrivateKey(lambda, mu, publicKey)
 
-  const m<sub>1</sub> = 12345678901234567890n
-  const m<sub>2</sub> = 5n
+  const m1 = 12345678901234567890n
+  const m2 = 5n
 
   // encryption/decryption
-  const c1 = publicKey.encrypt(m<sub>1</sub>)
+  const c1 = publicKey.encrypt(m1)
   console.log(privateKey.decrypt(c1)) // 12345678901234567890n
 
   // homomorphic addition of two ciphertexts (encrypted numbers)
-  const c2 = publicKey.encrypt(m<sub>2</sub>)
+  const c2 = publicKey.encrypt(m2)
   const encryptedSum = publicKey.addition(c1, c2)
-  console.log(privateKey.decrypt(encryptedSum)) // m<sub>1</sub> + m<sub>2</sub> = 12345678901234567895n
+  console.log(privateKey.decrypt(encryptedSum)) // m1 + m2 = 12345678901234567895n
 
   // multiplication by k
   const k = 10n
   const encryptedMul = publicKey.multiply(c1, k)
-  console.log(privateKey.decrypt(encryptedMul)) // k · m<sub>1</sub> = 123456789012345678900n
+  console.log(privateKey.decrypt(encryptedMul)) // k · m1 = 123456789012345678900n
 }
 paillierTest()
 
