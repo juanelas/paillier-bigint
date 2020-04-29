@@ -38,13 +38,25 @@ export class PrivateKey {
        */
     get n(): bigint;
     /**
-       * Paillier private-key decryption
-       *
-       * @param {bigint} c - a bigint encrypted with the public key
-       *
-       * @returns {bigint} - the decryption of c with this private key
-       */
+     * Paillier private-key decryption
+     *
+     * @param {bigint} c - a bigint encrypted with the public key
+     *
+     * @returns {bigint} - the decryption of c with this private key
+     */
     decrypt(c: bigint): bigint;
+    /**
+     * Recover the random factor used for encrypting a message with the complementary public key.
+     * The recovery function only works if the public key generator g was using the simple variant
+     * g = 1 + n
+     *
+     * @param {bigint} c - the encryption using the public of message m with random factor r
+     *
+     * @returns {bigint} - the random factor (mod n)
+     *
+     * @throws {RangeError} - Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )
+     */
+    getRandomFactor(c: bigint): bigint;
 }
 /**
  * Class for a Paillier public key
@@ -68,10 +80,11 @@ export class PublicKey {
        * Paillier public-key encryption
        *
        * @param {bigint} m - a bigint representation of a cleartext message
+       * @param {bigint} [r] - the random integer factor for encryption. By default is a random in (1,n)
        *
        * @returns {bigint} - the encryption of m with this public key
        */
-    encrypt(m: bigint): bigint;
+    encrypt(m: bigint, r?: bigint): bigint;
     /**
        * Homomorphic addition
        *
@@ -99,7 +112,7 @@ export class PublicKey {
  * Generates a pair private, public key for the Paillier cryptosystem.
  *
  * @param {number} [bitlength = 3072] - the bit length of the public modulo
- * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
+ * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key
  *
  * @returns {Promise<KeyPair>} - a promise that resolves to a {@link KeyPair} of public, private keys
  */

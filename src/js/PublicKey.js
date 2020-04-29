@@ -27,11 +27,11 @@ export default class PublicKey {
      * Paillier public-key encryption
      *
      * @param {bigint} m - a bigint representation of a cleartext message
+     * @param {bigint} [r] - the random integer factor for encryption. By default is a random in (1,n)
      *
      * @returns {bigint} - the encryption of m with this public key
      */
-  encrypt (m) {
-    const r = bcu.randBetween(this.n)
+  encrypt (m, r = bcu.randBetween(this.n)) {
     return (bcu.modPow(this.g, m, this._n2) * bcu.modPow(r, this.n, this._n2)) % this._n2
   }
 

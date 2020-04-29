@@ -178,7 +178,7 @@ Class for a Paillier public key
 * [PublicKey](#PublicKey)
     * [new PublicKey(n, g)](#new_PublicKey_new)
     * [.bitLength](#PublicKey+bitLength) ⇒ <code>number</code>
-    * [.encrypt(m)](#PublicKey+encrypt) ⇒ <code>bigint</code>
+    * [.encrypt(m, [r])](#PublicKey+encrypt) ⇒ <code>bigint</code>
     * [.addition(...ciphertexts)](#PublicKey+addition) ⇒ <code>bigint</code>
     * [.multiply(c, k)](#PublicKey+multiply) ⇒ <code>bigint</code>
 
@@ -202,7 +202,7 @@ Get the bit length of the public modulo
 **Returns**: <code>number</code> - - bit length of the public modulo  
 <a name="PublicKey+encrypt"></a>
 
-#### publicKey.encrypt(m) ⇒ <code>bigint</code>
+#### publicKey.encrypt(m, [r]) ⇒ <code>bigint</code>
 Paillier public-key encryption
 
 **Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
@@ -211,6 +211,7 @@ Paillier public-key encryption
 | Param | Type | Description |
 | --- | --- | --- |
 | m | <code>bigint</code> | a bigint representation of a cleartext message |
+| [r] | <code>bigint</code> | the random integer factor for encryption. By default is a random in (1,n) |
 
 <a name="PublicKey+addition"></a>
 
@@ -249,6 +250,7 @@ Class for Paillier private keys.
     * [.bitLength](#PrivateKey+bitLength) ⇒ <code>number</code>
     * [.n](#PrivateKey+n) ⇒ <code>bigint</code>
     * [.decrypt(c)](#PrivateKey+decrypt) ⇒ <code>bigint</code>
+    * [.getRandomFactor(c)](#PrivateKey+getRandomFactor) ⇒ <code>bigint</code>
 
 <a name="new_PrivateKey_new"></a>
 
@@ -290,6 +292,24 @@ Paillier private-key decryption
 | --- | --- | --- |
 | c | <code>bigint</code> | a bigint encrypted with the public key |
 
+<a name="PrivateKey+getRandomFactor"></a>
+
+#### privateKey.getRandomFactor(c) ⇒ <code>bigint</code>
+Recover the random factor used for encrypting a message with the complementary public key.
+The recovery function only works if the public key generator g was using the simple variant
+g = 1 + n
+
+**Kind**: instance method of [<code>PrivateKey</code>](#PrivateKey)  
+**Returns**: <code>bigint</code> - - the random factor (mod n)  
+**Throws**:
+
+- <code>RangeError</code> - Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| c | <code>bigint</code> | the encryption using the public of message m with random factor r |
+
 <a name="generateRandomKeys"></a>
 
 ### generateRandomKeys([bitlength], [simplevariant]) ⇒ [<code>Promise.&lt;KeyPair&gt;</code>](#KeyPair)
@@ -301,7 +321,7 @@ Generates a pair private, public key for the Paillier cryptosystem.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [bitlength] | <code>number</code> | <code>3072</code> | the bit length of the public modulo |
-| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1) |
+| [simplevariant] | <code>boolean</code> | <code>false</code> | use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key |
 
 <a name="generateRandomKeysSync"></a>
 

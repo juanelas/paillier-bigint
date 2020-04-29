@@ -15,7 +15,7 @@ export { default as PrivateKey } from './PrivateKey'
  * Generates a pair private, public key for the Paillier cryptosystem.
  *
  * @param {number} [bitlength = 3072] - the bit length of the public modulo
- * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
+ * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key
  *
  * @returns {Promise<KeyPair>} - a promise that resolves to a {@link KeyPair} of public, private keys
  */

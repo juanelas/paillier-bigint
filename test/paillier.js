@@ -84,7 +84,7 @@ for (const bitLength of bitLengths) {
   })
 }
 describe('Testing generateRandomKeysSync() NOT RECOMMENDED', function () {
-  this.timeout(90000)
+  this.timeout(120000)
   it('it should return a publicKey and a privateKey of the expected bitlength', function () {
     const keyPair = _pkg.generateRandomKeysSync(2048, true)
     chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
@@ -94,5 +94,34 @@ describe('Testing generateRandomKeysSync() NOT RECOMMENDED', function () {
     chai.expect(keyPair2.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
     chai.expect(keyPair2.privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
     chai.expect(keyPair2.publicKey.bitLength).to.equal(3072)
+  })
+})
+describe('recover encryption random factor from cryptogram', function () {
+  this.timeout(120000)
+  const tests = 50
+  it(`should return r in all the ${tests} test with random cleartext msg and random number`, async function () {
+    let testPassed = true
+    const keyPair = await _pkg.generateRandomKeys(512, true)
+    for (let i = 0; i < tests; i++) {
+      const m = bcu.randBetween(keyPair.publicKey.n)
+      const r = bcu.randBetween(keyPair.publicKey.n)
+      const c = keyPair.publicKey.encrypt(m, r)
+      testPassed = r === keyPair.privateKey.getRandomFactor(c)
+      if (!testPassed) {
+        console.log('r = ', r)
+        console.log('recoverd r = ', keyPair.privateKey.getRandomFactor(c))
+        break
+      }
+    }
+    chai.expect(testPassed).equals(true)
+  })
+  describe('If g != n + 1', function () {
+    it('should throw RangeError', async function () {
+      const keyPair = await _pkg.generateRandomKeys(512)
+      const m = bcu.randBetween(keyPair.publicKey.n)
+      const r = bcu.randBetween(keyPair.publicKey.n)
+      const c = keyPair.publicKey.encrypt(m, r)
+      chai.expect(() => keyPair.privateKey.getRandomFactor(c)).to.throw(RangeError)
+    })
   })
 })
