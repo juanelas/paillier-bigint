@@ -124,7 +124,7 @@ Import your module as :
    ```html
    <head>
      ...
-     <script src="../../lib/index.browser.bundle.js"></script> <!-- Use you actual path to the browser bundle -->
+     <script src="../../lib/index.browser.bundle.iife.js"></script> <!-- Use you actual path to the browser bundle -->
    </head>
    <body>
      ...
