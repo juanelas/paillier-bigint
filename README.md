@@ -63,7 +63,7 @@ The **public** (encryption) **key** is **(n, g)**.
 The **private** (decryption) **key** is **(λ, μ)**. 
   
 ## Encryption
-Let `m` in `Z<sub>n</sub>` be the clear-text message,
+Let `m` in `[0, n)` be the clear-text message,
 
 1. Select random integer `r` in `Z*` of `n`.
 
