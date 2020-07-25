@@ -31,7 +31,12 @@ export default class PublicKey {
      *
      * @returns {bigint} - the encryption of m with this public key
      */
-  encrypt (m, r = bcu.randBetween(this.n)) {
+
+  do {
+    r = bcu.randBetween(this.n)
+  } while (r % p === 0 || r % q === 0)
+
+  encrypt (m, r) {
     return (bcu.modPow(this.g, m, this._n2) * bcu.modPow(r, this.n, this._n2)) % this._n2
   }
 
