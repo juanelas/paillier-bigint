@@ -101,7 +101,7 @@ export class PublicKey {
        *
        * @returns {bigint} - the encryption of k·m with this public key
        */
-    multiply(c: bigint, k: number | bigint): bigint;
+    multiply(c: bigint, k: bigint | number): bigint;
 }
 /**
  * @typedef {Object} KeyPair

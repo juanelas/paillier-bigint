@@ -62,9 +62,9 @@ The **public** (encryption) **key** is **(n, g)**.
 The **private** (decryption) **key** is **(λ, μ)**. 
   
 ## Encryption
-Let `m` in `Z*` of `n` be the clear-text message,
+Let `m` in `[0, n)` be the clear-text message,
 
-1. Select random integer `r` in `(1, n)`.
+1. Select random integer `r` in `Z*` of `n`.
 
 2. Compute ciphertext as: **`c = g**m · r**n mod n**2`**
 

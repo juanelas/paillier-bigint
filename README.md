@@ -63,9 +63,9 @@ The **public** (encryption) **key** is **(n, g)**.
 The **private** (decryption) **key** is **(λ, μ)**. 
   
 ## Encryption
-Let `m` in `Z*` of `n` be the clear-text message,
+Let `m` in `[0, n)` be the clear-text message,
 
-1. Select random integer `r` in `(1, n)`.
+1. Select random integer `r` in `Z*` of `n`.
 
 2. Compute ciphertext as: **`c = g**m · r**n mod n**2`**
 
@@ -212,10 +212,10 @@ Paillier public-key encryption
 **Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
 **Returns**: <code>bigint</code> - - the encryption of m with this public key  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| m | <code>bigint</code> | a bigint representation of a cleartext message |
-| [r] | <code>bigint</code> | the random integer factor for encryption. By default is a random in (1,n) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| m | <code>bigint</code> |  | a bigint representation of a cleartext message |
+| [r] | <code>bigint</code> | <code></code> | the random integer factor for encryption. By default is a random in (1,n) |
 
 <a name="PublicKey+addition"></a>
 
