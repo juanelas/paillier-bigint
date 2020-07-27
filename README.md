@@ -212,10 +212,10 @@ Paillier public-key encryption
 **Kind**: instance method of [<code>PublicKey</code>](#PublicKey)  
 **Returns**: <code>bigint</code> - - the encryption of m with this public key  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| m | <code>bigint</code> | a bigint representation of a cleartext message |
-| [r] | <code>bigint</code> | the random integer factor for encryption. By default is a random in (1,n) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| m | <code>bigint</code> |  | a bigint representation of a cleartext message |
+| [r] | <code>bigint</code> | <code></code> | the random integer factor for encryption. By default is a random in (1,n) |
 
 <a name="PublicKey+addition"></a>
 

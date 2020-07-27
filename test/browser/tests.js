@@ -39,12 +39,14 @@ function bitLength (a) {
  * @param {number|bigint} a
  * @param {number|bigint} b
  *
+ * @throws {RangeError} a and b MUST be > 0
+ *
  * @returns {egcdReturn} A triple (g, x, y), such that ax + by = g = gcd(a, b).
  */
 function eGcd (a, b) {
   a = BigInt(a);
   b = BigInt(b);
-  if (a <= 0n | b <= 0n) { return NaN } // a and b MUST be positive
+  if (a <= 0n | b <= 0n) throw new RangeError('a and b MUST be > 0') // a and b MUST be positive
 
   let x = 0n;
   let y = 1n;
@@ -64,7 +66,7 @@ function eGcd (a, b) {
     v = n;
   }
   return {
-    b: b,
+    g: b,
     x: x,
     y: y
   }
@@ -114,7 +116,7 @@ function gcd (a, b) {
 function lcm (a, b) {
   a = BigInt(a);
   b = BigInt(b);
-  if (a === 0n && b === 0n) { return 0n }
+  if (a === 0n && b === 0n) return BigInt(0)
   return abs(a * b) / gcd(a, b)
 }
 
@@ -152,12 +154,14 @@ function min (a, b) {
  * @param {number|bigint} a The number to find an inverse for
  * @param {number|bigint} n The modulo
  *
- * @returns {bigint} the inverse modulo n or NaN if it does not exist
+ * @throws {RangeError} a does not have inverse modulo n
+ *
+ * @returns {bigint} the inverse modulo n
  */
 function modInv (a, n) {
   const egcd = eGcd(toZn(a, n), n);
-  if (egcd.b !== 1n) {
-    return NaN // modular inverse does not exist
+  if (egcd.g !== 1n) {
+    throw new RangeError(`${a.toString()} does not have inverse modulo ${n.toString()}`) // modular inverse does not exist
   } else {
     return toZn(egcd.x, n)
   }
@@ -174,7 +178,7 @@ function modInv (a, n) {
  */
 function modPow (b, e, n) {
   n = BigInt(n);
-  if (n === 0n) { return NaN } else if (n === 1n) { return 0n }
+  if (n === 0n) { throw new RangeError('n must be > 0') } else if (n === 1n) { return BigInt(0) }
 
   b = toZn(b, n);
 
@@ -213,15 +217,19 @@ function toZn (a, n) {
  * The test first tries if any of the first 250 small primes are a factor of the input number and then passes several
  * iterations of Miller-Rabin Probabilistic Primality Test (FIPS 186-4 C.3.1)
  *
- * @param {number | bigint} w An integer to be tested for primality
+ * @param {number | bigint} w A positive integer to be tested for primality
  * @param {number} [iterations = 16] The number of iterations for the primality test. The value shall be consistent with Table C.1, C.2 or C.3
+ * @param {boolean} [disableWorkers = false] Disable the use of workers for the primality test
+ *
+ * @throws {RangeError} w MUST be >= 0
  *
  * @returns {Promise<boolean>} A promise that resolves to a boolean that is either true (a probably prime number) or false (definitely composite)
  */
-function isProbablyPrime (w, iterations = 16) {
+function isProbablyPrime (w, iterations = 16, disableWorkers = false) {
   if (typeof w === 'number') {
     w = BigInt(w);
   }
+  if (w < 0) throw RangeError('w MUST be >= 0')
   /* eslint-disable no-lone-blocks */
   { // browser
     return new Promise((resolve, reject) => {
@@ -256,11 +264,14 @@ function isProbablyPrime (w, iterations = 16) {
  * @param {number} bitLength The required bit length for the generated prime
  * @param {number} [iterations = 16] The number of iterations for the Miller-Rabin Probabilistic Primality Test
  *
+ * @throws {RangeError} bitLength MUST be > 0
+ *
  * @returns {Promise<bigint>} A promise that resolves to a bigint probable prime of bitLength bits.
  */
 function prime (bitLength, iterations = 16) {
-  if (bitLength < 1) { throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`) }
+  if (bitLength < 1) throw new RangeError('bitLength MUST be > 0')
 
+  /* istanbul ignore if */
   if (!_useWorkers) { // If there is no support for workers
     let rnd = 0n;
     do {
@@ -305,12 +316,13 @@ function prime (bitLength, iterations = 16) {
     }
     /* eslint-enable no-lone-blocks */
     for (let i = 0; i < workerList.length; i++) {
-      const buf = randBitsSync(bitLength, true);
-      const rnd = fromBuffer(buf);
-      workerList[i].postMessage({
-        rnd: rnd,
-        iterations: iterations,
-        id: i
+      randBits(bitLength, true).then(function (buf) {
+        const rnd = fromBuffer(buf);
+        workerList[i].postMessage({
+          rnd: rnd,
+          iterations: iterations,
+          id: i
+        });
       });
     }
   })
@@ -323,10 +335,12 @@ function prime (bitLength, iterations = 16) {
  * @param {number} bitLength The required bit length for the generated prime
  * @param {number} [iterations = 16] The number of iterations for the Miller-Rabin Probabilistic Primality Test
  *
+ * @throws {RangeError} bitLength MUST be > 0
+ *
  * @returns {bigint} A bigint probable prime of bitLength bits.
  */
 function primeSync (bitLength, iterations = 16) {
-  if (bitLength < 1) throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`)
+  if (bitLength < 1) throw new RangeError('bitLength MUST be > 0')
   let rnd = 0n;
   do {
     rnd = fromBuffer(randBitsSync(bitLength, true));
@@ -335,14 +349,16 @@ function primeSync (bitLength, iterations = 16) {
 }
 
 /**
- * Returns a cryptographically secure random integer between [min,max]
+ * Returns a cryptographically secure random integer between [min,max]. Both numbers must be >=0
  * @param {bigint} max Returned value will be <= max
  * @param {bigint} [min = BigInt(1)] Returned value will be >= min
+ *
+ * @throws {RangeError} Arguments MUST be: max > 0 && min >=0 && max > min
  *
  * @returns {bigint} A cryptographically secure random bigint between [min,max]
  */
 function randBetween (max, min = 1n) {
-  if (max <= min) throw new Error('max must be > min')
+  if (max <= 0n || min < 0n || max <= min) throw new RangeError('Arguments MUST be: max > 0 && min >=0 && max > min')
   const interval = max - min;
   const bitLen = bitLength(interval);
   let rnd;
@@ -356,45 +372,45 @@ function randBetween (max, min = 1n) {
 /**
  * Secure random bits for both node and browsers. Node version uses crypto.randomFill() and browser one self.crypto.getRandomValues()
  *
- * Since version 3.0.0 this is an async function and a new randBitsSync function has been added. If you are migrating from version 2 call randBitsSync instead.
- * @since 3.0.0
  * @param {number} bitLength The desired number of random bits
  * @param {boolean} [forceLength = false] If we want to force the output to have a specific bit length. It basically forces the msb to be 1
  *
+ * @throws {RangeError} bitLength MUST be > 0
+ *
  * @returns {Promise<Buffer | Uint8Array>} A Promise that resolves to a Buffer/UInt8Array (Node.js/Browser) filled with cryptographically secure random bits
  */
-async function randBits (bitLength, forceLength = false) {
-  if (bitLength < 1) {
-    throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`)
-  }
+function randBits (bitLength, forceLength = false) {
+  if (bitLength < 1) throw new RangeError('bitLength MUST be > 0')
 
   const byteLength = Math.ceil(bitLength / 8);
   const bitLengthMod8 = bitLength % 8;
 
-  const rndBytes = await randBytes(byteLength, false);
-  if (bitLengthMod8) {
-    // Fill with 0's the extra bits
-    rndBytes[0] = rndBytes[0] & (2 ** bitLengthMod8 - 1);
-  }
-  if (forceLength) {
-    const mask = bitLengthMod8 ? 2 ** (bitLengthMod8 - 1) : 128;
-    rndBytes[0] = rndBytes[0] | mask;
-  }
-  return rndBytes
+  return new Promise((resolve) => {
+    randBytes(byteLength, false).then(function (rndBytes) {
+      if (bitLengthMod8) {
+        // Fill with 0's the extra bits
+        rndBytes[0] = rndBytes[0] & (2 ** bitLengthMod8 - 1);
+      }
+      if (forceLength) {
+        const mask = bitLengthMod8 ? 2 ** (bitLengthMod8 - 1) : 128;
+        rndBytes[0] = rndBytes[0] | mask;
+      }
+      resolve(rndBytes);
+    });
+  })
 }
 
 /**
  * Secure random bits for both node and browsers. Node version uses crypto.randomFill() and browser one self.crypto.getRandomValues()
- * @since 3.0.0
  * @param {number} bitLength The desired number of random bits
  * @param {boolean} [forceLength = false] If we want to force the output to have a specific bit length. It basically forces the msb to be 1
+ *
+ * @throws {RangeError} bitLength MUST be > 0
  *
  * @returns {Buffer | Uint8Array} A Buffer/UInt8Array (Node.js/Browser) filled with cryptographically secure random bits
  */
 function randBitsSync (bitLength, forceLength = false) {
-  if (bitLength < 1) {
-    throw new RangeError(`bitLength MUST be > 0 and it is ${bitLength}`)
-  }
+  if (bitLength < 1) throw new RangeError('bitLength MUST be > 0')
 
   const byteLength = Math.ceil(bitLength / 8);
   const rndBytes = randBytesSync(byteLength, false);
@@ -411,27 +427,29 @@ function randBitsSync (bitLength, forceLength = false) {
 }
 
 /**
- * Secure random bytes for both node and browsers. Node version uses crypto.randomFill() and browser one self.crypto.getRandomValues()
+ * Secure random bytes for both node and browsers. Node version uses crypto.randomBytes() and browser one self.crypto.getRandomValues()
  *
  * @param {number} byteLength The desired number of random bytes
  * @param {boolean} [forceLength = false] If we want to force the output to have a bit length of 8*byteLength. It basically forces the msb to be 1
  *
+ * @throws {RangeError} byteLength MUST be > 0
+ *
  * @returns {Promise<Buffer | Uint8Array>} A promise that resolves to a Buffer/UInt8Array (Node.js/Browser) filled with cryptographically secure random bytes
  */
 function randBytes (byteLength, forceLength = false) {
-  if (byteLength < 1) { throw new RangeError(`byteLength MUST be > 0 and it is ${byteLength}`) }
+  if (byteLength < 1) throw new RangeError('byteLength MUST be > 0')
 
-  /* eslint-disable no-lone-blocks */
-  { // browser
-    return new Promise(function (resolve) {
+  return new Promise(function (resolve, reject) {
+    /* eslint-disable no-lone-blocks */
+    { // browser
       const buf = new Uint8Array(byteLength);
-      crypto.getRandomValues(buf);
+      self.crypto.getRandomValues(buf);
       // If fixed length is required we put the first bit to 1 -> to get the necessary bitLength
       if (forceLength) buf[0] = buf[0] | 128;
       resolve(buf);
-    })
-  }
-  /* eslint-enable no-lone-blocks */
+    }
+    /* eslint-enable no-lone-blocks */
+  })
 }
 
 /**
@@ -440,17 +458,19 @@ function randBytes (byteLength, forceLength = false) {
  * @param {number} byteLength The desired number of random bytes
  * @param {boolean} [forceLength = false] If we want to force the output to have a bit length of 8*byteLength. It basically forces the msb to be 1
  *
+ * @throws {RangeError} byteLength MUST be > 0
+ *
  * @returns {Buffer | Uint8Array} A Buffer/UInt8Array (Node.js/Browser) filled with cryptographically secure random bytes
  */
 function randBytesSync (byteLength, forceLength = false) {
-  if (byteLength < 1) { throw new RangeError(`byteLength MUST be > 0 and it is ${byteLength}`) }
+  if (byteLength < 1) throw new RangeError('byteLength MUST be > 0')
 
   /* eslint-disable no-lone-blocks */
   { // browser
     const buf = new Uint8Array(byteLength);
-    crypto.getRandomValues(buf);
+    self.crypto.getRandomValues(buf);
     // If fixed length is required we put the first bit to 1 -> to get the necessary bitLength
-    if (forceLength) { buf[0] = buf[0] | 128; }
+    if (forceLength) buf[0] = buf[0] | 128;
     return buf
   }
   /* eslint-enable no-lone-blocks */
