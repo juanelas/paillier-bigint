@@ -2,86 +2,76 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 {{GITHUB_ACTIONS_BADGES}}
 
-# Skeleton for developing modules for browser and Node.js in Typescript
-
-> This entire section with all its subsections (Installation, Tooling, Scripts) should be removed from your `src/docs/index.md` after installing. The rest of sections may be useful for your package readme, and you may just modified them in `src/docs/index.md` to meet your needs.
-
-This is a skeleton for developing JS modules in Typescript that work both in Node.js and native Javascript. The idea is that you should just focus on developing your typescript code in the `src/ts` folder, and the necessary JS files and bundles will be created so that it can be used with no effort in every environment.
-
-You can use string variable `IS_BROWSER` to create specific code for native JS or Node. For example:
-
-```typescript
-if (IS_BROWSER === 'true') {
-  // browser specific code here
-} else {
-  // node.js specific code here
-}
-```
-
-Besides the actual code, you should create unit testing (mocha+chai) files either in the `test` or the `src/ts` directory, although in the latter case only files ending with `.spec.ts` will be considered as test files.
-
-When creating the tests, you MUST NOT import either `mocha`, `chai` or your package. They have been automatically added to the global scope:
-
-- `mocha` global variable points to mocha,
-- `chai` points to chai,
-- `_pkg` points to your package (all your exports),
-- `_pkgTypes` points to your package typings.
-
-## Installation
-
-Clone this repo to your desired project directory (`my-project` in the following example) and reset the git.
-
-```console
-git clone https://github.com/juanelas/node-browser-skel.git my-project
-cd my-project
-rm -rf .git
-git init
-git add -A
-```
-
-Edit `package.json` to suit your needs and initialize the project with:
-
-```console
-npm i
-npm update
-npm run build
-```
-
-The `README.md` file is automatically generated from the `src/docs/index.md` file. EDIT `src/docs/index.md` and rewrite it to your heart's content. Recall removing the section "Skeleton for developing modules for browser and Node.js in Typescript" with all its subsections (Installation, Tooling, Scripts).
-
-## Tooling
-
-- Build: [Rollup](https://rollupjs.org) is used for generating UMD, IIFE, ESM and CJS modules with the corresponding Typescript declaration files and sourcemaps in the `dist` directory.
-- Coverage: [Nyc-Istanbul](https://github.com/istanbuljs/nyc) is used to track how well your unit-tests exercise your codebase.
-- Doc: [TsCode](https://tsdoc.org/) is used for automatically generating the [API docs](./docs/API.md). Consider documenting your code with TsCode for it to be useful.
-- Lint: [ts-stamdard](https://github.com/standard/ts-standard) is the chosen linter, although you can easily change it by any other linter (update `scripts.lint` in the `package.json`). If developing with [Visual Studio Code](https://code.visualstudio.com/), consider installing the [Standard-JS extension](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) and select `ts-standard` as the `Standard:engine` in the extension settings.
-- Test: [Mocha](https://mochajs.org/) with [Chai](https://www.chaijs.com/) running both in Node.js and browser (using [puppeteer](https://pptr.dev/)). Test files should be created assuming that Mocha methods and Chai are declared global, so there is no need to import them (see the provided test examples). There is also no need to create separate test files for browser and Node.js, since every file will be tested against both. Test files are transpiled using [tsc CLI](https://www.typescriptlang.org/docs/handbook/compiler-options.html).
-
-## Scripts
-
-- `npm run build`. Runs the linter (`lint`), builds the JS files (`build:js`), builds the `README.md` and the API doc `./docs/API.md` (`docs`), runs the unit tests in browser (`test:browser`), and creates a coverage report of the tests run in Node.js (`coverage`). See the specific scripts for more details.
-- `npm run build:js`. Creates your distributable module files (UMD, IIFE, ESM and CJS), along with the sourcemap and typescript declaration files in the `dist` directory.
-- `npm run clean`. Cleans all the artifacts created by the rest of the script (most likely not needed).
-- `npm run coverage`. Runs all the unit tests (`src/**/*.spec.ts` and `test/**/*.ts`) in Node.js and track how well they exercise your codebase. Besides the on-screen summary, a complete report in HTML will be generated in the `coverage` directory.
-- `npm run docs`. Generates the `README.md` and the API doc `./docs/API.md`. Some labels in the `src/README.md` file will be automatically replaced in the generated `README.md`:
-
-  - &#123;&#123;PKG_NAME&#125;&#125; is automatically replaced with property `name` in `package.json` file.
-  - &#123;&#123;PKG_CAMELCASE&#125;&#125; will be replaced by a came case transformation of the package_name.
-  - &#123;&#123;IIFE_BUNDLE&#125;&#125; will point to the IIFE bundle file if using github or gitlab as repository.
-  - &#123;&#123;ESM_BUNDLE&#125;&#125; will point to the ESM bundle file if using github or gitlab as repository.
-  - &#123;&#123;UMD_BUNDLE&#125;&#125; will point to the UMD bundle file if using github or gitlab as repository.
-  - It has also some automatically added badges (see the top of this file), that you can remove if desired.
-
-- `npm run lint`. Uses the `ts-standard` linter to fix all the project files. If unconfortable, change the linter for the one of your liking.
-- `npm run mocha -- <glob>`. Runs Node.js mocha for the selected tests (use glob pattern). Add `--watch` before the glob to start mocha in watch mode.
-- `npm test`. Runs all the unit tests (`src/**/*.spec.ts` and `test/**/*.ts`) in both Node.js and browser (using puppeteer).
-- `npm run test:browser`. Runs all the unit tests (`src/**/*.spec.ts` and `test/**/*.ts`) in a browser (using pupppeteer).
-- `npm run test:node`. Runs all the unit tests (`src/**/*.spec.ts` and `test/**/*.ts`) in Node.js.
-- `npm run watch`. Likely to be the default script during development. Tests are automatically reexecuted whenever a test or source file changes.
-
 # {{PKG_NAME}}
 
-Your package description
+An implementation of the Paillier cryptosystem relying on the native JS implementation of BigInt. 
+
+It can be used by any [Web Browser or webview supporting BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#Browser_compatibility) and with Node.js (>=10.4.0). In the latter case, for multi-threaded primality tests, you should use Node.js v11 or newer or enable at runtime with `node --experimental-worker` with Node.js version >= 10.5.0 and < 11.
+
+_The operations supported on BigInts are not constant time. BigInt can be therefore **[unsuitable for use in cryptography](https://www.chosenplaintext.ca/articles/beginners-guide-constant-time-cryptography.html).** Many platforms provide native support for cryptography, such as [Web Cryptography API](https://w3c.github.io/webcrypto/) or [Node.js Crypto](https://nodejs.org/dist/latest/docs/api/crypto.html)._
+
+The Paillier cryptosystem, named after and invented by Pascal Paillier in 1999, is a probabilistic asymmetric algorithm for public key cryptography. A notable feature of the Paillier cryptosystem is its homomorphic properties.
+
+## Homomorphic properties
+
+### Homomorphic addition of plaintexts
+
+The product of two ciphertexts will decrypt to the sum of their corresponding plaintexts,
+
+**D( E(m<sub>1</sub>) · E(m<sub>2</sub>) ) mod n<sup>2</sup> = m<sub>1</sub> + m<sub>2</sub> mod n**
+
+The product of a ciphertext with a plaintext raising g will decrypt to the sum of the corresponding plaintexts,
+
+**D( E(m<sub>1</sub>) · g<sup>m<sub>2</sub></sup> ) mod n<sup>2</sup> = m<sub>1</sub> + m<sub>2</sub> mod n**
+
+### (pseudo-)homomorphic multiplication of plaintexts
+
+An encrypted plaintext raised to the power of another plaintext will decrypt to the product of the two plaintexts,
+
+**D( E(m<sub>1</sub>)<sup>m<sub>2</sub></sup> mod n<sup>2</sup> ) = m<sub>1</sub> · m<sub>2</sub> mod n**,
+
+**D( E(m<sub>2</sub>)<sup>m<sub>1</sub></sup> mod n<sup>2</sup> ) = m<sub>1</sub> · m<sub>2</sub> mod n**.
+
+More generally, an encrypted plaintext raised to a constant k will decrypt to the product of the plaintext and the
+constant,
+
+**D( E(m<sub>1</sub>)<sup>k</sup> mod n<sup>2</sup> ) = k · m<sub>1</sub> mod n**.
+
+However, given the Paillier encryptions of two messages there is no known way to compute an encryption of the product of
+these messages without knowing the private key.
+
+## Key generation
+
+1. Define the bit length of the modulus `n`, or `keyLength` in bits.
+2. Choose two large prime numbers `p` and `q` randomly and independently of each other such that `gcd( p·q, (p-1)(q-1) )=1` and `n=p·q` has a key length of keyLength. For instance:
+   1. Generate a random prime `p` with a bit length of `keyLength/2 + 1`.
+   2. Generate a random prime `q` with a bit length of `keyLength/2`.
+   3. Repeat until the bitlength of `n=p·q` is `keyLength`.
+3. Compute parameters `λ`, `g` and `μ`. Among other ways, it can be done as follows:
+   1. Standard approach:
+      1. Compute `λ = lcm(p-1, q-1)` with `lcm(a, b) = a·b / gcd(a, b)`.
+      2. Generate randoms `α` and `β` in `Z*` of `n`, and select generator `g` in `Z*` of `n**2` as `g = ( α·n + 1 ) β**n mod n**2`.
+      3. Compute `μ = ( L( g^λ mod n**2 ) )**(-1) mod n` where `L(x)=(x-1)/n`.
+   2. If using p,q of equivalent length, a simpler variant would be:
+      1. `λ = (p-1, q-1)`
+      2. `g = n+1`
+      3. `μ = λ**(-1) mod n`
+   
+The **public** (encryption) **key** is **(n, g)**.
+
+The **private** (decryption) **key** is **(λ, μ)**. 
+  
+## Encryption
+Let `m` in `[0, n)` be the clear-text message,
+
+1. Select random integer `r` in `Z*` of `n`.
+
+2. Compute ciphertext as: **`c = g**m · r**n mod n**2`**
+
+## Decryption
+Let `c` be the ciphertext to decrypt, where `c` in `(0, n**2)`.
+
+1. Compute the plaintext message as: **`m = L( c**λ mod n**2 ) · μ mod n`**
 
 ## Usage
 
@@ -109,9 +99,36 @@ You can also download the {{IIFE_BUNDLE}}, the {{ESM_BUNDLE}} or the {{UMD_BUNDL
 
 An example of usage could be:
 
-```typescript
-YOUR TYPESCRIPT EXAMPLE CODE HERE
+```javascript
+async function paillierTest () {
+  // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
+  const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(3072)
+
+  // Optionally, you can create your public/private keys from known parameters
+  // const publicKey = new paillierBigint.PublicKey(n, g)
+  // const privateKey = new paillierBigint.PrivateKey(lambda, mu, publicKey)
+
+  const m1 = 12345678901234567890n
+  const m2 = 5n
+
+  // encryption/decryption
+  const c1 = publicKey.encrypt(m1)
+  console.log(privateKey.decrypt(c1)) // 12345678901234567890n
+
+  // homomorphic addition of two ciphertexts (encrypted numbers)
+  const c2 = publicKey.encrypt(m2)
+  const encryptedSum = publicKey.addition(c1, c2)
+  console.log(privateKey.decrypt(encryptedSum)) // m1 + m2 = 12345678901234567895n
+
+  // multiplication by k
+  const k = 10n
+  const encryptedMul = publicKey.multiply(c1, k)
+  console.log(privateKey.decrypt(encryptedMul)) // k · m1 = 123456789012345678900n
+}
+paillierTest()
 ```
+
+> Consider using [bigint-conversion](https://github.com/juanelas/bigint-conversion) if you need to convert from/to bigint to/from unicode text, hex, buffer.
 
 ## API reference documentation
 
