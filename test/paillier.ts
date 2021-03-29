@@ -8,8 +8,9 @@ for (const bitLength of bitLengths) {
     const tests = 16
     const numbers: Array<bigint> = []
     const ciphertexts: Array<bigint> = []
+    const bitLengthText = (bitLength !== undefined) ? String(bitLength) : ''
 
-    describe(`generateRandomKeys(${bitLength ?? ''})`, function () {
+    describe(`generateRandomKeys(${bitLengthText})`, function () {
       it(`should return a publicKey and a privateKey with public modulus of ${bitLength ?? '3072'} bits`, async function () {
         keyPair = await _pkg.generateRandomKeys(bitLength)
         chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
