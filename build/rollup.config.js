@@ -66,7 +66,8 @@ module.exports = [
     input: input,
     output: {
       file: path.join(rootDir, pkgJson.main),
-      format: 'cjs'
+      format: 'cjs',
+      interop: false
     },
     plugins: [
       replace({
