@@ -23,7 +23,7 @@ async function typedoc () {
 
   app.bootstrap({
     // typedoc options here
-    entryPoints: ['src/index.ts'],
+    entryPoints: ['src/ts/index.ts'],
     plugin: ['typedoc-plugin-markdown'],
     includeVersion: true,
     entryDocument: 'API.md',
