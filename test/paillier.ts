@@ -2,20 +2,20 @@ import * as bcu from 'bigint-crypto-utils'
 
 const bitLengths = [511, 1024, undefined]
 for (const bitLength of bitLengths) {
-  describe(`Testing Paillier with keys of ${bitLength ?? '3072'} bits`, function () {
+  const bitLengthText = (bitLength !== undefined) ? String(bitLength) : ''
+  describe(`Testing Paillier with keys of ${bitLengthText} bits`, function () {
     this.timeout(200000)
     let keyPair: _pkgTypes.KeyPair
     const tests = 16
     const numbers: Array<bigint> = []
     const ciphertexts: Array<bigint> = []
-    const bitLengthText = (bitLength !== undefined) ? String(bitLength) : ''
 
     describe(`generateRandomKeys(${bitLengthText})`, function () {
-      it(`should return a publicKey and a privateKey with public modulus of ${bitLength ?? '3072'} bits`, async function () {
+      it(`should return a publicKey and a privateKey with public modulus of ${bitLengthText} bits`, async function () {
         keyPair = await _pkg.generateRandomKeys(bitLength)
         chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
         chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength ?? 3072)
+        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength || 3072) // eslint-disable-line
         if (bitLength !== undefined) {
           keyPair = await _pkg.generateRandomKeys(bitLength, true)
           chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
@@ -29,7 +29,7 @@ for (const bitLength of bitLengths) {
       it('should create a privateKey from known parameters', function () {
         const privateKey = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey)
         chai.expect(privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(privateKey.bitLength).to.equal(bitLength ?? 3072)
+        chai.expect(privateKey.bitLength).to.equal(bitLengthText)
         chai.expect(privateKey.n).to.equal(keyPair.publicKey.n)
       })
     })
