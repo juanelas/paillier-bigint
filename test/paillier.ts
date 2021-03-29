@@ -1,23 +1,23 @@
 import * as bcu from 'bigint-crypto-utils'
 
 const bitLengths = [511, 1024, undefined]
-for (const bitLength of bitLengths) {
-  const bitLengthText = (bitLength !== undefined) ? String(bitLength) : ''
-  describe(`Testing Paillier with keys of ${bitLengthText} bits`, function () {
+for (const _bitLength of bitLengths) {
+  const bitLength = (_bitLength !== undefined) ? _bitLength : 3072
+  describe(`Testing Paillier with keys of ${bitLength} bits`, function () {
     this.timeout(200000)
     let keyPair: _pkgTypes.KeyPair
     const tests = 16
     const numbers: Array<bigint> = []
     const ciphertexts: Array<bigint> = []
 
-    describe(`generateRandomKeys(${bitLengthText})`, function () {
-      it(`should return a publicKey and a privateKey with public modulus of ${bitLengthText} bits`, async function () {
-        keyPair = await _pkg.generateRandomKeys(bitLength)
+    describe(`generateRandomKeys(${bitLength})`, function () {
+      it(`should return a publicKey and a privateKey with public modulus of ${bitLength} bits`, async function () {
+        keyPair = await _pkg.generateRandomKeys(_bitLength)
         chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
         chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength || 3072) // eslint-disable-line
-        if (bitLength !== undefined) {
-          keyPair = await _pkg.generateRandomKeys(bitLength, true)
+        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength)
+        if (_bitLength !== undefined) {
+          keyPair = await _pkg.generateRandomKeys(_bitLength, true)
           chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
           chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
           chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength)
@@ -29,7 +29,7 @@ for (const bitLength of bitLengths) {
       it('should create a privateKey from known parameters', function () {
         const privateKey = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey)
         chai.expect(privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(privateKey.bitLength).to.equal(bitLengthText)
+        chai.expect(privateKey.bitLength).to.equal(bitLength)
         chai.expect(privateKey.n).to.equal(keyPair.publicKey.n)
       })
     })
