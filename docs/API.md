@@ -1,6 +1,6 @@
-paillier-bigint - v3.2.2
+paillier-bigint - v3.2.3
 
-# paillier-bigint - v3.2.2
+# paillier-bigint - v3.2.3
 
 ## Table of contents
 
@@ -37,7 +37,7 @@ Name | Type | Default value | Description |
 
 A promise that resolves to a [KeyPair](interfaces/keypair.md) of public, private keys
 
-Defined in: [generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/generateRandomKeys.ts#L18)
+Defined in: [generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/generateRandomKeys.ts#L18)
 
 ___
 
@@ -59,4 +59,4 @@ Name | Type | Default value | Description |
 
 A pair of public, private keys
 
-Defined in: [generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/generateRandomKeys.ts#L55)
+Defined in: [generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/generateRandomKeys.ts#L55)

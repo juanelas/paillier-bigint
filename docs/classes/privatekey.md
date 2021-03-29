@@ -1,4 +1,4 @@
-[paillier-bigint - v3.2.2](../API.md) / PrivateKey
+[paillier-bigint - v3.2.3](../API.md) / PrivateKey
 
 # Class: PrivateKey
 
@@ -48,7 +48,7 @@ Name | Type | Description |
 
 **Returns:** [*PrivateKey*](privatekey.md)
 
-Defined in: [PrivateKey.ts:12](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L12)
+Defined in: [PrivateKey.ts:12](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L12)
 
 ## Properties
 
@@ -56,7 +56,7 @@ Defined in: [PrivateKey.ts:12](https://github.com/juanelas/paillier-bigint/blob/
 
 • `Private` `Optional` `Readonly` **\_p**: *bigint*
 
-Defined in: [PrivateKey.ts:11](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L11)
+Defined in: [PrivateKey.ts:11](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L11)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 • `Private` `Optional` `Readonly` **\_q**: *bigint*
 
-Defined in: [PrivateKey.ts:12](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L12)
+Defined in: [PrivateKey.ts:12](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L12)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 • `Readonly` **lambda**: *bigint*
 
-Defined in: [PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L8)
+Defined in: [PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L8)
 
 ___
 
@@ -80,7 +80,7 @@ ___
 
 • `Readonly` **mu**: *bigint*
 
-Defined in: [PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L9)
+Defined in: [PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L9)
 
 ___
 
@@ -88,7 +88,7 @@ ___
 
 • `Readonly` **publicKey**: [*PublicKey*](publickey.md)
 
-Defined in: [PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L10)
+Defined in: [PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L10)
 
 ## Accessors
 
@@ -102,7 +102,7 @@ Get the bit length of the public modulo
 
 The bit length of the public modulo
 
-Defined in: [PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L35)
+Defined in: [PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L35)
 
 ___
 
@@ -116,7 +116,7 @@ Get the public modulo n=p·q
 
 The public modulo n=p·q
 
-Defined in: [PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L43)
+Defined in: [PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L43)
 
 ## Methods
 
@@ -136,7 +136,7 @@ Name | Type | Description |
 
 The decryption of c with this private key
 
-Defined in: [PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L54)
+Defined in: [PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L54)
 
 ___
 
@@ -165,4 +165,4 @@ Name | Type | Description |
 
 The random factor (mod n)
 
-Defined in: [PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/PrivateKey.ts#L75)
+Defined in: [PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/PrivateKey.ts#L75)

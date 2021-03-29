@@ -1,4 +1,4 @@
-[paillier-bigint - v3.2.2](../API.md) / KeyPair
+[paillier-bigint - v3.2.3](../API.md) / KeyPair
 
 # Interface: KeyPair
 
@@ -15,7 +15,7 @@
 
 • **privateKey**: [*PrivateKey*](../classes/privatekey.md)
 
-Defined in: [generateRandomKeys.ts:7](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/generateRandomKeys.ts#L7)
+Defined in: [generateRandomKeys.ts:7](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/generateRandomKeys.ts#L7)
 
 ___
 
@@ -23,4 +23,4 @@ ___
 
 • **publicKey**: [*PublicKey*](../classes/publickey.md)
 
-Defined in: [generateRandomKeys.ts:6](https://github.com/juanelas/paillier-bigint/blob/b36905d/src/ts/generateRandomKeys.ts#L6)
+Defined in: [generateRandomKeys.ts:6](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/generateRandomKeys.ts#L6)
