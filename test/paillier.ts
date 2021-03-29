@@ -1,29 +1,21 @@
-'use strict'
+import * as bcu from 'bigint-crypto-utils'
 
-// Every test file (you can create as many as you want) should start like this
-// Please, do NOT touch. They will be automatically removed for browser tests -->
-const _pkg = require('../lib/index.node')
-const chai = require('chai')
-// <--
-
-const bcu = require('bigint-crypto-utils')
-
-const bitLengths = [511, 1024, null]
+const bitLengths = [511, 1024, undefined]
 for (const bitLength of bitLengths) {
-  describe(`Testing Paillier with keys of ${bitLength || '3072'} bits`, function () {
+  describe(`Testing Paillier with keys of ${bitLength ?? '3072'} bits`, function () {
     this.timeout(200000)
-    let keyPair
+    let keyPair: _pkgTypes.KeyPair
     const tests = 16
-    const numbers = []
-    const ciphertexts = []
+    const numbers: Array<bigint> = []
+    const ciphertexts: Array<bigint> = []
 
-    describe(`generateRandomKeys(${bitLength || ''})`, function () {
-      it(`should return a publicKey and a privateKey with public modulus of ${bitLength || '3072'} bits`, async function () {
-        keyPair = bitLength ? await _pkg.generateRandomKeys(bitLength) : await _pkg.generateRandomKeys()
+    describe(`generateRandomKeys(${bitLength ?? ''})`, function () {
+      it(`should return a publicKey and a privateKey with public modulus of ${bitLength ?? '3072'} bits`, async function () {
+        keyPair = await _pkg.generateRandomKeys(bitLength)
         chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
         chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength || 3072)
-        if (bitLength) {
+        chai.expect(keyPair.publicKey.bitLength).to.equal(bitLength ?? 3072)
+        if (bitLength !== undefined) {
           keyPair = await _pkg.generateRandomKeys(bitLength, true)
           chai.expect(keyPair.publicKey).to.be.an.instanceOf(_pkg.PublicKey)
           chai.expect(keyPair.privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
@@ -36,7 +28,7 @@ for (const bitLength of bitLengths) {
       it('should create a privateKey from known parameters', function () {
         const privateKey = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey)
         chai.expect(privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(privateKey.bitLength).to.equal(bitLength || 3072)
+        chai.expect(privateKey.bitLength).to.equal(bitLength ?? 3072)
         chai.expect(privateKey.n).to.equal(keyPair.publicKey.n)
       })
     })
@@ -122,6 +114,16 @@ describe('recover encryption random factor from cryptogram', function () {
       const r = bcu.randBetween(keyPair.publicKey.n)
       const c = keyPair.publicKey.encrypt(m, r)
       chai.expect(() => keyPair.privateKey.getRandomFactor(c)).to.throw(RangeError)
+    })
+  })
+  describe('If no p or q in the private key', function () {
+    it('should throw Error', async function () {
+      const keyPair = await _pkg.generateRandomKeys(512, true)
+      const privKey = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey)
+      const m = bcu.randBetween(keyPair.publicKey.n)
+      const r = bcu.randBetween(keyPair.publicKey.n)
+      const c = keyPair.publicKey.encrypt(m, r)
+      chai.expect(() => privKey.getRandomFactor(c)).to.throw(Error)
     })
   })
 })

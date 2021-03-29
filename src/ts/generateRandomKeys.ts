@@ -2,24 +2,20 @@ import * as bcu from 'bigint-crypto-utils'
 import PublicKey from './PublicKey'
 import PrivateKey, { L } from './PrivateKey'
 
-export { default as PublicKey } from './PublicKey'
-export { default as PrivateKey } from './PrivateKey'
-
-/**
- * @typedef {Object} KeyPair
- * @property {PublicKey} publicKey - a Paillier's public key
- * @property {PrivateKey} privateKey - the associated Paillier's private key
- */
+export interface KeyPair {
+  publicKey: PublicKey
+  privateKey: PrivateKey
+}
 
 /**
  * Generates a pair private, public key for the Paillier cryptosystem.
  *
- * @param {number} [bitlength = 3072] - the bit length of the public modulo
- * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key
+ * @param bitlength - The bit length of the public modulo
+ * @param simplevariant - Use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key
  *
- * @returns {Promise<KeyPair>} - a promise that resolves to a {@link KeyPair} of public, private keys
+ * @returns A promise that resolves to a {@link KeyPair} of public, private keys
  */
-export async function generateRandomKeys (bitlength = 3072, simpleVariant = false) {
+export async function generateRandomKeys (bitlength: number = 3072, simpleVariant: boolean = false): Promise<KeyPair> {
   let p, q, n, g, lambda, mu
   // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength)
   do {
@@ -28,7 +24,7 @@ export async function generateRandomKeys (bitlength = 3072, simpleVariant = fals
     n = p * q
   } while (q === p || bcu.bitLength(n) !== bitlength)
 
-  if (simpleVariant === true) {
+  if (simpleVariant) {
     // If using p,q of equivalent length, a simpler variant of the key
     // generation steps would be to set
     // g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n)
@@ -51,12 +47,12 @@ export async function generateRandomKeys (bitlength = 3072, simpleVariant = fals
  * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
  * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
  *
- * @param {number} [bitlength = 3072] - the bit length of the public modulo
- * @param {boolean} [simplevariant = false] - use the simple variant to compute the generator (g=n+1)
+ * @param bitlength - The bit length of the public modulo
+ * @param simplevariant - Use the simple variant to compute the generator (g=n+1)
  *
- * @returns {KeyPair} - a {@link KeyPair} of public, private keys
+ * @returns A pair of public, private keys
  */
-export function generateRandomKeysSync (bitlength = 3072, simpleVariant = false) {
+export function generateRandomKeysSync (bitlength: number = 3072, simpleVariant: boolean = false): KeyPair {
   let p, q, n, g, lambda, mu
   // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength)
   do {
@@ -65,7 +61,7 @@ export function generateRandomKeysSync (bitlength = 3072, simpleVariant = false)
     n = p * q
   } while (q === p || bcu.bitLength(n) !== bitlength)
 
-  if (simpleVariant === true) {
+  if (simpleVariant) {
     // If using p,q of equivalent length, a simpler variant of the key
     // generation steps would be to set
     // g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n)
@@ -84,7 +80,7 @@ export function generateRandomKeysSync (bitlength = 3072, simpleVariant = false)
   return { publicKey, privateKey }
 }
 
-function getGenerator (n, n2) { // n2 = n*n
+function getGenerator (n: bigint, n2: bigint): bigint { // n2 = n*n
   const alpha = bcu.randBetween(n)
   const beta = bcu.randBetween(n)
   return ((alpha * n + 1n) * bcu.modPow(beta, n, n2)) % n2

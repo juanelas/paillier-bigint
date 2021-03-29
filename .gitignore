@@ -4,17 +4,14 @@ logs
 npm-debug.log*
 
 # Dependency directories
-node_modules/
+node_modules
 
 # Output of 'npm pack'
 *.tgz
 
-# Visual Studio Code
-.vscode
-
-# IntelliJ
-.idea
-
 # MYC output
 .nyc_output
-coverage/*
+coverage
+
+# Test temporal files
+.mocha-ts

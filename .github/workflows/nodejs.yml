@@ -11,11 +11,11 @@ on:
 
 jobs:
   build:
-    name: build, test, check coverage
+    name: build and node tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [11, 12, 13]
+        node-version: [10, 12, 14]
     steps:
       - uses: actions/checkout@v2
 
@@ -26,14 +26,23 @@ jobs:
 
       - name: install
         run: npm ci
-
+      
+      - name: lint
+        run: npm run lint
+      
       - name: build
-        run: npm run build
+        run: npm run build:js
+      
+      - name: docs
+        run: npm run docs
+      
+      # - name: browser tests
+      #   run: npm run test:browser
+      
+      - name: node tests
+        run: npm run test:node
 
-      - name: test
-        run: npm test
-
-  publication:
+  new-version:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -49,22 +58,30 @@ jobs:
       - uses: actions/setup-node@v1
         if: steps.check.outputs.changed == 'true'
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://registry.npmjs.org/
       
       - name: install
         if: steps.check.outputs.changed == 'true'
         run: npm ci
       
+      - name: lint
+        if: steps.check.outputs.changed == 'true'
+        run: npm run lint
+      
       - name: build
         if: steps.check.outputs.changed == 'true'
-        run: npm run build
+        run: npm run build:js
       
-      - name: test
+      - name: docs
         if: steps.check.outputs.changed == 'true'
-        run: npm test
+        run: npm run docs
       
-      - name: create code coverage report
+      - name: browser tests
+        if: steps.check.outputs.changed == 'true'
+        run: npm run test:browser
+      
+      - name: node tests and coverage
         if: steps.check.outputs.changed == 'true'
         run: npm run coverage
       

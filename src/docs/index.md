@@ -1,7 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-[![Node CI](https://github.com/juanelas/paillier-bigint/workflows/Node%20CI/badge.svg)](https://github.com/juanelas/paillier-bigint/actions?query=workflow%3A%22Node+CI%22)
-[![Coverage Status](https://coveralls.io/repos/github/juanelas/paillier-bigint/badge.svg?branch=master)](https://coveralls.io/github/juanelas/paillier-bigint?branch=master)
+{{GITHUB_ACTIONS_BADGES}}
 
 # Skeleton for developing modules for browser and Node.js in Typescript
 
@@ -80,33 +79,33 @@ The `README.md` file is automatically generated from the `src/docs/index.md` fil
 - `npm run test:node`. Runs all the unit tests (`src/**/*.spec.ts` and `test/**/*.ts`) in Node.js.
 - `npm run watch`. Likely to be the default script during development. Tests are automatically reexecuted whenever a test or source file changes.
 
-# paillier-bigint
+# {{PKG_NAME}}
 
 Your package description
 
 ## Usage
 
-`paillier-bigint` can be imported to your project with `npm`:
+`{{PKG_NAME}}` can be imported to your project with `npm`:
 
 ```console
-npm install paillier-bigint
+npm install {{PKG_NAME}}
 ```
 
 Then either require (Node.js CJS):
 
 ```javascript
-const paillierBigint = require('paillier-bigint')
+const {{PKG_CAMELCASE}} = require('{{PKG_NAME}}')
 ```
 
 or import (JavaScript ES module):
 
 ```javascript
-import * as paillierBigint from 'paillier-bigint'
+import * as {{PKG_CAMELCASE}} from '{{PKG_NAME}}'
 ```
 
 The appropriate version for browser or node is automatically exported.
 
-You can also download the [IIFE bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/paillier-bigint.iife.js), the [ESM bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/paillier-bigint.esm.js) or the [UMD bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/paillier-bigint.umd.js) and manually add it to your project, or, if you have already imported `paillier-bigint` to your project, just get the bundles from `node_modules/paillier-bigint/dist/bundles/`.
+You can also download the {{IIFE_BUNDLE}}, the {{ESM_BUNDLE}} or the {{UMD_BUNDLE}} and manually add it to your project, or, if you have already imported `{{PKG_NAME}}` to your project, just get the bundles from `node_modules/{{PKG_NAME}}/dist/bundles/`.
 
 An example of usage could be:
 

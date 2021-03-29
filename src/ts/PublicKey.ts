@@ -4,12 +4,17 @@ import * as bcu from 'bigint-crypto-utils'
  * Class for a Paillier public key
  */
 export default class PublicKey {
+  readonly n: bigint
+  readonly g: bigint
+
+  readonly _n2: bigint
+
   /**
      * Creates an instance of class PublicKey
-     * @param {bigint} n - the public modulo
-     * @param {bigint} g - the public generator
+     * @param n - The public modulo
+     * @param g - The public generator
      */
-  constructor (n, g) {
+  constructor (n: bigint, g: bigint) {
     this.n = n
     this._n2 = this.n ** 2n // cache n^2
     this.g = g
@@ -17,22 +22,22 @@ export default class PublicKey {
 
   /**
      * Get the bit length of the public modulo
-     * @returns {number} - bit length of the public modulo
+     * @returns The bit length of the public modulo
      */
-  get bitLength () {
+  get bitLength (): number {
     return bcu.bitLength(this.n)
   }
 
   /**
      * Paillier public-key encryption
      *
-     * @param {bigint} m - a bigint representation of a cleartext message
-     * @param {bigint} [r] - the random integer factor for encryption. By default is a random in (1,n)
+     * @param m - A bigint representation of a plaintext message
+     * @param r - The random integer factor for encryption. By default is a random in (1,n)
      *
-     * @returns {bigint} - the encryption of m with this public key
+     * @returns The encryption of m with this public key
      */
-  encrypt (m, r = null) {
-    if (r === null) {
+  encrypt (m: bigint, r?: bigint): bigint {
+    if (r === undefined) {
       do {
         r = bcu.randBetween(this.n)
       } while (bcu.gcd(r, this.n) !== 1n)
@@ -43,11 +48,11 @@ export default class PublicKey {
   /**
      * Homomorphic addition
      *
-     * @param {...bigint} ciphertexts - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
+     * @param ciphertexts - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
      *
-     * @returns {bigint} - the encryption of (m_1 + ... + m_2) with this public key
+     * @returns The encryption of (m_1 + ... + m_2) with this public key
      */
-  addition (...ciphertexts) {
+  addition (...ciphertexts: Array<bigint>): bigint {
     return ciphertexts.reduce((sum, next) => sum * next % (this._n2), 1n)
   }
 
@@ -59,7 +64,7 @@ export default class PublicKey {
      *
      * @returns {bigint} - the encryption of k·m with this public key
      */
-  multiply (c, k) {
-    return bcu.modPow(BigInt(c), BigInt(k), this._n2)
+  multiply (c: bigint, k: bigint|number): bigint {
+    return bcu.modPow(c, k, this._n2)
   }
 }
