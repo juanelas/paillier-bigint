@@ -96,7 +96,7 @@ import * as paillierBigint from 'paillier-bigint'
 
 The appropriate version for browser or node is automatically exported.
 
-You can also download the [IIFE bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/paillier-bigint.iife.js), the [ESM bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/paillier-bigint.esm.js) or the [UMD bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/paillier-bigint.umd.js) and manually add it to your project, or, if you have already imported `paillier-bigint` to your project, just get the bundles from `node_modules/paillier-bigint/dist/bundles/`.
+You can also download the [IIFE bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/iife.js), the [ESM bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/esm.js) or the [UMD bundle](https://raw.githubusercontent.com/juanelas/paillier-bigint/master/dist/bundles/umd.js) and manually add it to your project, or, if you have already imported `paillier-bigint` to your project, just get the bundles from `node_modules/paillier-bigint/dist/bundles/`.
 
 An example of usage could be:
 

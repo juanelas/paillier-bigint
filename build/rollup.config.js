@@ -1,18 +1,18 @@
 'use strict'
 
-const resolve = require('@rollup/plugin-node-resolve').nodeResolve
-const replace = require('@rollup/plugin-replace')
-const { terser } = require('rollup-plugin-terser')
-const typescriptPlugin = require('@rollup/plugin-typescript')
-const commonjs = require('@rollup/plugin-commonjs')
+import { nodeResolve as resolve } from '@rollup/plugin-node-resolve'
+import replace from '@rollup/plugin-replace'
+import { terser } from 'rollup-plugin-terser'
+import typescriptPlugin from '@rollup/plugin-typescript'
+import commonjs from '@rollup/plugin-commonjs'
 
-const path = require('path')
-const fs = require('fs')
-const pkgJson = require('../package.json')
+import { dirname, join } from 'path'
+import { existsSync, moveSync, removeSync } from 'fs-extra'
+import { directories, name as _name, dependencies, peerDependencies, exports, types } from '../package.json'
 
-const rootDir = path.join(__dirname, '..')
-const dstDir = path.join(rootDir, pkgJson.directories.dist)
-const srcDir = path.join(rootDir, 'src', 'ts')
+const rootDir = join(__dirname, '..')
+const dstDir = join(rootDir, directories.dist)
+const srcDir = join(rootDir, 'src', 'ts')
 
 function camelise (str) {
   return str.replace(/-([a-z])/g,
@@ -22,29 +22,41 @@ function camelise (str) {
 }
 
 const regex = /^(?:(?<scope>@.*?)\/)?(?<name>.*)/ // We are going to take only the package name part if there is a scope, e.g. @my-org/package-name
-const { name } = pkgJson.name.match(regex).groups
+const { name } = _name.match(regex).groups
 const pkgCamelisedName = camelise(name)
 
-const input = path.join(srcDir, 'index.ts')
-if (fs.existsSync(input) !== true) throw new Error('The entry point should be index.ts')
+const input = join(srcDir, 'index.ts')
+if (existsSync(input) !== true) throw new Error('The entry point should be index.ts')
 
 const tsBundleOptions = {
+  tsconfig: join(rootDir, 'tsconfig.json'),
+  outDir: undefined, // ignore outDir in tsconfig.json
   exclude: ['test/**/*', 'src/**/*.spec.ts', './build/typings/global-this-pkg.d.ts']
 }
 
-const external = [...Object.keys(pkgJson.dependencies || {}), ...Object.keys(pkgJson.peerDependencies || {})]
+const external = [...Object.keys(dependencies || {}), ...Object.keys(peerDependencies || {})]
 
 const sourcemapOutputOptions = {
   sourcemap: 'inline',
   sourcemapExcludeSources: true
 }
 
-module.exports = [
+function moveDirPlugin (srcDir, dstDir) {
+  return {
+    name: 'move-dir',
+    closeBundle () {
+      removeSync(dstDir)
+      moveSync(srcDir, dstDir, { overwrite: true })
+    }
+  }
+}
+
+export default [
   { // ESM for browsers
     input: input,
     output: [
       {
-        file: path.join(rootDir, pkgJson.exports['.'].default),
+        file: join(rootDir, exports['.'].default),
         ...sourcemapOutputOptions,
         format: 'es'
       }
@@ -62,16 +74,16 @@ module.exports = [
     input: input,
     output: [
       {
-        file: path.join(dstDir, `bundles/${name}.iife.js`),
+        file: join(dstDir, 'bundles/iife.js'),
         format: 'iife',
         name: pkgCamelisedName
       },
       {
-        file: path.join(dstDir, `bundles/${name}.esm.js`),
+        file: join(dstDir, 'bundles/esm.js'),
         format: 'es'
       },
       {
-        file: path.join(dstDir, `bundles/${name}.umd.js`),
+        file: join(dstDir, 'bundles/umd.js'),
         format: 'umd',
         name: pkgCamelisedName
       }
@@ -92,8 +104,7 @@ module.exports = [
   { // Node ESM with declaration files
     input: input,
     output: {
-      dir: path.join(rootDir, path.dirname(pkgJson.exports['.'].node.import)),
-      entryFileNames: path.basename(pkgJson.exports['.'].node.import),
+      file: join(rootDir, exports['.'].node.import),
       ...sourcemapOutputOptions,
       format: 'es'
     },
@@ -104,20 +115,20 @@ module.exports = [
       }),
       typescriptPlugin({
         ...tsBundleOptions,
+        // outDir: path.join(rootDir, path.dirname(pkgJson.exports['.'].node.import)),
         declaration: true,
-        outDir: path.join(rootDir, path.dirname(pkgJson.exports['.'].node.import)),
-        declarationDir: path.join(rootDir, path.dirname(pkgJson.exports['.'].node.import), 'types'),
+        declarationDir: 'types',
         declarationMap: true
       }),
-      commonjs({ extensions: ['.js', '.ts'] }) // the ".ts" extension is required
+      commonjs({ extensions: ['.js', '.cjs', '.ts'] }), // the ".ts" extension is required
+      moveDirPlugin(join(rootDir, dirname(exports['.'].node.import), 'types'), join(rootDir, dirname(types)))
     ],
     external
   },
   { // Node CJS
     input: input,
     output: {
-      dir: path.join(rootDir, path.dirname(pkgJson.exports['.'].node.require)),
-      entryFileNames: path.basename(pkgJson.exports['.'].node.require),
+      file: join(rootDir, exports['.'].node.require),
       ...sourcemapOutputOptions,
       format: 'cjs'
     },
@@ -127,7 +138,7 @@ module.exports = [
         preventAssignment: true
       }),
       typescriptPlugin(tsBundleOptions),
-      commonjs({ extensions: ['.js', '.ts'] }) // the ".ts" extension is required
+      commonjs({ extensions: ['.js', '.cjs', '.ts'] }) // the ".ts" extension is required
     ]
   }
 ]

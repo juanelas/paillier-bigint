@@ -1,17 +1,15 @@
-paillier-bigint - v3.2.3
-
-# paillier-bigint - v3.2.3
+# paillier-bigint
 
 ## Table of contents
 
 ### Classes
 
-- [PrivateKey](classes/privatekey.md)
-- [PublicKey](classes/publickey.md)
+- [PrivateKey](classes/PrivateKey.md)
+- [PublicKey](classes/PublicKey.md)
 
 ### Interfaces
 
-- [KeyPair](interfaces/keypair.md)
+- [KeyPair](interfaces/KeyPair.md)
 
 ### Functions
 
@@ -22,41 +20,49 @@ paillier-bigint - v3.2.3
 
 ### generateRandomKeys
 
-▸ **generateRandomKeys**(`bitlength?`: *number*, `simpleVariant?`: *boolean*): *Promise*<[*KeyPair*](interfaces/keypair.md)\>
+▸ **generateRandomKeys**(`bitlength?`, `simpleVariant?`): `Promise`<[`KeyPair`](interfaces/KeyPair.md)\>
 
 Generates a pair private, public key for the Paillier cryptosystem.
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Default value | Description |
-:------ | :------ | :------ | :------ |
-`bitlength` | *number* | 3072 | The bit length of the public modulo   |
-`simpleVariant` | *boolean* | false | - |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `bitlength` | `number` | `3072` | The bit length of the public modulo |
+| `simpleVariant` | `boolean` | `false` | - |
 
-**Returns:** *Promise*<[*KeyPair*](interfaces/keypair.md)\>
+#### Returns
 
-A promise that resolves to a [KeyPair](interfaces/keypair.md) of public, private keys
+`Promise`<[`KeyPair`](interfaces/KeyPair.md)\>
 
-Defined in: [generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/generateRandomKeys.ts#L18)
+A promise that resolves to a [KeyPair](interfaces/KeyPair.md) of public, private keys
+
+#### Defined in
+
+[generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/63a69bb/src/ts/generateRandomKeys.ts#L18)
 
 ___
 
 ### generateRandomKeysSync
 
-▸ **generateRandomKeysSync**(`bitlength?`: *number*, `simpleVariant?`: *boolean*): [*KeyPair*](interfaces/keypair.md)
+▸ **generateRandomKeysSync**(`bitlength?`, `simpleVariant?`): [`KeyPair`](interfaces/KeyPair.md)
 
 Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
 Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Default value | Description |
-:------ | :------ | :------ | :------ |
-`bitlength` | *number* | 3072 | The bit length of the public modulo   |
-`simpleVariant` | *boolean* | false | - |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `bitlength` | `number` | `3072` | The bit length of the public modulo |
+| `simpleVariant` | `boolean` | `false` | - |
 
-**Returns:** [*KeyPair*](interfaces/keypair.md)
+#### Returns
+
+[`KeyPair`](interfaces/KeyPair.md)
 
 A pair of public, private keys
 
-Defined in: [generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/17c7ce4/src/ts/generateRandomKeys.ts#L55)
+#### Defined in
+
+[generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/63a69bb/src/ts/generateRandomKeys.ts#L55)

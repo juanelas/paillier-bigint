@@ -25,13 +25,21 @@ testBuilder.start() // This should be in exports.mochaGlobalSetup but mocha fail
 exports.mochaHooks = {
   beforeAll: [
     async function () {
+      this.timeout('120000')
+
+      await Promise.all([rollupBuilder.ready(), testBuilder.ready()])
+
       // Just in case our module had been modified. Reload it when the tests are repeated (for mocha watch mode).
       delete require.cache[require.resolve(rootDir)]
       global._pkg = require(rootDir)
-    },
-    async function () {
-      this.timeout('120000')
-      await Promise.all([rollupBuilder.ready(), testBuilder.ready()])
+
+      // And now reset any other transpiled module (just delete the cache so it is fully reloaded)
+      for (const key in require.cache) {
+        const relativePath = path.relative(rootDir, key)
+        if (relativePath.startsWith(`.mocha-ts${path.sep}`)) {
+          delete require.cache[key]
+        }
+      }
     }
   ]
 }
