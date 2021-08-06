@@ -25,7 +25,7 @@ async function typedoc () {
     // typedoc options here
     entryPoints: ['src/ts/index.ts'],
     plugin: ['typedoc-plugin-markdown'],
-    includeVersion: false,
+    includeVersion: true,
     entryDocument: 'API.md',
     readme: 'none',
     hideBreadcrumbs: true
