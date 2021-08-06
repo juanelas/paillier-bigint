@@ -41,7 +41,7 @@ Creates an instance of class PublicKey
 
 #### Defined in
 
-[PublicKey.ts:17](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L17)
+[PublicKey.ts:17](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L17)
 
 ## Properties
 
@@ -51,7 +51,7 @@ Creates an instance of class PublicKey
 
 #### Defined in
 
-[PublicKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L10)
+[PublicKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L10)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[PublicKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L8)
+[PublicKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L8)
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 #### Defined in
 
-[PublicKey.ts:7](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L7)
+[PublicKey.ts:7](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L7)
 
 ## Accessors
 
@@ -89,7 +89,7 @@ The bit length of the public modulo
 
 #### Defined in
 
-[PublicKey.ts:27](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L27)
+[PublicKey.ts:27](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L27)
 
 ## Methods
 
@@ -113,7 +113,7 @@ The encryption of (m_1 + ... + m_2) with this public key
 
 #### Defined in
 
-[PublicKey.ts:55](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L55)
+[PublicKey.ts:55](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L55)
 
 ___
 
@@ -138,7 +138,7 @@ The encryption of m with this public key
 
 #### Defined in
 
-[PublicKey.ts:39](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L39)
+[PublicKey.ts:39](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L39)
 
 ___
 
@@ -163,4 +163,4 @@ Pseudo-homomorphic Paillier multiplication
 
 #### Defined in
 
-[PublicKey.ts:67](https://github.com/juanelas/paillier-bigint/blob/73fe0d1/src/ts/PublicKey.ts#L67)
+[PublicKey.ts:67](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L67)
