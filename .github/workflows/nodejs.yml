@@ -79,7 +79,7 @@ jobs:
       
       - name: browser tests
         if: steps.check.outputs.changed == 'true'
-        run: npm run test:browser
+        run: npm run test:browser-headless
       
       - name: node tests and coverage
         if: steps.check.outputs.changed == 'true'
