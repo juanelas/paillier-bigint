@@ -1,6 +1,6 @@
 {
   "name": "paillier-bigint",
-  "version": "3.2.6",
+  "version": "3.3.0",
   "description": "An implementation of the Paillier cryptosystem using native JS (ECMA 2020) implementation of BigInt",
   "keywords": [
     "paillier",

@@ -15,7 +15,7 @@
 
 #### Defined in
 
-[generateRandomKeys.ts:7](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/generateRandomKeys.ts#L7)
+[generateRandomKeys.ts:7](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/generateRandomKeys.ts#L7)
 
 ___
 
@@ -25,4 +25,4 @@ ___
 
 #### Defined in
 
-[generateRandomKeys.ts:6](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/generateRandomKeys.ts#L6)
+[generateRandomKeys.ts:6](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/generateRandomKeys.ts#L6)

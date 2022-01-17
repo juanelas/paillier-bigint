@@ -44,7 +44,7 @@ Creates an instance of class PrivateKey
 
 #### Defined in
 
-[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L23)
+[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L23)
 
 ## Properties
 
@@ -54,7 +54,7 @@ Creates an instance of class PrivateKey
 
 #### Defined in
 
-[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L8)
+[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L8)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L9)
+[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L9)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L10)
+[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L10)
 
 ## Accessors
 
@@ -92,7 +92,7 @@ The bit length of the public modulo
 
 #### Defined in
 
-[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L35)
+[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L35)
 
 ___
 
@@ -110,7 +110,7 @@ The public modulo n=p·q
 
 #### Defined in
 
-[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L43)
+[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L43)
 
 ## Methods
 
@@ -134,7 +134,7 @@ The decryption of c with this private key
 
 #### Defined in
 
-[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L54)
+[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L54)
 
 ___
 
@@ -167,4 +167,4 @@ The random factor (mod n)
 
 #### Defined in
 
-[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/a5ecf4a/src/ts/PrivateKey.ts#L75)
+[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L75)
