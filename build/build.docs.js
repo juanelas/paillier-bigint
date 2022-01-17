@@ -28,7 +28,8 @@ async function typedoc () {
     includeVersion: true,
     entryDocument: 'API.md',
     readme: 'none',
-    hideBreadcrumbs: true
+    hideBreadcrumbs: true,
+    excludePrivate: true
   })
 
   const project = app.convert()
@@ -53,6 +54,16 @@ function getRepositoryData () {
         repoName: repodata.slice(2).join('/')
       }
     } else return null
+  } else {
+    if (pkgJson.repository.url !== 'undefined') {
+      const regex = /(?:.+?\+)?http[s]?:\/\/(?<repoProvider>[\w._-]+)\.\w{2,3}\/(?<repoUsername>[\w._-]+)\/(?<repoName>[\w._\-/]+?)\.git/
+      const match = pkgJson.repository.url.match(regex)
+      return {
+        repoProvider: match[1],
+        repoUsername: match[2],
+        repoName: match[3]
+      }
+    }
   }
 }
 
@@ -73,14 +84,14 @@ if (repoProvider) {
       iifeBundle = `[IIFE bundle](https://raw.githubusercontent.com/${repoUsername}/${repoName}/master/${iifeBundlePath})`
       esmBundle = `[ESM bundle](https://raw.githubusercontent.com/${repoUsername}/${repoName}/master/${esmBundlePath})`
       umdBundle = `[UMD bundle](https://raw.githubusercontent.com/${repoUsername}/${repoName}/master/${umdBundlePath})`
-      workflowBadget = `[![Node CI](https://github.com/${repoUsername}/${repoName}/workflows/Node%20CI/badge.svg)](https://github.com/${repoUsername}/${repoName}/actions?query=workflow%3A%22Node+CI%22)`
+      workflowBadget = `[![Node.js CI](https://github.com/${repoUsername}/${repoName}/workflows/Node.js%20CI/badge.svg)](https://github.com/${repoUsername}/${repoName}/actions?query=workflow%3A%22Node.js+CI%22)`
       coverallsBadge = `[![Coverage Status](https://coveralls.io/repos/github/${repoUsername}/${repoName}/badge.svg?branch=master)](https://coveralls.io/github/${repoUsername}/${repoName}?branch=master)`
       break
 
     case 'gitlab':
-      iifeBundle = `[IIFE bundle](https://gitlab.com/${repoUsername}/${repoName}/-/raw/master/dist/${iifeBundlePath}?inline=false)`
-      esmBundle = `[ESM bundle](https://gitlab.com/${repoUsername}/${repoName}/-/raw/master/dist/${esmBundlePath}?inline=false)`
-      umdBundle = `[UMD bundle](https://gitlab.com/${repoUsername}/${repoName}/-/raw/master/dist/${umdBundlePath}?inline=false)`
+      iifeBundle = `[IIFE bundle](https://gitlab.com/${repoUsername}/${repoName}/-/raw/master/${iifeBundlePath}?inline=false)`
+      esmBundle = `[ESM bundle](https://gitlab.com/${repoUsername}/${repoName}/-/raw/master/${esmBundlePath}?inline=false)`
+      umdBundle = `[UMD bundle](https://gitlab.com/${repoUsername}/${repoName}/-/raw/master/${umdBundlePath}?inline=false)`
       break
 
     default:

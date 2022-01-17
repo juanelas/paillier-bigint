@@ -11,6 +11,9 @@ const TestsBuilder = require('./builders/TestsBuilder.js')
 const rootDir = path.join(__dirname, '../../../')
 
 global.chai = chai
+loadPkgToGlobal()
+
+global.IS_BROWSER = false
 
 const watch = process.argv.includes('--watch') || process.argv.includes('-w')
 
@@ -31,7 +34,7 @@ exports.mochaHooks = {
 
       // Just in case our module had been modified. Reload it when the tests are repeated (for mocha watch mode).
       delete require.cache[require.resolve(rootDir)]
-      global._pkg = require(rootDir)
+      loadPkgToGlobal()
 
       // And now reset any other transpiled module (just delete the cache so it is fully reloaded)
       for (const key in require.cache) {
@@ -57,4 +60,15 @@ exports.mochaGlobalTeardown = async function () {
   // main thread and thus the mocha watcher, which otherwise would complain
   // about files being deleted
   rimraf.sync(tempDir, { disableGlob: true })
+}
+
+function loadPkgToGlobal () {
+  const _pkg = require(rootDir)
+  if (typeof _pkg === 'function') { // If it is just a default export, load it as named (for compatibility)
+    global._pkg = {
+      default: _pkg
+    }
+  } else {
+    global._pkg = _pkg
+  }
 }

@@ -5,10 +5,12 @@ import replace from '@rollup/plugin-replace'
 import { terser } from 'rollup-plugin-terser'
 import typescriptPlugin from '@rollup/plugin-typescript'
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
 
-import { dirname, join } from 'path'
-import { existsSync, moveSync, removeSync } from 'fs-extra'
-import { directories, name as _name, dependencies, peerDependencies, exports, types } from '../package.json'
+import { join } from 'path'
+import { existsSync } from 'fs-extra'
+import { directories, name as _name, dependencies, peerDependencies, exports } from '../package.json'
+import { compile } from './rollup-plugin-dts.js'
 
 const rootDir = join(__dirname, '..')
 const dstDir = join(rootDir, directories.dist)
@@ -31,7 +33,8 @@ if (existsSync(input) !== true) throw new Error('The entry point should be index
 const tsBundleOptions = {
   tsconfig: join(rootDir, 'tsconfig.json'),
   outDir: undefined, // ignore outDir in tsconfig.json
-  exclude: ['test/**/*', 'src/**/*.spec.ts', './build/typings/global-this-pkg.d.ts']
+  include: ['src/ts/**/*', 'build/typings/is-browser.d.ts'],
+  exclude: ['src/**/*.spec.ts']
 }
 
 const external = [...Object.keys(dependencies || {}), ...Object.keys(peerDependencies || {})]
@@ -41,18 +44,17 @@ const sourcemapOutputOptions = {
   sourcemapExcludeSources: true
 }
 
-function moveDirPlugin (srcDir, dstDir) {
+function compileDts () {
   return {
-    name: 'move-dir',
+    name: 'compile-dts',
     closeBundle () {
-      removeSync(dstDir)
-      moveSync(srcDir, dstDir, { overwrite: true })
+      compile()
     }
   }
 }
 
 export default [
-  { // ESM for browsers
+  { // ESM for browsers and declarations
     input: input,
     output: [
       {
@@ -66,7 +68,9 @@ export default [
         IS_BROWSER: true,
         preventAssignment: true
       }),
-      typescriptPlugin(tsBundleOptions)
+      typescriptPlugin(tsBundleOptions),
+      compileDts(),
+      json()
     ],
     external
   },
@@ -76,16 +80,24 @@ export default [
       {
         file: join(dstDir, 'bundles/iife.js'),
         format: 'iife',
-        name: pkgCamelisedName
+        name: pkgCamelisedName,
+        plugins: [terser()]
       },
       {
         file: join(dstDir, 'bundles/esm.js'),
+        ...sourcemapOutputOptions,
         format: 'es'
+      },
+      {
+        file: join(dstDir, 'bundles/esm.min.js'),
+        format: 'es',
+        plugins: [terser()]
       },
       {
         file: join(dstDir, 'bundles/umd.js'),
         format: 'umd',
-        name: pkgCamelisedName
+        name: pkgCamelisedName,
+        plugins: [terser()]
       }
     ],
     plugins: [
@@ -96,49 +108,44 @@ export default [
       typescriptPlugin(tsBundleOptions),
       resolve({
         browser: true,
-        exportConditions: ['browser', 'module', 'import', 'default']
+        exportConditions: ['browser', 'module', 'import', 'default'],
+        mainFields: ['browser', 'module', 'main']
       }),
-      terser()
+      commonjs({
+        namedExports: {
+          'bn.js': ['BN'],
+          'hash.js': ['hmac', 'ripemd160', 'sha256', 'sha512'],
+          elliptic: ['ec'],
+          'scrypt-js': ['scrypt', 'syncScrypt']
+        }
+      }),
+      json()
     ]
   },
-  { // Node ESM with declaration files
+  { // Node
     input: input,
-    output: {
-      file: join(rootDir, exports['.'].node.import),
-      ...sourcemapOutputOptions,
-      format: 'es'
-    },
-    plugins: [
-      replace({
-        IS_BROWSER: false,
-        preventAssignment: true
-      }),
-      typescriptPlugin({
-        ...tsBundleOptions,
-        // outDir: path.join(rootDir, path.dirname(pkgJson.exports['.'].node.import)),
-        declaration: true,
-        declarationDir: 'types',
-        declarationMap: true
-      }),
-      commonjs({ extensions: ['.js', '.cjs', '.ts'] }), // the ".ts" extension is required
-      moveDirPlugin(join(rootDir, dirname(exports['.'].node.import), 'types'), join(rootDir, dirname(types)))
+    output: [
+      {
+        file: join(rootDir, exports['.'].node.require),
+        ...sourcemapOutputOptions,
+        format: 'cjs',
+        exports: 'auto'
+      },
+      {
+        file: join(rootDir, exports['.'].node.import),
+        ...sourcemapOutputOptions,
+        format: 'es'
+      }
     ],
-    external
-  },
-  { // Node CJS
-    input: input,
-    output: {
-      file: join(rootDir, exports['.'].node.require),
-      ...sourcemapOutputOptions,
-      format: 'cjs'
-    },
     plugins: [
       replace({
         IS_BROWSER: false,
         preventAssignment: true
       }),
       typescriptPlugin(tsBundleOptions),
-      commonjs({ extensions: ['.js', '.cjs', '.ts'] }) // the ".ts" extension is required
-    ]
+      commonjs({ extensions: ['.js', '.cjs', '.ts', '.jsx', '.cjsx', '.tsx'] }), // the ".ts" extension is required
+      json()
+    ],
+    external
   }
 ]

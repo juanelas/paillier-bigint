@@ -24,17 +24,36 @@ module.exports = class TestsBuilder extends Builder {
 
     this.tempDir = tempDir
 
-    const readFileAndMangle = (path) => { // We need to change the include or file in the original file to only compile the tests
-      const fileStr = fs.readFileSync(path, 'utf8')
-      const config = JSON5.parse(fileStr)
-      if (config.file) delete config.file
-      config.include.push('node_modules/**/*.d.ts')
-      config.compilerOptions.module = 'commonjs'
-      return JSON.stringify(config)
-    }
-    const configFile = ts.readJsonConfigFile(configPath, readFileAndMangle)
+    const tsConfig = JSON5.parse(fs.readFileSync(configPath, 'utf8'))
 
-    const parsedTsConfig = ts.parseJsonSourceFileConfigFileContent(configFile, ts.sys, path.dirname(configPath))
+    tsConfig.file = undefined
+
+    // Exclude already transpiled files in src
+    tsConfig.exclude = ['src/ts/**/!(*.spec).ts']
+
+    // "noResolve": true
+    tsConfig.compilerOptions.noResolve = false
+
+    // we don't need declaration files
+    tsConfig.compilerOptions.declaration = false
+
+    // we need to emit files
+    tsConfig.compilerOptions.noEmit = false
+
+    // source mapping eases debuging
+    tsConfig.compilerOptions.sourceMap = true
+
+    // This prevents SyntaxError: Cannot use import statement outside a module
+    tsConfig.compilerOptions.module = 'commonjs'
+
+    // Removed typeroots (it causes issues)
+    tsConfig.compilerOptions.typeRoots = undefined
+
+    tsConfig.compilerOptions.outDir = path.isAbsolute(tempDir) ? path.relative(rootDir, tempDir) : tempDir
+
+    this.tempTsConfigPath = path.join(rootDir, '.tsconfig.json')
+
+    fs.writeFileSync(this.tempTsConfigPath, JSON.stringify(tsConfig, undefined, 2))
 
     const createProgram = ts.createSemanticDiagnosticsBuilderProgram
 
@@ -64,15 +83,8 @@ module.exports = class TestsBuilder extends Builder {
     // Note that there is another overload for `createWatchCompilerHost` that takes
     // a set of root files.
     this.host = ts.createWatchCompilerHost(
-      parsedTsConfig.fileNames,
-      {
-        ...parsedTsConfig.options,
-        rootDir,
-        outDir: this.tempDir,
-        noEmit: false,
-        noResolve: true,
-        sourceMap: true
-      },
+      this.tempTsConfigPath,
+      {},
       ts.sys,
       createProgram,
       reportDiagnostic,
@@ -91,5 +103,6 @@ module.exports = class TestsBuilder extends Builder {
   async close () {
     await super.close()
     this.watcher.close()
+    fs.unlinkSync(this.tempTsConfigPath)
   }
 }

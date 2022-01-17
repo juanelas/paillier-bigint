@@ -9,8 +9,9 @@ const rollup = require('rollup')
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const replace = require('@rollup/plugin-replace')
 const multi = require('@rollup/plugin-multi-entry')
-const typescript = require('@rollup/plugin-typescript')
+const typescriptPlugin = require('@rollup/plugin-typescript')
 const commonjs = require('@rollup/plugin-commonjs')
+const json = require('@rollup/plugin-json')
 
 const rootDir = path.join(__dirname, '..', '..', '..')
 
@@ -41,10 +42,17 @@ const indexHtml = `<!DOCTYPE html>
     <script type="module">
       import * as _pkg from './${name}.esm.js'
       self._pkg = _pkg
+    </script>
+    <script type="module">
       import './tests.js'
       window._mocha = mocha.run()
     </script>
   </html>`
+
+const tsBundleOptions = {
+  tsconfig: path.join(rootDir, 'tsconfig.json'),
+  outDir: undefined // ignore outDir in tsconfig.json
+}
 
 async function buildTests () {
   // create a bundle
@@ -56,12 +64,13 @@ async function buildTests () {
         IS_BROWSER: true,
         preventAssignment: true
       }),
-      typescript(),
+      typescriptPlugin(tsBundleOptions),
       resolve({
         browser: true,
         exportConditions: ['browser', 'module', 'import', 'default']
       }),
-      commonjs()
+      commonjs(),
+      json()
     ],
     external: [pkgJson.name]
   }

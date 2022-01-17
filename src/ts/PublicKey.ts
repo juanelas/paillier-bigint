@@ -50,10 +50,22 @@ export default class PublicKey {
      *
      * @param ciphertexts - n >= 2 ciphertexts (c_1,..., c_n) that are the encryption of (m_1, ..., m_n) with this public key
      *
-     * @returns The encryption of (m_1 + ... + m_2) with this public key
+     * @returns The encryption of (m_1 + ... + m_n) with this public key
      */
   addition (...ciphertexts: Array<bigint>): bigint {
-    return ciphertexts.reduce((sum, next) => sum * next % (this._n2), 1n)
+    return ciphertexts.reduce((sum, next) => sum * next % this._n2, 1n)
+  }
+
+  /**
+     * Pseudo-homomorphic addition of plaintext to chipertext
+     *
+     * @param ciphertext - an encryption of m1 with this public key
+     * @param plaintexts - 1 or more plaintexts (m_2, ..., m_n)
+     *
+     * @returns The encryption of (m_1 + ... + m_n) with this public key
+     */
+  plaintextAddition (ciphertext: bigint, ...plaintexts: Array<bigint>): bigint {
+    return plaintexts.reduce((sum, next) => sum * bcu.modPow(this.g, next, this._n2) % this._n2, ciphertext)
   }
 
   /**

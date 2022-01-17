@@ -1,7 +1,4 @@
-import * as _pkgModule from '../..'
+import * as _pkgModule from '../../src/ts/index'
 
-declare global {
-  const _pkg: typeof _pkgModule
-}
-export as namespace _pkgTypes
+export as namespace _pkg
 export = _pkgModule

@@ -23,6 +23,7 @@ Class for a Paillier public key
 - [addition](PublicKey.md#addition)
 - [encrypt](PublicKey.md#encrypt)
 - [multiply](PublicKey.md#multiply)
+- [plaintextAddition](PublicKey.md#plaintextaddition)
 
 ## Constructors
 
@@ -41,7 +42,7 @@ Creates an instance of class PublicKey
 
 #### Defined in
 
-[PublicKey.ts:17](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L17)
+[PublicKey.ts:17](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L17)
 
 ## Properties
 
@@ -51,7 +52,7 @@ Creates an instance of class PublicKey
 
 #### Defined in
 
-[PublicKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L10)
+[PublicKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L10)
 
 ___
 
@@ -61,7 +62,7 @@ ___
 
 #### Defined in
 
-[PublicKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L8)
+[PublicKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L8)
 
 ___
 
@@ -71,7 +72,7 @@ ___
 
 #### Defined in
 
-[PublicKey.ts:7](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L7)
+[PublicKey.ts:7](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L7)
 
 ## Accessors
 
@@ -89,7 +90,7 @@ The bit length of the public modulo
 
 #### Defined in
 
-[PublicKey.ts:27](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L27)
+[PublicKey.ts:27](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L27)
 
 ## Methods
 
@@ -109,11 +110,11 @@ Homomorphic addition
 
 `bigint`
 
-The encryption of (m_1 + ... + m_2) with this public key
+The encryption of (m_1 + ... + m_n) with this public key
 
 #### Defined in
 
-[PublicKey.ts:55](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L55)
+[PublicKey.ts:55](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L55)
 
 ___
 
@@ -138,7 +139,7 @@ The encryption of m with this public key
 
 #### Defined in
 
-[PublicKey.ts:39](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L39)
+[PublicKey.ts:39](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L39)
 
 ___
 
@@ -163,4 +164,29 @@ Pseudo-homomorphic Paillier multiplication
 
 #### Defined in
 
-[PublicKey.ts:67](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PublicKey.ts#L67)
+[PublicKey.ts:79](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L79)
+
+___
+
+### plaintextAddition
+
+▸ **plaintextAddition**(`ciphertext`, ...`plaintexts`): `bigint`
+
+Pseudo-homomorphic addition of plaintext to chipertext
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `ciphertext` | `bigint` | an encryption of m1 with this public key |
+| `...plaintexts` | `bigint`[] | 1 or more plaintexts (m_2, ..., m_n) |
+
+#### Returns
+
+`bigint`
+
+The encryption of (m_1 + ... + m_n) with this public key
+
+#### Defined in
+
+[PublicKey.ts:67](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PublicKey.ts#L67)

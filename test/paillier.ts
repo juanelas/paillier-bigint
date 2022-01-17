@@ -5,7 +5,7 @@ for (const _bitLength of bitLengths) {
   const bitLength = (_bitLength !== undefined) ? _bitLength : 3072
   describe(`Testing Paillier with keys of ${bitLength} bits`, function () {
     this.timeout(200000)
-    let keyPair: _pkgTypes.KeyPair
+    let keyPair: _pkg.KeyPair
     const tests = 16
     const numbers: Array<bigint> = []
     const ciphertexts: Array<bigint> = []
@@ -54,6 +54,14 @@ for (const _bitLength of bitLengths) {
       describe(`Homomorphic addtion: D( E(m1)·...·E(m${tests})) mod n^2 )`, function () {
         it(`should return m1+...+m${tests} mod n`, function () {
           const encSum = keyPair.publicKey.addition(...ciphertexts)
+          const d = keyPair.privateKey.decrypt(encSum)
+          const sumNumbers = numbers.reduce((sum, next) => (sum + next) % keyPair.publicKey.n)
+          chai.expect(d === sumNumbers)
+        })
+      })
+      describe(`Pseudo-homomorphic addtion of plaintexts: D( E(m1)·(g^(m2)·...·g^(m${tests})) mod n^2 )`, function () {
+        it(`should return m1+...+m${tests} mod n`, function () {
+          const encSum = keyPair.publicKey.plaintextAddition(ciphertexts[0], ...numbers.slice(1))
           const d = keyPair.privateKey.decrypt(encSum)
           const sumNumbers = numbers.reduce((sum, next) => (sum + next) % keyPair.publicKey.n)
           chai.expect(d === sumNumbers)

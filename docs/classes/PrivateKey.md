@@ -10,8 +10,6 @@ Class for Paillier private keys.
 
 ### Properties
 
-- [\_p](PrivateKey.md#_p)
-- [\_q](PrivateKey.md#_q)
 - [lambda](PrivateKey.md#lambda)
 - [mu](PrivateKey.md#mu)
 - [publicKey](PrivateKey.md#publickey)
@@ -46,29 +44,9 @@ Creates an instance of class PrivateKey
 
 #### Defined in
 
-[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L23)
+[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L23)
 
 ## Properties
-
-### \_p
-
-• `Private` `Optional` `Readonly` **\_p**: `bigint`
-
-#### Defined in
-
-[PrivateKey.ts:11](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L11)
-
-___
-
-### \_q
-
-• `Private` `Optional` `Readonly` **\_q**: `bigint`
-
-#### Defined in
-
-[PrivateKey.ts:12](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L12)
-
-___
 
 ### lambda
 
@@ -76,7 +54,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L8)
+[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L8)
 
 ___
 
@@ -86,7 +64,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L9)
+[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L9)
 
 ___
 
@@ -96,7 +74,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L10)
+[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L10)
 
 ## Accessors
 
@@ -114,7 +92,7 @@ The bit length of the public modulo
 
 #### Defined in
 
-[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L35)
+[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L35)
 
 ___
 
@@ -132,7 +110,7 @@ The public modulo n=p·q
 
 #### Defined in
 
-[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L43)
+[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L43)
 
 ## Methods
 
@@ -156,7 +134,7 @@ The decryption of c with this private key
 
 #### Defined in
 
-[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L54)
+[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L54)
 
 ___
 
@@ -189,4 +167,4 @@ The random factor (mod n)
 
 #### Defined in
 
-[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/7ee1e4f/src/ts/PrivateKey.ts#L75)
+[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/928e840/src/ts/PrivateKey.ts#L75)
