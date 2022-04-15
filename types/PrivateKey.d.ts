@@ -6,8 +6,8 @@ export default class PrivateKey {
     readonly lambda: bigint;
     readonly mu: bigint;
     readonly publicKey: PublicKey;
-    private readonly _p?;
-    private readonly _q?;
+    readonly _p?;
+    readonly _q?;
     /**
        * Creates an instance of class PrivateKey
        *

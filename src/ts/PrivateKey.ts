@@ -8,8 +8,8 @@ export default class PrivateKey {
   readonly lambda: bigint
   readonly mu: bigint
   readonly publicKey: PublicKey
-  private readonly _p?: bigint
-  private readonly _q?: bigint
+  readonly _p?: bigint
+  readonly _q?: bigint
 
   /**
      * Creates an instance of class PrivateKey
@@ -20,7 +20,7 @@ export default class PrivateKey {
      * @param p - a big prime
      * @param q- a big prime
      */
-  constructor (lambda: bigint, mu: bigint, publicKey: PublicKey, p?: bigint, q?: bigint) {
+  constructor(lambda: bigint, mu: bigint, publicKey: PublicKey, p?: bigint, q?: bigint) {
     this.lambda = lambda
     this.mu = mu
     this._p = p
@@ -32,7 +32,7 @@ export default class PrivateKey {
    * Get the bit length of the public modulo
    * @returns The bit length of the public modulo
    */
-  get bitLength (): number {
+  get bitLength(): number {
     return bcu.bitLength(this.publicKey.n)
   }
 
@@ -40,7 +40,7 @@ export default class PrivateKey {
    * Get the public modulo n=p·q
    * @returns The public modulo n=p·q
    */
-  get n (): bigint {
+  get n(): bigint {
     return this.publicKey.n
   }
 
@@ -51,7 +51,7 @@ export default class PrivateKey {
    *
    * @returns The decryption of c with this private key
    */
-  decrypt (c: bigint): bigint {
+  decrypt(c: bigint): bigint {
     return (L(bcu.modPow(c, this.lambda, this.publicKey._n2), this.publicKey.n) * this.mu) % this.publicKey.n
   }
 
@@ -72,7 +72,7 @@ export default class PrivateKey {
    * Cannot get random factor without knowing p and q
    *
    */
-  getRandomFactor (c: bigint): bigint {
+  getRandomFactor(c: bigint): bigint {
     if (this.publicKey.g !== this.n + 1n) throw RangeError('Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )')
     if (this._p === undefined || this._q === undefined) {
       throw Error('Cannot get random factor without knowing p and q')
@@ -85,6 +85,6 @@ export default class PrivateKey {
   }
 }
 
-export function L (a: bigint, n: bigint): bigint {
+export function L(a: bigint, n: bigint): bigint {
   return (a - 1n) / n
 }
