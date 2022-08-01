@@ -1,11 +1,15 @@
 #! /usr/bin/env node
-const path = require('path')
-const childProcess = require('child_process')
+import { join, resolve } from 'path'
+import { fork } from 'child_process'
+import minimatch from 'minimatch'
+import glob from 'glob'
+import { fileURLToPath } from 'url'
+const { sync } = glob
 
-const rootDir = path.join(__dirname, '../..')
+const __dirname = resolve(fileURLToPath(import.meta.url), '../')
+const rootDir = join(__dirname, '../..')
+
 const mochaTsRelativeDir = '.mocha-ts'
-const minimatch = require('minimatch')
-const glob = require('glob')
 
 // First let us prepare the args to pass to mocha.
 // ts.files will be replaced by their js-transpiled counterparts
@@ -13,13 +17,13 @@ const glob = require('glob')
 const processedArgs = processArgs(process.argv.slice(2))
 
 // Now we can run a script and invoke a callback when complete, e.g.
-runScript(path.join(rootDir, 'node_modules/mocha/bin/mocha'), processedArgs)
+runScript(join(rootDir, 'node_modules/mocha/bin/mocha'), processedArgs)
 
 function processArgs (args) {
   args = process.argv.slice(2).map(arg => {
     // Let us first remove surrounding quotes in string (it gives issues in windows)
     arg = arg.replace(/^['"]/, '').replace(/['"]$/, '')
-    const filenames = glob.sync(arg, { cwd: rootDir, matchBase: true })
+    const filenames = sync(arg, { cwd: rootDir, matchBase: true })
     if (filenames.length > 0) {
       return filenames.map(file => {
         const isTsTestFile = minimatch(file, '{test/**/*.ts,src/**/*.spec.ts}', { matchBase: true })
@@ -58,7 +62,7 @@ function processArgs (args) {
 }
 
 function runScript (scriptPath, args) {
-  const mochaCmd = childProcess.fork(scriptPath, args, {
+  const mochaCmd = fork(scriptPath, args, {
     cwd: rootDir
   })
 

@@ -22,6 +22,7 @@
   "engines": {
     "node": ">=12"
   },
+  "type": "module",
   "types": "./types/index.d.ts",
   "main": "./dist/cjs/index.node.cjs",
   "browser": "./dist/esm/index.browser.js",
@@ -30,7 +31,8 @@
     ".": {
       "node": {
         "require": "./dist/cjs/index.node.cjs",
-        "import": "./dist/esm/index.node.js"
+        "import": "./dist/esm/index.node.js",
+        "module": "./dist/esm/index.node.js"
       },
       "default": "./dist/esm/index.browser.js"
     },
@@ -49,19 +51,22 @@
   "scripts": {
     "build": "run-s lint build:js docs",
     "build:js": "rollup -c build/rollup.config.js",
-    "clean": "rimraf .nyc_output .mocha-ts coverage dist types docs",
-    "coverage": "nyc --check-coverage --exclude build --exclude '{src/ts/**/*.spec.ts,test/**/*.ts,.mocha-ts/**/*}' --reporter=text --reporter=lcov node ./build/bin/mocha-ts.js --require build/testing/mocha/mocha-init.js '{src/ts/**/*.spec.ts,test/**/*.ts}'",
-    "docs": "node build/build.docs.js",
+    "clean": "rimraf .mocha-ts coverage dist types docs",
+    "coverage": "c8 --clean --check-coverage --exclude-after-remap --exclude '{build,node_modules,src/ts/**/*.spec.ts,test/**/*.ts,.mocha-ts/**/*}' --reporter=text --reporter=lcov node ./build/bin/mocha-ts.js --require build/testing/mocha/mocha-init.js '{src/ts/**/*.spec.ts,test/**/*.ts}'",
+    "docs": "node build/build.docs.cjs",
     "git:add": "git add -A",
     "lint": "ts-standard --fix",
-    "mocha": "node ./build/bin/mocha-ts.js --require build/testing/mocha/mocha-init.js ",
-    "version": "run-s build test:browser-headless coverage git:add",
+    "mocha-ts": "node ./build/bin/mocha-ts.js --require build/testing/mocha/mocha-init.js ",
+    "mocha-ts:browser": "node build/testing/browser/index.cjs ",
+    "mocha-ts:browser-headless": "node build/testing/browser/index.cjs headless ",
+    "preversion": "run-s clean lint build:js",
+    "version": "run-s docs git:add",
     "postversion": "git push --follow-tags",
     "test": "run-s test:browser-headless test:node",
-    "test:browser": "node build/testing/browser/index.js",
-    "test:browser-headless": "node build/testing/browser/index.js headless",
-    "test:node": "npm run mocha -- '{src/ts/**/*.spec.ts,test/**/*.ts}'",
-    "watch": "npm run mocha -- --watch '{src/ts/**/*.spec.ts,test/**/*.ts}'"
+    "test:browser": "npm run mocha-ts:browser ",
+    "test:browser-headless": "npm run mocha-ts:browser-headless ",
+    "test:node": "npm run mocha-ts -- '{src/ts/**/*.spec.ts,test/**/*.ts}'",
+    "watch": "npm run mocha-ts -- --watch '{src/ts/**/*.spec.ts,test/**/*.ts}'"
   },
   "ts-standard": {
     "env": [
@@ -74,42 +79,44 @@
       "_pkg",
       "chai"
     ],
-    "project": "./tsconfig.json",
+    "project": "tsconfig.json",
     "ignore": [
       "dist/**/*",
+      "examples/**/*",
       "types/**/*",
-      "build/testing/types/**/*"
+      "example.js"
     ]
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.0",
+    "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
-    "@rollup/plugin-replace": "^3.0.0",
+    "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.2.0",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
+    "c8": "^7.12.0",
     "chai": "^4.3.3",
+    "dotenv": "^16.0.0",
     "fs-extra": "^10.0.0",
-    "glob": "^7.2.0",
+    "glob": "^8.0.1",
     "json5": "^2.2.0",
-    "minimatch": "^3.0.4",
-    "mocha": "^9.1.1",
+    "minimatch": "^5.0.1",
+    "mocha": "^10.0.0",
     "npm-run-all": "^4.1.5",
-    "nyc": "^15.1.0",
     "pirates": "^4.0.1",
-    "puppeteer": "^13.0.1",
+    "puppeteer": "^15.5.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.57.0",
     "rollup-plugin-terser": "^7.0.2",
     "ts-standard": "^11.0.0",
     "tslib": "^2.3.1",
-    "typedoc": "^0.22.0",
+    "typedoc": "^0.23.0",
     "typedoc-plugin-markdown": "^3.11.0",
     "typescript": "^4.4.3"
   },
   "dependencies": {
-    "bigint-crypto-utils": "^3.0.17"
+    "bigint-crypto-utils": "^3.1.4"
   }
 }

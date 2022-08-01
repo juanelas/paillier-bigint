@@ -44,7 +44,7 @@ Creates an instance of class PrivateKey
 
 #### Defined in
 
-[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L23)
+[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L23)
 
 ## Properties
 
@@ -54,7 +54,7 @@ Creates an instance of class PrivateKey
 
 #### Defined in
 
-[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L8)
+[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L8)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L9)
+[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L9)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L10)
+[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L10)
 
 ## Accessors
 
@@ -92,7 +92,7 @@ The bit length of the public modulo
 
 #### Defined in
 
-[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L35)
+[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L35)
 
 ___
 
@@ -110,7 +110,7 @@ The public modulo n=p·q
 
 #### Defined in
 
-[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L43)
+[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L43)
 
 ## Methods
 
@@ -134,7 +134,7 @@ The decryption of c with this private key
 
 #### Defined in
 
-[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L54)
+[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L54)
 
 ___
 
@@ -147,10 +147,12 @@ The recovery function only works if the public key generator g was using the sim
 g = 1 + n
 It is also necessary to know p and q (usually stored in the private key)
 
-**`throws`** {RangeError}
+**`Throws`**
+
 Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )
 
-**`throws`** {Error}
+**`Throws`**
+
 Cannot get random factor without knowing p and q
 
 #### Parameters
@@ -167,4 +169,4 @@ The random factor (mod n)
 
 #### Defined in
 
-[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/acf01d9/src/ts/PrivateKey.ts#L75)
+[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/1a67747/src/ts/PrivateKey.ts#L75)

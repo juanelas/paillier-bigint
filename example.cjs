@@ -1,5 +1,5 @@
-const paillierBigint = await import('./dist/esm/index.node.js') // eslint-disable-line
-// import * as paillierBigint from 'paillier-bigint'
+const paillierBigint = require('.')
+// const paillierBigint = require('paillier-bigint')
 
 async function paillierTest () {
   // (asynchronous) creation of a random private, public key pair for the Paillier cryptosystem
@@ -27,5 +27,3 @@ async function paillierTest () {
   console.log(privateKey.decrypt(encryptedMul)) // k · m1 = 123456789012345678900n
 }
 paillierTest()
-
-export {}

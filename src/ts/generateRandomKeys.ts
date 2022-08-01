@@ -16,7 +16,7 @@ export interface KeyPair {
  * @returns A promise that resolves to a {@link KeyPair} of public, private keys
  */
 export async function generateRandomKeys (bitlength: number = 3072, simpleVariant: boolean = false): Promise<KeyPair> {
-  let p, q, n, g, lambda, mu
+  let p: bigint, q: bigint, n: bigint, g: bigint, lambda: bigint, mu: bigint
   // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength)
   do {
     p = await bcu.prime(Math.floor(bitlength / 2) + 1)
@@ -53,7 +53,7 @@ export async function generateRandomKeys (bitlength: number = 3072, simpleVarian
  * @returns A pair of public, private keys
  */
 export function generateRandomKeysSync (bitlength: number = 3072, simpleVariant: boolean = false): KeyPair {
-  let p, q, n, g, lambda, mu
+  let p: bigint, q: bigint, n: bigint, g: bigint, lambda: bigint, mu: bigint
   // if p and q are bitLength/2 long ->  2**(bitLength - 2) <= n < 2**(bitLength)
   do {
     p = bcu.primeSync(Math.floor(bitlength / 2) + 1)

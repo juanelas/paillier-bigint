@@ -1,30 +1,49 @@
-const path = require('path')
-const fs = require('fs')
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
+import json5 from 'json5'
+import { isAbsolute, join, relative, resolve } from 'path'
+import { fileURLToPath } from 'url'
 
-const ts = require('typescript')
-const JSON5 = require('json5')
+import typescript from 'typescript'
+import Builder from './Builder.js'
 
-const Builder = require('./Builder.js')
+const { sys, createSemanticDiagnosticsBuilderProgram, flattenDiagnosticMessageText, createWatchCompilerHost, createWatchProgram } = typescript
 
-const rootDir = path.join(__dirname, '../../../../')
+const __dirname = resolve(fileURLToPath(import.meta.url), '../')
+
+const rootDir = join(__dirname, '../../../../')
+
+// const pkgJson = (await import(join(rootDir, 'package.json'), {
+//   assert: {
+//     type: "json",
+//   }
+// })).default
+
+const pkgJson = json5.parse(readFileSync(join(rootDir, 'package.json')))
+
 const mochaTsRelativeDir = '.mocha-ts'
-const mochaTsDir = path.join(rootDir, mochaTsRelativeDir)
+const mochaTsDir = join(rootDir, mochaTsRelativeDir)
 
 const formatHost = {
   getCanonicalFileName: path => path,
-  getCurrentDirectory: ts.sys.getCurrentDirectory,
-  getNewLine: () => ts.sys.newLine
+  getCurrentDirectory: sys.getCurrentDirectory,
+  getNewLine: () => sys.newLine
 }
 
-module.exports = class TestsBuilder extends Builder {
-  constructor ({ name = 'tsc', configPath = path.join(rootDir, 'tsconfig.json'), tempDir = mochaTsDir }) {
-    super(path.join(tempDir, 'semaphore'), name)
+export default class TestsBuilder extends Builder {
+  constructor ({ name = 'tsc', configPath = join(rootDir, 'tsconfig.json'), tempDir = mochaTsDir }) {
+    super(join(tempDir, 'semaphore'), name)
 
-    if (fs.existsSync(configPath) !== true) throw new Error(`Couldn't find a tsconfig file at ${configPath}`)
+    if (existsSync(configPath) !== true) throw new Error(`Couldn't find a tsconfig file at ${configPath}`)
 
     this.tempDir = tempDir
 
-    const tsConfig = JSON5.parse(fs.readFileSync(configPath, 'utf8'))
+    this.tempPkgJsonPath = join(tempDir, 'package.json')
+
+    delete pkgJson.type
+
+    writeFileSync(this.tempPkgJsonPath, JSON.stringify(pkgJson, undefined, 2))
+
+    const tsConfig = json5.parse(readFileSync(configPath, 'utf8'))
 
     tsConfig.file = undefined
 
@@ -49,22 +68,22 @@ module.exports = class TestsBuilder extends Builder {
     // Removed typeroots (it causes issues)
     tsConfig.compilerOptions.typeRoots = undefined
 
-    tsConfig.compilerOptions.outDir = path.isAbsolute(tempDir) ? path.relative(rootDir, tempDir) : tempDir
+    tsConfig.compilerOptions.outDir = isAbsolute(tempDir) ? relative(rootDir, tempDir) : tempDir
 
-    this.tempTsConfigPath = path.join(rootDir, '.tsconfig.json')
+    this.tempTsConfigPath = join(rootDir, '.tsconfig.json')
 
-    fs.writeFileSync(this.tempTsConfigPath, JSON.stringify(tsConfig, undefined, 2))
+    writeFileSync(this.tempTsConfigPath, JSON.stringify(tsConfig, undefined, 2))
 
-    const createProgram = ts.createSemanticDiagnosticsBuilderProgram
+    const createProgram = createSemanticDiagnosticsBuilderProgram
 
     const reportDiagnostic = (diagnostic) => {
-      const filePath = path.relative(rootDir, diagnostic.file.fileName)
-      const tranpiledJsPath = `${path.join(tempDir, filePath).slice(0, -3)}.js`
+      const filePath = relative(rootDir, diagnostic.file.fileName)
+      const tranpiledJsPath = `${join(tempDir, filePath).slice(0, -3)}.js`
       const errorLine = diagnostic.file.text.slice(0, diagnostic.start).split(/\r\n|\r|\n/).length
-      if (fs.existsSync(tranpiledJsPath)) {
-        fs.writeFileSync(tranpiledJsPath, '', 'utf8')
+      if (existsSync(tranpiledJsPath)) {
+        writeFileSync(tranpiledJsPath, '', 'utf8')
       }
-      this.emit('error', `[Error ${diagnostic.code}]`, `${filePath}:${errorLine}`, ':', ts.flattenDiagnosticMessageText(diagnostic.messageText, formatHost.getNewLine()))
+      this.emit('error', `[Error ${diagnostic.code}]`, `${filePath}:${errorLine}`, ':', flattenDiagnosticMessageText(diagnostic.messageText, formatHost.getNewLine()))
     }
 
     const reportWatchStatusChanged = (diagnostic, newLine, options, errorCount) => {
@@ -82,10 +101,10 @@ module.exports = class TestsBuilder extends Builder {
 
     // Note that there is another overload for `createWatchCompilerHost` that takes
     // a set of root files.
-    this.host = ts.createWatchCompilerHost(
+    this.host = createWatchCompilerHost(
       this.tempTsConfigPath,
       {},
-      ts.sys,
+      sys,
       createProgram,
       reportDiagnostic,
       reportWatchStatusChanged
@@ -96,13 +115,13 @@ module.exports = class TestsBuilder extends Builder {
     await super.start()
     // `createWatchProgram` creates an initial program, watches files, and updates
     // the program over time.
-    this.watcher = ts.createWatchProgram(this.host)
+    this.watcher = createWatchProgram(this.host)
     return await this.ready()
   }
 
   async close () {
     await super.close()
     this.watcher.close()
-    fs.unlinkSync(this.tempTsConfigPath)
+    unlinkSync(this.tempTsConfigPath)
   }
 }

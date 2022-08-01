@@ -1,4 +1,9 @@
+const path = require('path')
+
 const puppeteer = require('puppeteer')
+const minimatch = require('minimatch')
+const glob = require('glob')
+const rootDir = path.join(__dirname, '../../..')
 
 const browserTests = async (
   {
@@ -9,9 +14,9 @@ const browserTests = async (
       headless: false,
       devtools: true
     }
-  }) => {
-  const server = require('./server.js').server
-  await server.init()
+  }, testFiles) => {
+  const server = require('./server.cjs').server
+  await server.init(testFiles)
   await server.listen(serverPort)
   const browser = await puppeteer.launch(puppeteerOptions)
   const page = (await browser.pages())[0]
@@ -76,6 +81,24 @@ const browserTests = async (
   }
 }
 
+function processedTestFiles (testFilesStr) {
+  if (testFilesStr === undefined) {
+    return undefined
+  }
+  // Let us first remove surrounding quotes in string (it gives issues in windows)
+  testFilesStr = testFilesStr.replace(/^['"]/, '').replace(/['"]$/, '')
+  const filenames = glob.sync(testFilesStr, { cwd: rootDir, matchBase: true })
+  if (filenames.length > 0) {
+    filenames.forEach(file => {
+      const isTsTestFile = minimatch(file, '{test/**/*.ts,src/**/*.spec.ts}', { matchBase: true })
+      if (!isTsTestFile) {
+        throw new Error(`test file '${file}' not found`)
+      }
+    })
+  }
+  return filenames
+}
+
 const opts = {
   // puppeteer options
   puppeteerOptions: {
@@ -92,6 +115,7 @@ const opts = {
 const args = process.argv.slice(2)
 if (args[0] === 'headless') {
   opts.puppeteerOptions.headless = true
+  args.shift()
 }
 
-browserTests(opts)
+browserTests(opts, processedTestFiles(args[0]))

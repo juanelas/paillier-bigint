@@ -7,9 +7,9 @@ import typescriptPlugin from '@rollup/plugin-typescript'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 
-import { join } from 'path'
+import { dirname, join } from 'path'
 import { existsSync } from 'fs-extra'
-import { directories, name as _name, dependencies, peerDependencies, exports } from '../package.json'
+import { directories, name as _name, exports } from '../package.json'
 import { compile } from './rollup-plugin-dts.js'
 
 const rootDir = join(__dirname, '..')
@@ -37,8 +37,6 @@ const tsBundleOptions = {
   exclude: ['src/**/*.spec.ts']
 }
 
-const external = [...Object.keys(dependencies || {}), ...Object.keys(peerDependencies || {})]
-
 const sourcemapOutputOptions = {
   sourcemap: 'inline',
   sourcemapExcludeSources: true
@@ -54,34 +52,68 @@ function compileDts () {
 }
 
 export default [
-  { // ESM for browsers and declarations
+  { // Node ESM with declarations
     input: input,
     output: [
       {
-        file: join(rootDir, exports['.'].default),
+        file: join(rootDir, exports['.'].node.import),
         ...sourcemapOutputOptions,
         format: 'es'
       }
     ],
     plugins: [
       replace({
-        IS_BROWSER: true,
+        IS_BROWSER: false,
+        __filename: `'${exports['.'].node.import}'`,
+        __dirname: `'${dirname(exports['.'].node.import)}'`,
         preventAssignment: true
       }),
       typescriptPlugin(tsBundleOptions),
+      // resolve({
+      //   browser: false,
+      //   exportConditions: ['node']
+      // }),
       compileDts(),
+      commonjs({ extensions: ['.js', '.cjs', '.ts', '.jsx', '.cjsx', '.tsx'] }), // the ".ts" extension is required
       json()
-    ],
-    external
+    ]
   },
-  { // Browser bundles
+  { // Node CJS
     input: input,
     output: [
       {
-        file: join(dstDir, 'bundles/iife.js'),
-        format: 'iife',
-        name: pkgCamelisedName,
-        plugins: [terser()]
+        file: join(rootDir, exports['.'].node.require),
+        ...sourcemapOutputOptions,
+        format: 'cjs',
+        exports: 'auto'
+      }
+    ],
+    plugins: [
+      replace({
+        'await import(': 'require(',
+        delimiters: ['', ''],
+        preventAssignment: true
+      }),
+      replace({
+        IS_BROWSER: false,
+        preventAssignment: true
+      }),
+      typescriptPlugin(tsBundleOptions),
+      // resolve({
+      //   browser: false,
+      //   exportConditions: ['require', 'node', 'module', 'import']
+      // }),
+      commonjs({ extensions: ['.js', '.cjs', '.ts', '.jsx', '.cjsx', '.tsx'] }), // the ".ts" extension is required
+      json()
+    ]
+  },
+  { // ESM for browsers
+    input: input,
+    output: [
+      {
+        file: join(rootDir, exports['.'].default),
+        ...sourcemapOutputOptions,
+        format: 'es'
       },
       {
         file: join(dstDir, 'bundles/esm.js'),
@@ -91,12 +123,6 @@ export default [
       {
         file: join(dstDir, 'bundles/esm.min.js'),
         format: 'es',
-        plugins: [terser()]
-      },
-      {
-        file: join(dstDir, 'bundles/umd.js'),
-        format: 'umd',
-        name: pkgCamelisedName,
         plugins: [terser()]
       }
     ],
@@ -108,44 +134,46 @@ export default [
       typescriptPlugin(tsBundleOptions),
       resolve({
         browser: true,
-        exportConditions: ['browser', 'module', 'import', 'default'],
-        mainFields: ['browser', 'module', 'main']
+        exportConditions: ['browser', 'default']
       }),
-      commonjs({
-        namedExports: {
-          'bn.js': ['BN'],
-          'hash.js': ['hmac', 'ripemd160', 'sha256', 'sha512'],
-          elliptic: ['ec'],
-          'scrypt-js': ['scrypt', 'syncScrypt']
-        }
-      }),
+      commonjs({ extensions: ['.js', '.cjs', '.ts', '.jsx', '.cjsx', '.tsx'] }), // the ".ts" extension is required
       json()
     ]
   },
-  { // Node
+  { // Browser bundles
     input: input,
     output: [
       {
-        file: join(rootDir, exports['.'].node.require),
-        ...sourcemapOutputOptions,
-        format: 'cjs',
-        exports: 'auto'
+        file: join(dstDir, 'bundles/iife.js'),
+        format: 'iife',
+        name: pkgCamelisedName,
+        plugins: [terser()]
       },
       {
-        file: join(rootDir, exports['.'].node.import),
-        ...sourcemapOutputOptions,
-        format: 'es'
+        file: join(dstDir, 'bundles/umd.js'),
+        format: 'umd',
+        name: pkgCamelisedName,
+        plugins: [terser()]
       }
     ],
     plugins: [
       replace({
-        IS_BROWSER: false,
+        'await import(': 'require(',
+        delimiters: ['', ''],
+        preventAssignment: true
+      }),
+      replace({
+        IS_BROWSER: true,
         preventAssignment: true
       }),
       typescriptPlugin(tsBundleOptions),
+      resolve({
+        browser: true,
+        exportConditions: ['browser', 'default'],
+        mainFields: ['browser', 'module', 'main']
+      }),
       commonjs({ extensions: ['.js', '.cjs', '.ts', '.jsx', '.cjsx', '.tsx'] }), // the ".ts" extension is required
       json()
-    ],
-    external
+    ]
   }
 ]

@@ -1,7 +1,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-[![Node.js CI](https://github.com/juanelas/paillier-bigint/workflows/Node.js%20CI/badge.svg)](https://github.com/juanelas/paillier-bigint/actions?query=workflow%3A%22Node.js+CI%22)
+[![Node.js CI](https://github.com/juanelas/paillier-bigint/workflows/build/badge.svg)](https://github.com/juanelas/paillier-bigint/actions?query=workflow%3A%22build%22)
 [![Coverage Status](https://coveralls.io/repos/github/juanelas/paillier-bigint/badge.svg?branch=master)](https://coveralls.io/github/juanelas/paillier-bigint?branch=master)
 
 # paillier-bigint
