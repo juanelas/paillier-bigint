@@ -1,4 +1,5 @@
 import * as bcu from 'bigint-crypto-utils'
+import * as _pkg from '#pkg'
 
 const bitLengths = [511, 1024, undefined]
 for (const _bitLength of bitLengths) {
@@ -7,8 +8,8 @@ for (const _bitLength of bitLengths) {
     this.timeout(200000)
     let keyPair: _pkg.KeyPair
     const tests = 16
-    const numbers: Array<bigint> = []
-    const ciphertexts: Array<bigint> = []
+    const numbers: bigint[] = []
+    const ciphertexts: bigint[] = []
 
     describe(`generateRandomKeys(${bitLength})`, function () {
       it(`should return a publicKey and a privateKey with public modulus of ${bitLength} bits`, async function () {

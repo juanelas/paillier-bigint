@@ -52,7 +52,7 @@ export default class PublicKey {
      *
      * @returns The encryption of (m_1 + ... + m_n) with this public key
      */
-  addition (...ciphertexts: Array<bigint>): bigint {
+  addition (...ciphertexts: bigint[]): bigint {
     return ciphertexts.reduce((sum, next) => sum * next % this._n2, 1n)
   }
 
@@ -64,7 +64,7 @@ export default class PublicKey {
      *
      * @returns The encryption of (m_1 + ... + m_n) with this public key
      */
-  plaintextAddition (ciphertext: bigint, ...plaintexts: Array<bigint>): bigint {
+  plaintextAddition (ciphertext: bigint, ...plaintexts: bigint[]): bigint {
     return plaintexts.reduce((sum, next) => sum * bcu.modPow(this.g, next, this._n2) % this._n2, ciphertext)
   }
 
@@ -76,7 +76,7 @@ export default class PublicKey {
      *
      * @returns {bigint} - the encryption of k·m with this public key
      */
-  multiply (c: bigint, k: bigint|number): bigint {
+  multiply (c: bigint, k: bigint | number): bigint {
     return bcu.modPow(c, k, this._n2)
   }
 }

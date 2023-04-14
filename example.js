@@ -1,4 +1,4 @@
-const paillierBigint = await import('./dist/esm/index.node.js') // eslint-disable-line
+const paillierBigint = await import('#pkg') // eslint-disable-line
 // import * as paillierBigint from 'paillier-bigint'
 
 async function paillierTest () {

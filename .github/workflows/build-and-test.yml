@@ -1,0 +1,116 @@
+name: build, test (node and browser), coverage, publish to NPM
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: "https://registry.npmjs.org"
+
+      - name: install
+        run: npm ci
+      
+      - name: build
+        run: npm run build
+
+  nodetests:
+    name: tests in Node.js
+    needs: [build]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [16.x, 18.x]
+      # When set to true, GitHub cancels all in-progress jobs if any matrix job fails.
+      fail-fast: false
+      # The maximum number of jobs that can run simultaneously. Set to 1 if you can't run tests in parallel
+      # max-parallel: 1
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: install
+        run: npm i
+
+      - name: node esm tests
+        run: npm run test:node-esm
+        # env:
+        #   VARIABLE1: ${{ secrets.VARIABLE1 }}
+        #   VARIABLE2: ${{ secrets.VARIABLE2 }}
+      
+      - name: node cjs tests
+        run: npm run test:node-cjs
+        # env:
+        #   VARIABLE1: ${{ secrets.VARIABLE1 }}
+        #   VARIABLE2: ${{ secrets.VARIABLE2 }}
+
+  browsertests:
+    needs: [build]
+    name: tests in browser
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: "https://registry.npmjs.org"
+
+      - name: install
+        run: npm ci
+
+      - name: browser tests
+        run: npm run test:browser-headless
+        # env:
+        #   VARIABLE1: ${{ secrets.VARIABLE1 }}
+        #   VARIABLE2: ${{ secrets.VARIABLE2 }}
+
+  publish:
+    needs: [nodetests, browsertests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: install
+        run: npm ci
+        
+      - name: coverage
+        run: npm run coverage
+
+      - name: send report to coveralls.io
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: NPM publish
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -39,7 +39,7 @@ A promise that resolves to a [KeyPair](interfaces/KeyPair.md) of public, private
 
 #### Defined in
 
-[generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/37de4f7/src/ts/generateRandomKeys.ts#L18)
+[generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/76e6e84/src/ts/generateRandomKeys.ts#L18)
 
 ___
 
@@ -65,4 +65,4 @@ A pair of public, private keys
 
 #### Defined in
 
-[generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/37de4f7/src/ts/generateRandomKeys.ts#L55)
+[generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/76e6e84/src/ts/generateRandomKeys.ts#L55)

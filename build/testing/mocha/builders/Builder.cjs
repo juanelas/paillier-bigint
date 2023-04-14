@@ -1,15 +1,18 @@
-import EventEmitter from 'events'
-import { mkdirSync, writeFileSync, rmSync } from 'fs'
-import { dirname } from 'path'
+const EventEmitter = require('events')
+const fs = require('fs')
+const path = require('path')
 
-export default class Builder extends EventEmitter {
+module.exports = class Builder extends EventEmitter {
   constructor (semaphoreFile, name = 'builder') {
     super()
     this.name = name
-    this.firstBuild = true
-    mkdirSync(dirname(semaphoreFile), { recursive: true })
+    fs.mkdirSync(path.dirname(semaphoreFile), { recursive: true })
 
     this.semaphoreFile = semaphoreFile
+    if (!fs.existsSync(this.semaphoreFile)) {
+      fs.writeFileSync(this.semaphoreFile, '', { encoding: 'utf8' })
+    }
+
     this._ready = false
 
     this.on('message', (...message) => {
@@ -24,12 +27,12 @@ export default class Builder extends EventEmitter {
       }
     })
 
-    this.on('ready', () => {
-      if (this.firstBuild === false) {
-        writeFileSync(this.semaphoreFile, '', 'utf-8')
-      } else {
-        this.firstBuild = false
+    this.on('ready', (updateSemaphore = true) => {
+      const now = Date.now()
+      if (updateSemaphore) {
+        fs.utimesSync(this.semaphoreFile, now, now)
       }
+
       this._ready = true
     })
 
@@ -54,6 +57,6 @@ export default class Builder extends EventEmitter {
   async close () {}
 
   clean () {
-    rmSync(this.semaphoreFile, { force: true })
+    fs.rmSync(this.semaphoreFile, { force: true })
   }
 }
