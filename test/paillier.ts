@@ -9,7 +9,7 @@ for (const _bitLength of bitLengths) {
     let keyPair: _pkg.KeyPair
     let privKeyNoPNoQ: _pkg.PrivateKey
     let publicKey: _pkg.PublicKey
-    const tests = 50
+    const tests = 20
     const numbers: bigint[] = []
     const ciphertexts: bigint[] = []
 

@@ -61,22 +61,22 @@ export default class PrivateKey {
   /**
    * Recover the random factor used for encrypting a message with the complementary public key.
    * The recovery function only works if the public key generator g was using the simple variant
-   * g = 1 + n
+   * g = 1 + n (see {@link generateRandomKeys})
    * It is also necessary to know p and q (usually stored in the private key)
    *
-   * @param c - The encryption using the public of message m with random factor r
+   * @param c - The encryption of message m using a Paillier's {@link PublicKey} and random factor r
    *
-   * @returns The random factor (mod n)
+   * @returns The random factor r (mod n)
    *
-   * @throws {RangeError}
-   * Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )
+   * @throws {@link RangeError}
+   * Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true)  (see {@link generateRandomKeys})
    *
-   * @throws {Error}
+   * @throws {@link Error}
    * Cannot get random factor without knowing p and q
    *
    */
   getRandomFactor (c: bigint): bigint {
-    if (this.publicKey.g !== this.n + 1n) throw RangeError('Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )')
+    if (this.publicKey.g !== this.n + 1n) throw RangeError('Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true)')
     if (this._p === undefined || this._q === undefined) {
       throw Error('Cannot get random factor without knowing p and q')
     }

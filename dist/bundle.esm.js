@@ -50,7 +50,7 @@ class PrivateKey {
     }
     getRandomFactor(c) {
         if (this.publicKey.g !== this.n + 1n)
-            throw RangeError('Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )');
+            throw RangeError('Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true)');
         if (this._p === undefined || this._q === undefined) {
             throw Error('Cannot get random factor without knowing p and q');
         }

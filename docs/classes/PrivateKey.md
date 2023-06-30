@@ -116,25 +116,27 @@ ___
 
 Recover the random factor used for encrypting a message with the complementary public key.
 The recovery function only works if the public key generator g was using the simple variant
-g = 1 + n
+g = 1 + n (see [generateRandomKeys](../API.md#generaterandomkeys))
 It is also necessary to know p and q (usually stored in the private key)
 
 **`Throws`**
 
-Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )
+RangeError
+Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true)  (see [generateRandomKeys](../API.md#generaterandomkeys))
 
 **`Throws`**
 
+Error
 Cannot get random factor without knowing p and q
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `c` | `bigint` | The encryption using the public of message m with random factor r |
+| `c` | `bigint` | The encryption of message m using a Paillier's [PublicKey](PublicKey.md) and random factor r |
 
 #### Returns
 
 `bigint`
 
-The random factor (mod n)
+The random factor r (mod n)

@@ -93,17 +93,17 @@ declare class PrivateKey {
     /**
      * Recover the random factor used for encrypting a message with the complementary public key.
      * The recovery function only works if the public key generator g was using the simple variant
-     * g = 1 + n
+     * g = 1 + n (see {@link generateRandomKeys})
      * It is also necessary to know p and q (usually stored in the private key)
      *
-     * @param c - The encryption using the public of message m with random factor r
+     * @param c - The encryption of message m using a Paillier's {@link PublicKey} and random factor r
      *
-     * @returns The random factor (mod n)
+     * @returns The random factor r (mod n)
      *
-     * @throws {RangeError}
-     * Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true) )
+     * @throws {@link RangeError}
+     * Cannot recover the random factor if publicKey.g != publicKey.n + 1. You should generate yout keys using the simple variant, e.g. generateRandomKeys(3072, true)  (see {@link generateRandomKeys})
      *
-     * @throws {Error}
+     * @throws {@link Error}
      * Cannot get random factor without knowing p and q
      *
      */
@@ -115,22 +115,22 @@ interface KeyPair {
     privateKey: PrivateKey;
 }
 /**
- * Generates a pair private, public key for the Paillier cryptosystem.
+ * Generates a pair of private and public key for the Paillier cryptosystem.
  *
  * @param bitlength - The bit length of the public modulo
- * @param simplevariant - Use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key
+ * @param simpleVariant - Since generated p and q are of equivalent length, a simpler variant of the key generation steps would be to set g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key using the {@link PrivateKey.getRandomFactor} method
  *
- * @returns A promise that resolves to a {@link KeyPair} of public, private keys
+ * @returns A promise that resolves to a {@link KeyPair} holding a public and a private key
  */
 declare function generateRandomKeys(bitlength?: number, simpleVariant?: boolean): Promise<KeyPair>;
 /**
- * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
+ * Generates a pair of private and public key for the Paillier cryptosystem in synchronous mode.
  * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
  *
  * @param bitlength - The bit length of the public modulo
- * @param simplevariant - Use the simple variant to compute the generator (g=n+1)
+ * @param simpleVariant - Since generated p and q are of equivalent length, a simpler variant of the key generation steps would be to set g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key using the {@link PrivateKey.getRandomFactor} method.
  *
- * @returns A pair of public, private keys
+ * @returns A {@link KeyPair} with a public and a private key
  */
 declare function generateRandomKeysSync(bitlength?: number, simpleVariant?: boolean): KeyPair;
 

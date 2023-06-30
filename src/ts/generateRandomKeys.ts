@@ -8,12 +8,12 @@ export interface KeyPair {
 }
 
 /**
- * Generates a pair private, public key for the Paillier cryptosystem.
+ * Generates a pair of private and public key for the Paillier cryptosystem.
  *
  * @param bitlength - The bit length of the public modulo
- * @param simplevariant - Use the simple variant to compute the generator (g=n+1). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key
+ * @param simpleVariant - Since generated p and q are of equivalent length, a simpler variant of the key generation steps would be to set g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key using the {@link PrivateKey.getRandomFactor} method
  *
- * @returns A promise that resolves to a {@link KeyPair} of public, private keys
+ * @returns A promise that resolves to a {@link KeyPair} holding a public and a private key
  */
 export async function generateRandomKeys (bitlength: number = 3072, simpleVariant: boolean = false): Promise<KeyPair> {
   let p: bigint, q: bigint, n: bigint, g: bigint, lambda: bigint, mu: bigint
@@ -44,13 +44,13 @@ export async function generateRandomKeys (bitlength: number = 3072, simpleVarian
 }
 
 /**
- * Generates a pair private, public key for the Paillier cryptosystem in synchronous mode.
+ * Generates a pair of private and public key for the Paillier cryptosystem in synchronous mode.
  * Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be slower and may freeze thw window in browser's javascript.
  *
  * @param bitlength - The bit length of the public modulo
- * @param simplevariant - Use the simple variant to compute the generator (g=n+1)
+ * @param simpleVariant - Since generated p and q are of equivalent length, a simpler variant of the key generation steps would be to set g=n+1, lambda=(p-1)(q-1), mu=lambda.invertm(n). This is REQUIRED if you want to be able to recover the random integer factor used when encrypting with the public key using the {@link PrivateKey.getRandomFactor} method.
  *
- * @returns A pair of public, private keys
+ * @returns A {@link KeyPair} with a public and a private key
  */
 export function generateRandomKeysSync (bitlength: number = 3072, simpleVariant: boolean = false): KeyPair {
   let p: bigint, q: bigint, n: bigint, g: bigint, lambda: bigint, mu: bigint
