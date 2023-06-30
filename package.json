@@ -22,7 +22,7 @@
   "engines": {
     "node": ">=12"
   },
-  "type": "module",
+"type": "module",
   "main": "./dist/index.node.cjs",
   "browser": "./dist/index.browser.esm.js",
   "types": "./dist/index.d.ts",
@@ -49,10 +49,26 @@
       }
     },
     "./esm-browser-bundle": "./dist/bundle.esm.min.js",
+    "./dist/bundle.esm.min.js": "./dist/bundle.esm.min.js",
     "./esm-browser-bundle-nomin": "./dist/bundle.esm.js",
+    "./dist/bundle.esm.js": "./dist/bundle.esm.js",
     "./iife-browser-bundle": "./dist/bundle.iife.js",
+    "./dist/bundle.iife.js": "./dist/bundle.iife.js",
     "./umd-browser-bundle": "./dist/bundle.umd.js",
-    "./types": "./dist/index.d.ts"
+    "./dist/bundle.umd.js": "./dist/bundle.umd.js",
+    "./dist/index.node": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.node.cjs"
+    },
+    "./dist/index.node.esm": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.node.esm.js"
+    },
+    "./dist/index.browser.esm": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.browser.esm.js"
+    },
+    "./package.json": "./package.json"
   },
   "imports": {
     "#pkg": {
@@ -134,7 +150,7 @@
     }
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-inject": "^5.0.3",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-multi-entry": "^6.0.0",
@@ -144,7 +160,7 @@
     "@rollup/plugin-typescript": "^11.1.0",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^10.0.0",
-    "c8": "^7.12.0",
+    "c8": "^8.0.0",
     "chai": "^4.3.3",
     "dotenv": "^16.0.3",
     "glob": "^10.0.0",
@@ -153,7 +169,7 @@
     "mocha": "^10.0.0",
     "npm-run-all": "^4.1.5",
     "pirates": "^4.0.1",
-    "puppeteer": "^19.1.2",
+    "puppeteer": "^20.7.3",
     "rimraf": "^5.0.0",
     "rollup": "^3.20.2",
     "rollup-plugin-dts": "^5.3.0",
@@ -161,9 +177,9 @@
     "tslib": "^2.3.1",
     "typedoc": "~0.23.0",
     "typedoc-plugin-markdown": "~3.14.0",
-    "typescript": "^5.0.3"
+    "typescript": "^4.6.0"
   },
   "dependencies": {
-    "bigint-crypto-utils": "^3.2.2"
+    "bigint-crypto-utils": "^3.3.0"
   }
 }

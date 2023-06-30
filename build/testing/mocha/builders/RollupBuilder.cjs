@@ -42,6 +42,9 @@ class RollupBuilder extends Builder {
       rollupOptions.output = rollupOptions.output[0]
     }
 
+    rollupOptions.output[0].sourcemap = 'inline'
+    rollupOptions.output[0].sourcemapExcludeSources = true
+
     this.builder = new RollupBundler({ rollupOptions, watch: this.watch, watchedModule: this.watchedModule })
 
     this.builder.on('event', event => {
@@ -115,11 +118,7 @@ class RollupBundler extends EventEmitter {
         this.emit('event', event)
       })
     } else {
-      if (!fs.existsSync(path.join(rootDir, this.watchedModule))) {
-        await this._bundle()
-      } else {
-        this.emit('event', { code: 'END', noBuild: true })
-      }
+      await this._bundle()
     }
   }
 

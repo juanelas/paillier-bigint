@@ -58,6 +58,7 @@ async function typedoc () {
     // typedoc options here
     tsconfig: tempTsConfigPath,
     entryPoints: ['src/ts/index.ts'],
+    disableSources: true,
     plugin: ['typedoc-plugin-markdown'],
     includeVersion: true,
     entryDocument: 'API.md',

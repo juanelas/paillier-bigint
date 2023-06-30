@@ -42,19 +42,11 @@ Creates an instance of class PrivateKey
 | `p?` | `bigint` | a big prime |
 | `q?` | `bigint` | - |
 
-#### Defined in
-
-[PrivateKey.ts:23](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L23)
-
 ## Properties
 
 ### lambda
 
 • `Readonly` **lambda**: `bigint`
-
-#### Defined in
-
-[PrivateKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L8)
 
 ___
 
@@ -62,19 +54,11 @@ ___
 
 • `Readonly` **mu**: `bigint`
 
-#### Defined in
-
-[PrivateKey.ts:9](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L9)
-
 ___
 
 ### publicKey
 
 • `Readonly` **publicKey**: [`PublicKey`](PublicKey.md)
-
-#### Defined in
-
-[PrivateKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L10)
 
 ## Accessors
 
@@ -90,10 +74,6 @@ Get the bit length of the public modulo
 
 The bit length of the public modulo
 
-#### Defined in
-
-[PrivateKey.ts:35](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L35)
-
 ___
 
 ### n
@@ -107,10 +87,6 @@ Get the public modulo n=p·q
 `bigint`
 
 The public modulo n=p·q
-
-#### Defined in
-
-[PrivateKey.ts:43](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L43)
 
 ## Methods
 
@@ -131,10 +107,6 @@ Paillier private-key decryption
 `bigint`
 
 The decryption of c with this private key
-
-#### Defined in
-
-[PrivateKey.ts:54](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L54)
 
 ___
 
@@ -166,7 +138,3 @@ Cannot get random factor without knowing p and q
 `bigint`
 
 The random factor (mod n)
-
-#### Defined in
-
-[PrivateKey.ts:75](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PrivateKey.ts#L75)

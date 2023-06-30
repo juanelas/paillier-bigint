@@ -51,7 +51,7 @@ const tsBundleOptions = {
   tsconfig: path.join(rootDir, 'tsconfig.json'),
   outDir: undefined, // ignore outDir in tsconfig.json
   sourceMap: false
-  // include: ['build/typings/is-browser.d.ts']
+  // include: ['src/ts/**/*', 'build/typings/**/*.d.ts']
 }
 
 async function buildTests (testFiles) {
@@ -63,6 +63,7 @@ async function buildTests (testFiles) {
       replace({
         IS_BROWSER: true,
         _MODULE_TYPE: "'ESM'",
+        _NPM_PKG_VERSION: `'${process.env.npm_package_version}'` ?? "'0.0.1'",
         preventAssignment: true
       }),
       typescriptPlugin(tsBundleOptions),
@@ -202,7 +203,7 @@ function _getEnvVarsReplacements (testsCode) {
     }
   }
   if (missingEnvVars.length > 0) {
-    console.warn('The folloinwg environment variables are missing in your .env file and will be replaced with "undefined": ' + [...(new Set(missingEnvVars)).values()].join(', '))
+    console.warn('The following environment variables are missing in your .env file and will be replaced with "undefined": ' + [...(new Set(missingEnvVars)).values()].join(', '))
   }
   return replacements
 }

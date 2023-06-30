@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
       # When set to true, GitHub cancels all in-progress jobs if any matrix job fails.
       fail-fast: false
       # The maximum number of jobs that can run simultaneously. Set to 1 if you can't run tests in parallel

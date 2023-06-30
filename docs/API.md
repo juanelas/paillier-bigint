@@ -37,10 +37,6 @@ Generates a pair private, public key for the Paillier cryptosystem.
 
 A promise that resolves to a [KeyPair](interfaces/KeyPair.md) of public, private keys
 
-#### Defined in
-
-[generateRandomKeys.ts:18](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/generateRandomKeys.ts#L18)
-
 ___
 
 ### generateRandomKeysSync
@@ -62,7 +58,3 @@ Synchronous mode is NOT RECOMMENDED since it won't use workers and thus it'll be
 [`KeyPair`](interfaces/KeyPair.md)
 
 A pair of public, private keys
-
-#### Defined in
-
-[generateRandomKeys.ts:55](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/generateRandomKeys.ts#L55)

@@ -40,19 +40,11 @@ Creates an instance of class PublicKey
 | `n` | `bigint` | The public modulo |
 | `g` | `bigint` | The public generator |
 
-#### Defined in
-
-[PublicKey.ts:17](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L17)
-
 ## Properties
 
 ### \_n2
 
 • `Readonly` **\_n2**: `bigint`
-
-#### Defined in
-
-[PublicKey.ts:10](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L10)
 
 ___
 
@@ -60,19 +52,11 @@ ___
 
 • `Readonly` **g**: `bigint`
 
-#### Defined in
-
-[PublicKey.ts:8](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L8)
-
 ___
 
 ### n
 
 • `Readonly` **n**: `bigint`
-
-#### Defined in
-
-[PublicKey.ts:7](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L7)
 
 ## Accessors
 
@@ -87,10 +71,6 @@ Get the bit length of the public modulo
 `number`
 
 The bit length of the public modulo
-
-#### Defined in
-
-[PublicKey.ts:27](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L27)
 
 ## Methods
 
@@ -111,10 +91,6 @@ Homomorphic addition
 `bigint`
 
 The encryption of (m_1 + ... + m_n) with this public key
-
-#### Defined in
-
-[PublicKey.ts:55](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L55)
 
 ___
 
@@ -137,10 +113,6 @@ Paillier public-key encryption
 
 The encryption of m with this public key
 
-#### Defined in
-
-[PublicKey.ts:39](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L39)
-
 ___
 
 ### multiply
@@ -162,10 +134,6 @@ Pseudo-homomorphic Paillier multiplication
 
 - the encryption of k·m with this public key
 
-#### Defined in
-
-[PublicKey.ts:79](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L79)
-
 ___
 
 ### plaintextAddition
@@ -186,7 +154,3 @@ Pseudo-homomorphic addition of plaintext to chipertext
 `bigint`
 
 The encryption of (m_1 + ... + m_n) with this public key
-
-#### Defined in
-
-[PublicKey.ts:67](https://github.com/juanelas/paillier-bigint/blob/8a14c4e/src/ts/PublicKey.ts#L67)

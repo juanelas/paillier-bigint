@@ -52,6 +52,9 @@ export default class PrivateKey {
    * @returns The decryption of c with this private key
    */
   decrypt (c: bigint): bigint {
+    if (this._p !== undefined && this._q !== undefined) {
+      return (L(bcu.modPow(c, this.lambda, this.publicKey._n2, [[this._p, 2], [this._q, 2]]), this.publicKey.n) * this.mu) % this.publicKey.n
+    }
     return (L(bcu.modPow(c, this.lambda, this.publicKey._n2), this.publicKey.n) * this.mu) % this.publicKey.n
   }
 
@@ -81,7 +84,7 @@ export default class PrivateKey {
     const phi = (this._p - 1n) * (this._q - 1n)
     const nInvModPhi = bcu.modInv(this.n, phi)
     const c1 = c * (1n - m * this.n) % this.publicKey._n2
-    return bcu.modPow(c1, nInvModPhi, this.n)
+    return bcu.modPow(c1, nInvModPhi, this.n, [[this._p, 1], [this._q, 1]])
   }
 }
 

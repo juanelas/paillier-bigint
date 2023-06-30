@@ -34,8 +34,8 @@ coverage
 # tsconfig
 tsconfig.json
 
-# SRC docs
-src/docs
+# SRC
+src
 
 # Environment files
 *.env

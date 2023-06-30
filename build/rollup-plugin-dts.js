@@ -21,6 +21,7 @@ const tsConfig = parseJsonSourceFileConfigFileContent(configFile, sys, dirname(t
 export const compile = (outDir) => {
   const compilerOptions = {
     ...tsConfig.options,
+    removeComments: false,
     declaration: true,
     declarationMap: true,
     emitDeclarationOnly: true,

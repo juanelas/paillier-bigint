@@ -45,13 +45,8 @@ if (existsSync(input) !== true) throw new Error('The entry point should be index
 const tsPluginOptions = {
   tsconfig: tsConfigPath,
   outDir: undefined,
-  include: ['src/ts/**/*', 'build/typings/is-browser.d.ts'],
+  include: ['src/ts/**/*', 'build/typings/**/*.d.ts'],
   exclude: ['src/**/*.spec.ts']
-}
-
-const sourcemapOutputOptions = {
-  sourcemap: 'inline',
-  sourcemapExcludeSources: true
 }
 
 function compileDts (outDir) {
@@ -90,7 +85,6 @@ export default [
     output: [
       {
         file: join(rootDir, pkgJson.exports['.'].default.default),
-        ...sourcemapOutputOptions,
         format: 'es',
         plugins: [
           terser()
@@ -100,7 +94,9 @@ export default [
     plugins: [
       replace({
         IS_BROWSER: true,
+        environment: 'browser',
         _MODULE_TYPE: "'ESM'",
+        _NPM_PKG_VERSION: `'${process.env.npm_package_version}'` ?? "'0.0.1'",
         preventAssignment: true
       }),
       rollupPluginTs(tsPluginOptions),
@@ -142,7 +138,9 @@ export default [
     plugins: [
       replace({
         IS_BROWSER: true,
+        environment: 'browser',
         _MODULE_TYPE: "'BUNDLE'",
+        _NPM_PKG_VERSION: `'${process.env.npm_package_version}'` ?? "'0.0.1'",
         preventAssignment: true
       }),
       rollupPluginTs({
@@ -159,12 +157,11 @@ export default [
     output: [
       {
         file: join(rootDir, pkgJson.exports['.'].node.require.default),
-        ...sourcemapOutputOptions,
         format: 'cjs',
         exports: 'auto',
-        plugins: [
-          terser()
-        ]
+        interop: 'auto',
+        dynamicImportInCjs: false,
+        plugins: [terser()]
       }
     ],
     plugins: [
@@ -175,7 +172,9 @@ export default [
       }),
       replace({
         IS_BROWSER: false,
+        environment: 'nodejs',
         _MODULE_TYPE: "'CJS'",
+        _NPM_PKG_VERSION: `'${process.env.npm_package_version}'` ?? "'0.0.1'",
         preventAssignment: true
       }),
       rollupPluginTs(tsPluginOptions),
@@ -195,17 +194,16 @@ export default [
     output: [
       {
         file: join(rootDir, pkgJson.exports['.'].node.import.default),
-        ...sourcemapOutputOptions,
         format: 'es',
-        plugins: [
-          terser()
-        ]
+        plugins: [terser()]
       }
     ],
     plugins: [
       replace({
         IS_BROWSER: false,
+        environment: 'nodejs',
         _MODULE_TYPE: "'ESM'",
+        _NPM_PKG_VERSION: `'${process.env.npm_package_version}'` ?? "'0.0.1'",
         __filename: 'fileURLToPath(import.meta.url)',
         __dirname: 'fileURLToPath(new URL(\'.\', import.meta.url))',
         preventAssignment: true

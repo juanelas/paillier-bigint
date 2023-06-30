@@ -7,7 +7,9 @@ for (const _bitLength of bitLengths) {
   describe(`Testing Paillier with keys of ${bitLength} bits`, function () {
     this.timeout(200000)
     let keyPair: _pkg.KeyPair
-    const tests = 16
+    let privKeyNoPNoQ: _pkg.PrivateKey
+    let publicKey: _pkg.PublicKey
+    const tests = 50
     const numbers: bigint[] = []
     const ciphertexts: bigint[] = []
 
@@ -28,20 +30,42 @@ for (const _bitLength of bitLengths) {
 
     describe('privateKey constructor', function () {
       it('should create a privateKey from known parameters', function () {
-        const privateKey = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey)
-        chai.expect(privateKey).to.be.an.instanceOf(_pkg.PrivateKey)
-        chai.expect(privateKey.bitLength).to.equal(bitLength)
-        chai.expect(privateKey.n).to.equal(keyPair.publicKey.n)
+        privKeyNoPNoQ = new _pkg.PrivateKey(keyPair.privateKey.lambda, keyPair.privateKey.mu, keyPair.publicKey)
+        chai.expect(privKeyNoPNoQ).to.be.an.instanceOf(_pkg.PrivateKey)
+        chai.expect(privKeyNoPNoQ.bitLength).to.equal(bitLength)
+        chai.expect(privKeyNoPNoQ.n).to.equal(keyPair.publicKey.n)
+      })
+    })
+
+    describe('publicKey constructor', function () {
+      it('should create a publicKey from known parameters', function () {
+        publicKey = new _pkg.PublicKey(keyPair.publicKey.n, keyPair.publicKey.g)
+        chai.expect(publicKey).to.be.an.instanceOf(_pkg.PublicKey)
+        chai.expect(publicKey.bitLength).to.equal(bitLength)
+        chai.expect(publicKey.n).to.equal(keyPair.publicKey.n)
       })
     })
 
     describe(`Correctness. For ${tests} random r in (1,n), encrypt r with publicKey and then decrypt with privateKey: D(E(r))`, function () {
-      it('all should return r', function () {
+      it('all should return r with optimized decryption (known p and q)', function () {
         let testPassed = true
         for (let i = 0; i < tests; i++) {
           numbers[i] = bcu.randBetween(keyPair.publicKey.n)
           ciphertexts[i] = keyPair.publicKey.encrypt(numbers[i])
           const decrypted = keyPair.privateKey.decrypt(ciphertexts[i])
+          if (numbers[i] !== decrypted) {
+            testPassed = false
+            break
+          }
+        }
+        chai.expect(testPassed).equals(true)
+      })
+      it('all should return r with non-optimized decryption (unknown p and q)', function () {
+        let testPassed = true
+        for (let i = 0; i < tests; i++) {
+          numbers[i] = bcu.randBetween(keyPair.publicKey.n)
+          ciphertexts[i] = keyPair.publicKey.encrypt(numbers[i])
+          const decrypted = privKeyNoPNoQ.decrypt(ciphertexts[i])
           if (numbers[i] !== decrypted) {
             testPassed = false
             break
