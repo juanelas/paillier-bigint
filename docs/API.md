@@ -1,4 +1,4 @@
-# paillier-bigint - v3.4.1
+# paillier-bigint - v3.4.2
 
 ## Table of contents
 

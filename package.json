@@ -1,6 +1,6 @@
 {
   "name": "paillier-bigint",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "An implementation of the Paillier cryptosystem using native JS (ECMA 2020) implementation of BigInt",
   "keywords": [
     "paillier",
@@ -22,7 +22,7 @@
   "engines": {
     "node": ">=12"
   },
-"type": "module",
+  "type": "module",
   "main": "./dist/index.node.cjs",
   "browser": "./dist/index.browser.esm.js",
   "types": "./dist/index.d.ts",
